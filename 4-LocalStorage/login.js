@@ -1,43 +1,61 @@
-// login.js
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
-  if (!form) return;
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("loginForm");
+  const feedback = document.getElementById("feedback");
 
-  form.addEventListener('submit', (e) => {
+  // 🔹 Função para mostrar feedback
+  function mostrarFeedback(mensagem, tipo) {
+    feedback.textContent = mensagem;
+    feedback.className = `feedback ${tipo}`;
+    feedback.style.display = "block";
+  }
+
+  // 🔹 Simulação de API (igual apiPost do React)
+  function apiLogin(email, senha) {
+    return new Promise((resolve, reject) => {
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+      const usuarioEncontrado = usuarios.find(
+        (u) => u.emailDadosPessoais === email
+      );
+
+      if (!usuarioEncontrado) {
+        reject(new Error("Usuário não encontrado."));
+        return;
+      }
+
+      if (usuarioEncontrado.senhaDadosPessoais !== senha) {
+        reject(new Error("Senha incorreta."));
+        return;
+      }
+
+      resolve(usuarioEncontrado);
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const emailInput = document.getElementById('email')?.value.trim();
-    const senhaInput = document.getElementById('senha')?.value;
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
 
-    if (!emailInput || !senhaInput) {
-      alert('Preencha email e senha.');
+    if (!email || !senha) {
+      mostrarFeedback("Email ou senha inválidos.", "erro");
       return;
     }
 
-    const chaveUsuario = `cadastroDados_${emailInput}`;
-    const stored = localStorage.getItem(chaveUsuario);
-
-    if (!stored) {
-      alert('Nenhum usuário encontrado com esse email. Faça o cadastro primeiro.');
-      return;
-    }
-
-    let dados;
     try {
-      dados = JSON.parse(stored);
-    } catch {
-      alert('Erro ao ler os dados do cadastro.');
-      return;
-    }
+      const usuario = await apiLogin(email, senha);
 
-    const senhaCadastrada = dados.senhaDadosPessoais || '';
+      localStorage.setItem("usuarioLogado", usuario.emailDadosPessoais);
 
-    if (senhaInput === senhaCadastrada) {
-      localStorage.setItem('usuarioLogado', emailInput);
-      alert(`Bem-vindo(a), ${dados.nomeDadosPessoais || 'usuário'}!`);
-      window.location.href = '/3-Paginas/PaginasGlobal/home.html';
-    } else {
-      alert('Senha incorreta.');
+      mostrarFeedback(`Bem vindo(a) ${usuario.nomeDadosPessoais}!`, "sucesso");
+
+      setTimeout(() => {
+        window.location.href = "/3-Paginas/PaginasGlobal/home.html";
+      }, 1500);
+
+    } catch (error) {
+      mostrarFeedback(error.message, "erro");
     }
   });
 });
