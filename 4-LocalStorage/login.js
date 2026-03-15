@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mostrarFeedback(`Bem vindo(a) ${usuario.nomeDadosPessoais}!`, "sucesso");
 
       setTimeout(() => {
-        window.location.href = "/3-Paginas/PaginasGlobal/Home.html";
+        window.location.href = "/2-Paginas/Home/home.html";
       }, 1500);
 
     } catch (error) {
