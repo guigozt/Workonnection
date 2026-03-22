@@ -4,9 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - Workonnection</title>
+
+  <!-- GLOBAL -->
+  <link rel="stylesheet" href="/3-Style/global.css">
+
+  <!-- CSS DA PÁGINA -->
   <link rel="stylesheet" href="styleCadastro.css">
+
+  <!-- ÍCONES -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
 <header class="header">
@@ -19,65 +27,127 @@
 
     <h2>Dados Pessoais</h2>
 
-    <!-- Feedback igual React -->
-    <div id="feedback" class="feedback" style="display:none;"></div>
+    <div id="feedback" class="feedback"></div>
 
     <form id="cadastroForm">
 
+      <!-- NOME + CPF -->
       <div class="form-row">
+
         <div class="input-group">
           <label>Nome</label>
-          <input name="nomeDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input name="nomeDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
           <label>CPF</label>
-          <input name="cpfDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-id-card input-icon"></i>
+            <input name="cpfDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
         </div>
+
       </div>
 
+      <!-- DATA + TELEFONE -->
       <div class="form-row">
+
         <div class="input-group">
           <label>Data de Nascimento</label>
-          <input type="date" name="dataNascimentoDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-calendar input-icon"></i>
+            <input type="date" name="dataNascimentoDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
           <label>Telefone</label>
-          <input name="telefoneDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-phone input-icon"></i>
+            <input name="telefoneDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
         </div>
+
       </div>
 
+      <!-- EMAIL + SENHA -->
       <div class="form-row">
+
         <div class="input-group">
           <label>Email</label>
-          <input type="email" name="emailDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" name="emailDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
           <label>Senha</label>
-          <input type="password" name="senhaDadosPessoais" required>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" name="senhaDadosPessoais" required>
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+      </div>
+
+      <!-- CONFIRMAR SENHA -->
+      <div class="form-row">
+        <div class="input-group">
+          <label>Confirmar Senha</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" name="confirmarSenha" required>
+          </div>
+          <small class="error-message"></small>
         </div>
       </div>
 
+      <!-- TIPO USUÁRIO -->
       <p class="user-label">Tipo de Usuário</p>
 
+
       <div class="user-type-box">
-        <button type="button" class="user-btn" data-tipo="empresa">EMPRESA</button>
-        <button type="button" class="user-btn" data-tipo="me">ME</button>
-        <button type="button" class="user-btn" data-tipo="mei">MEI</button>
-        <button type="button" class="user-btn" data-tipo="estudante">ESTUDANTE</button>
+        <button type="button" class="user-btn" data-tipo="empresa">
+          <i class="fa-solid fa-building"></i> Empresa
+        </button>
+
+        <button type="button" class="user-btn" data-tipo="me">
+          <i class="fa-solid fa-briefcase"></i> ME
+        </button>
+
+        <button type="button" class="user-btn" data-tipo="mei">
+          <i class="fa-solid fa-file-invoice"></i> MEI
+        </button>
+
+        <button type="button" class="user-btn" data-tipo="estudante">
+          <i class="fa-solid fa-user-graduate"></i> Estudante
+        </button>
       </div>
 
-      <!-- Caixa dinâmica igual React -->
       <div id="tipoBox" class="user-box collapsible">
         <h3 id="tipoTitulo"></h3>
         <p>Campos específicos podem ser adicionados aqui futuramente.</p>
       </div>
 
+      <!-- BOTÕES -->
       <div class="buttons">
-        <button type="button" class="btn-back">Voltar</button>
-        <button type="submit" class="btn-submit">Cadastrar</button>
+        <button type="button" class="btn-back">
+          <i class="fa-solid fa-arrow-left"></i> Voltar
+        </button>
+
+        <button type="submit" class="btn-submit btn-primary">
+          <i class="fa-solid fa-user-plus"></i> Cadastrar
+        </button>
       </div>
 
     </form>
