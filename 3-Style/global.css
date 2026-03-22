@@ -1,0 +1,135 @@
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== VARIÁVEIS ===== */
+:root {
+  --primary: #007B8A;
+  --primary-light: #5ec3e6;
+  --primary-dark: #47a4c4;
+
+  --danger: #dc3545;
+  --success: #28a745;
+
+  --bg: #f4f8fb;
+  --text: #333;
+
+  --font-base: 16px;
+  --font-input: 15px;
+  --font-small: 13px;
+
+  --radius: 10px;
+}
+
+/* ===== BASE ===== */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: var(--font-base);
+}
+
+/* ===== INPUT ===== */
+input {
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  font-size: var(--font-input);
+}
+
+input:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 10px rgba(94,195,230,.4);
+  outline: none;
+}
+
+/* ===== BOTÃO ===== */
+button {
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: var(--font-input);
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--primary-light);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* ===== FEEDBACK ===== */
+.feedback {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: var(--radius);
+  display: none;
+}
+
+.feedback.erro {
+  background: #fdecea;
+  color: #b00020;
+}
+
+.feedback.sucesso {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+/* ===== INPUT COM ÍCONE ===== */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding-left: 40px;
+  height: 44px;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #007B8A;
+}
+
+/* estados */
+input.error {
+  border: 2px solid var(--danger);
+  background-color: #fdecea;
+}
+
+input.success {
+  border: 2px solid var(--success);
+  background-color: #e6f4ea;
+}
+
+.error-message {
+  font-size: var(--font-small);
+  color: var(--danger);
+  margin-top: 4px;
+}
+
+/* reação do ícone */
+.input-group:focus-within .input-icon {
+  color: var(--primary-light);
+}
+
+input.error ~ .input-icon {
+  color: var(--danger);
+}
+
+input.success ~ .input-icon {
+  color: var(--success);
+}
