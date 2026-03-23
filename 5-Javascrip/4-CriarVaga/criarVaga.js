@@ -1,176 +1,202 @@
-// pegar elementos
-const botaoNovaVaga = document.querySelector(".botao-publicar");
-const modalVaga = new bootstrap.Modal(document.getElementById("modalVaga"));
-const btnSalvarVaga = document.getElementById("btnSalvarVaga");
+document.addEventListener("DOMContentLoaded", () => {
+  const botaoNovaVaga = document.querySelector(".botao-publicar");
+  const modalVaga = new bootstrap.Modal(document.getElementById("modalVaga"));
+  const btnSalvarVaga = document.getElementById("btnSalvarVaga");
 
-// inputs do modal
-const inputEmpresa = document.getElementById("inputEmpresa");
-const inputCargo = document.getElementById("inputCargo");
-const inputDescricao = document.getElementById("inputDescricao");
-const inputModalidade = document.getElementById("inputModalidade");
-const inputHorario = document.getElementById("inputHorario");
-const inputBeneficios = document.getElementById("inputBeneficios");
-const inputLocalizacao = document.getElementById("inputLocalizacao");
-const inputSalario = document.getElementById("inputSalario");
-const inputData = document.getElementById("inputData");
-const inputRequisitos = document.getElementById("inputRequisitos");
-const inputEmail = document.getElementById("inputEmail");
+  const inputs = {
+    empresa: document.getElementById("inputEmpresa"),
+    cargo: document.getElementById("inputCargo"),
+    descricao: document.getElementById("inputDescricao"),
+    modalidade: document.getElementById("inputModalidade"),
+    horario: document.getElementById("inputHorario"),
+    beneficios: document.getElementById("inputBeneficios"),
+    localizacao: document.getElementById("inputLocalizacao"),
+    salario: document.getElementById("inputSalario"),
+    data: document.getElementById("inputData"),
+    requisitos: document.getElementById("inputRequisitos"),
+    email: document.getElementById("inputEmail")
+  };
 
-const vagasContainer = document.getElementById("vagas-container");
+  const vagasContainer = document.getElementById("vagas-container");
+  const usuarioLogado = localStorage.getItem("usuarioLogado") || "Guest";
+  const user = { username: usuarioLogado, profilePic: "https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg" };
+  let vagas = JSON.parse(localStorage.getItem("vagas")) || [];
 
-// Pegar usuário logado
-const usuarioLogado = localStorage.getItem("usuarioLogado") || "Guest";
-const user = {
-    username: usuarioLogado,
-    profilePic: "/6-Imagens/FotosPerfis/default.png" // Ajuste se quiser usar a foto real
-};
+  // ===== Feedback igual cadastro =====
+  function mostrarErro(input, mensagem) {
+    let small = input.parentElement.querySelector(".error-message");
+    if (!small) {
+      small = document.createElement("small");
+      small.className = "error-message";
+      input.parentElement.appendChild(small);
+    }
+    small.textContent = mensagem;
+    input.classList.add("error");
+    input.classList.remove("success");
+  }
 
-// Pegar vagas do localStorage
-let vagas = JSON.parse(localStorage.getItem("vagas")) || [];
+  function mostrarSucesso(input) {
+    let small = input.parentElement.querySelector(".error-message");
+    if (small) small.textContent = "";
+    input.classList.remove("error");
+    input.classList.add("success");
+  }
 
-// Função para renderizar todas as vagas
-function renderVagas() {
-    // Limpa apenas vagas criadas dinamicamente
-    vagasContainer.querySelectorAll(".vaga-card[data-created]").forEach(v => v.remove());
+  // ===== Validações =====
+  function validarObrigatorio(input) {
+    if (!input.value.trim()) {
+      mostrarErro(input, "Campo obrigatório");
+      return false;
+    }
+    mostrarSucesso(input);
+    return true;
+  }
 
-    // Renderiza todas as vagas
-    vagas.forEach((vaga, index) => {
-        const vagaDiv = document.createElement("div");
-        vagaDiv.classList.add("vaga-card");
-        vagaDiv.dataset.created = true;
-        vagaDiv.dataset.index = index;
-        vagaDiv.dataset.creator = vaga.creator;
+  function validarEmail(input) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!input.value.trim()) return mostrarErro(input, "Campo obrigatório") && false;
+    if (!regex.test(input.value.trim())) return mostrarErro(input, "Email inválido") && false;
+    mostrarSucesso(input);
+    return true;
+  }
 
-        vagaDiv.innerHTML = `
-            <div class="vaga-header" style="position: relative;">
-                <img src="${user.profilePic}" alt="Logo Empresa">
-                <div>
-                    <h5>${vaga.empresa}</h5>
-                    <small>${vaga.cargo}</small>
-                </div>
-                ${vaga.creator === user.username ? `
-                <div class="dropdown" style="position: absolute; top: 10px; right: 10px;">
-                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#" onclick="editarVaga(${index})">Editar</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="excluirVaga(${index})">Excluir</a></li>
-                    </ul>
-                </div>` : ''}
-            </div>
+  function validarSalario(input) {
+    const valor = input.value.replace(/\D/g, "");
+    if (!valor) return mostrarErro(input, "Salário obrigatório") && false;
+    mostrarSucesso(input);
+    return true;
+  }
 
-            <div class="vaga-body">
-                <p><b>Cargo:</b> ${vaga.cargo}</p>
-                <p><b>Descrição:</b> ${vaga.descricao}</p>
-                <p><b>Modalidade:</b> ${vaga.modalidade}</p>
-                <p><b>Horário:</b> ${vaga.horario}</p>
-                <p><b>Benefícios:</b> ${vaga.beneficios}</p>
-                <p><b>Localização:</b> ${vaga.localizacao}</p>
-                <p><b>Salário:</b> ${vaga.salario}</p>
-                <p><b>Data de publicação:</b> ${vaga.data}</p>
-                <p><b>Requisitos:</b> ${vaga.requisitos}</p>
-                <p><b>Email de contato:</b> ${vaga.email}</p>
-            </div>
+  function validarData(input) {
+    if (!input.value.trim()) return mostrarErro(input, "Data obrigatória") && false;
+    const dataSelecionada = new Date(input.value);
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const umAnoDepois = new Date(); umAnoDepois.setFullYear(umAnoDepois.getFullYear() + 1); umAnoDepois.setHours(0,0,0,0);
 
-            <div class="vaga-footer d-flex align-items-center gap-2">
-                <button class="btn btn-success btn-sm" onclick="openWhatsApp('${vaga.empresa}', '${vaga.localizacao}')">
-                    <i class="fab fa-whatsapp"></i> WhatsApp
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="openChat('${vaga.empresa}')">
-                    <i class="fas fa-comment"></i> Chat (FAQ)
-                </button>
+    if (dataSelecionada < hoje) return mostrarErro(input, "Data não pode ser passada") && false;
+    if (dataSelecionada > umAnoDepois) return mostrarErro(input, "Data não pode ser maior que 1 ano") && false;
 
-                <div class="d-flex flex-grow-1 align-items-center comment-wrapper">
-                    <input type="text" class="form-control form-control-sm comment-input" placeholder="Comentar..." />
-                    <button class="btn btn-comment-send" title="Enviar comentário">
-                        <i class="fas fa-paper-plane" style="color:#47a4c4;"></i>
-                    </button>
-                </div>
-            </div>
-        `;
+    mostrarSucesso(input);
+    return true;
+  }
 
-        vagasContainer.appendChild(vagaDiv);
+  // ===== Máscara de salário =====
+  inputs.salario.addEventListener("input", () => {
+    let v = inputs.salario.value.replace(/\D/g, "");
+    v = (v/100).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    inputs.salario.value = v;
+  });
+
+  // ===== Feedback em tempo real =====
+  Object.values(inputs).forEach(input => {
+    input.addEventListener("blur", () => {
+      if (input === inputs.email) validarEmail(input);
+      else if (input === inputs.salario) validarSalario(input);
+      else if (input === inputs.data) validarData(input);
+      else validarObrigatorio(input);
     });
-}
+  });
 
-// Criar nova vaga
-btnSalvarVaga.addEventListener("click", () => {
-    const novaVaga = {
-        empresa: inputEmpresa.value,
-        cargo: inputCargo.value,
-        descricao: inputDescricao.value,
-        modalidade: inputModalidade.value,
-        horario: inputHorario.value,
-        beneficios: inputBeneficios.value,
-        localizacao: inputLocalizacao.value,
-        salario: inputSalario.value,
-        data: inputData.value,
-        requisitos: inputRequisitos.value,
-        email: inputEmail.value,
-        creator: user.username // garante que é o usuário logado
-    };
+  // ===== Render vagas =====
+  function renderVagas() {
+    vagasContainer.querySelectorAll(".vaga-card[data-created]").forEach(v => v.remove());
+    vagas.forEach((vaga, index) => {
+      const div = document.createElement("div");
+      div.className = "vaga-card";
+      div.dataset.created = true;
+
+      div.innerHTML = `
+        <div class="vaga-header d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center gap-2">
+            <img src="${user.profilePic}" alt="Logo Empresa" class="rounded-circle" style="width:50px;height:50px;">
+            <div>
+              <h5>${vaga.empresa}</h5>
+              <small>${vaga.cargo}</small>
+            </div>
+          </div>
+          ${vaga.creator === user.username ? `
+          <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#" onclick="editarVaga(${index})">Editar</a></li>
+              <li><a class="dropdown-item" href="#" onclick="excluirVaga(${index})">Excluir</a></li>
+            </ul>
+          </div>` : ""}
+        </div>
+        <div class="vaga-body">
+          <p><b>Descrição:</b> ${vaga.descricao}</p>
+          <p><b>Modalidade:</b> ${vaga.modalidade}</p>
+          <p><b>Horário:</b> ${vaga.horario}</p>
+          <p><b>Benefícios:</b> ${vaga.beneficios}</p>
+          <p><b>Localização:</b> ${vaga.localizacao}</p>
+          <p><b>Salário:</b> ${vaga.salario}</p>
+          <p><b>Data:</b> ${vaga.data}</p>
+          <p><b>Requisitos:</b> ${vaga.requisitos}</p>
+          <p><b>Email:</b> ${vaga.email}</p>
+        </div>
+      `;
+      vagasContainer.appendChild(div);
+    });
+  }
+
+  // ===== Salvar vaga =====
+  btnSalvarVaga.addEventListener("click", () => {
+    let valido = true;
+    Object.values(inputs).forEach(input => {
+      if (input === inputs.email) valido = validarEmail(input) && valido;
+      else if (input === inputs.salario) valido = validarSalario(input) && valido;
+      else if (input === inputs.data) valido = validarData(input) && valido;
+      else valido = validarObrigatorio(input) && valido;
+    });
+
+    if (!valido) return alert("Corrija os campos antes de salvar!");
+
+    const novaVaga = {};
+    Object.keys(inputs).forEach(key => novaVaga[key] = inputs[key].value.trim());
+    novaVaga.creator = user.username;
 
     vagas.push(novaVaga);
     localStorage.setItem("vagas", JSON.stringify(vagas));
-
     renderVagas();
     modalVaga.hide();
 
-    // limpar inputs
-    inputEmpresa.value = "";
-    inputCargo.value = "";
-    inputDescricao.value = "";
-    inputModalidade.value = "";
-    inputHorario.value = "";
-    inputBeneficios.value = "";
-    inputLocalizacao.value = "";
-    inputSalario.value = "";
-    inputData.value = "";
-    inputRequisitos.value = "";
-    inputEmail.value = "";
+    Object.values(inputs).forEach(input => {
+      input.value = "";
+      input.classList.remove("error", "success");
+    });
+  });
+
+  // ===== Editar / Excluir =====
+  window.excluirVaga = function(index) {
+    if (vagas[index].creator !== user.username) return alert("Não pode excluir vaga de outro usuário!");
+    vagas.splice(index, 1);
+    localStorage.setItem("vagas", JSON.stringify(vagas));
+    renderVagas();
+  };
+
+  window.editarVaga = function(index) {
+    if (vagas[index].creator !== user.username) return alert("Não pode editar vaga de outro usuário!");
+    Object.keys(inputs).forEach(key => inputs[key].value = vagas[index][key]);
+    vagas.splice(index, 1);
+    localStorage.setItem("vagas", JSON.stringify(vagas));
+    modalVaga.show();
+  };
+
+  function limparCamposVaga() {
+    Object.values(inputs).forEach(input => {
+        input.value = "";
+        input.classList.remove("error", "success");
+        const small = input.parentElement.querySelector(".error-message");
+        if (small) small.textContent = "";
+  });
+}
+
+
+  // Ao abrir o modal, limpar campos
+    botaoNovaVaga.addEventListener("click", () => {
+    limparCamposVaga();   // limpa antes de abrir
+    modalVaga.show();
+    });
 });
-
-// Funções editar/excluir
-function excluirVaga(index) {
-    const vaga = vagas[index];
-    if (!vaga) return;
-    if (vaga.creator === user.username) {
-        vagas.splice(index, 1);
-        localStorage.setItem("vagas", JSON.stringify(vagas));
-        renderVagas();
-    } else {
-        alert("Você não pode excluir uma vaga de outro usuário!");
-    }
-}
-
-function editarVaga(index) {
-    const vaga = vagas[index];
-    if (!vaga) return;
-    if (vaga.creator === user.username) {
-        inputEmpresa.value = vaga.empresa;
-        inputCargo.value = vaga.cargo;
-        inputDescricao.value = vaga.descricao;
-        inputModalidade.value = vaga.modalidade;
-        inputHorario.value = vaga.horario;
-        inputBeneficios.value = vaga.beneficios;
-        inputLocalizacao.value = vaga.localizacao;
-        inputSalario.value = vaga.salario;
-        inputData.value = vaga.data;
-        inputRequisitos.value = vaga.requisitos;
-        inputEmail.value = vaga.email;
-
-        modalVaga.show();
-
-        vagas.splice(index, 1);
-        localStorage.setItem("vagas", JSON.stringify(vagas));
-    } else {
-        alert("Você não pode editar uma vaga de outro usuário!");
-    }
-}
-
-// Renderizar ao carregar
-renderVagas();
-
-// Abrir modal nova vaga
-botaoNovaVaga.addEventListener("click", () => modalVaga.show());
