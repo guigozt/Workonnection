@@ -3,7 +3,7 @@ import { save, load, getUserKey, getCurrentUser } from './helpers.js';
 // ===== ELEMENTOS =====
 const fotoEl = document.getElementById('perfil-foto');
 const nomeEl = document.getElementById('perfil-nome');
-const formacaoSmall = document.getElementById('perfil-formacao');
+const emailEl = document.getElementById('perfil-email')
 const btnAbrirModal = document.getElementById('btnAbrirModal');
 
 const modalPerfil = new bootstrap.Modal(document.getElementById('editarPerfilModal'));
@@ -15,7 +15,7 @@ const inputTelefone = document.getElementById('inputTelefone');
 const inputInstagram = document.getElementById('inputInstagram');
 const inputLinkedin = document.getElementById('inputLinkedin');
 const inputSite = document.getElementById('inputSite');
-const inputFoto = document.getElementById('inputFoto'); // FILE INPUT
+const inputFoto = document.getElementById('inputFoto');
 const btnSalvarPerfil = document.getElementById('btnSalvarPerfil');
 
 let fotoBase64 = "";
@@ -44,45 +44,20 @@ function mostrarSucesso(input) {
 }
 
 // ===== REGRAS =====
-function validarNome(input) {
-  if (input.value.trim().length < 3) {
-    mostrarErro(input, "Nome deve ter no mínimo 3 caracteres");
-    return false;
-  }
-  mostrarSucesso(input);
-  return true;
-}
-
-function validarEmail(input) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!regex.test(input.value.trim())) {
-    mostrarErro(input, "Email inválido");
-    return false;
-  }
-
-  mostrarSucesso(input);
-  return true;
-}
-
 function validarTelefone(input) {
   const numeros = input.value.replace(/\D/g, "");
-
   if (numeros.length < 10) {
     mostrarErro(input, "Telefone inválido");
     return false;
   }
-
   mostrarSucesso(input);
   return true;
 }
 
 // ===== VALIDAÇÃO EM TEMPO REAL =====
-inputNome.addEventListener("input", () => validarNome(inputNome));
-inputEmail.addEventListener("input", () => validarEmail(inputEmail));
 inputTelefone.addEventListener("input", () => validarTelefone(inputTelefone));
 
-// ===== FOTO (UPLOAD) =====
+// ===== FOTO =====
 inputFoto.addEventListener("change", () => {
   const file = inputFoto.files[0];
   if (!file) return;
@@ -107,18 +82,16 @@ export function carregarPerfil() {
 
   let perfil = load(getUserKey('perfil'), null);
 
-  // 🔥 BUSCAR USUÁRIO DO ARRAY
   const usuarios = load("usuarios", []);
   const cadastro = usuarios.find(
     u => u.emailDadosPessoais === usuarioLogado.email
   ) || {};
 
-  // 🔹 Se não tiver perfil ainda, cria baseado no cadastro
   if (!perfil && cadastro) {
     perfil = {
-      nome: cadastro.nomeDadosPessoais || "Seu Nome",
-      email: cadastro.emailDadosPessoais || "",
-      telefone: cadastro.telefoneDadosPessoais || "",
+      nome: cadastro.nomeDadosPessoais,
+      email: cadastro.emailDadosPessoais,
+      telefone: cadastro.telefoneDadosPessoais || '',
       local: '',
       instagram: '',
       linkedin: '',
@@ -129,39 +102,34 @@ export function carregarPerfil() {
     save(getUserKey('perfil'), perfil);
   }
 
-  // 🔹 fallback seguro
-  if (!perfil) {
-    perfil = {
-      nome: "Seu Nome",
-      email: usuarioLogado.email,
-      telefone: '',
-      local: '',
-      instagram: '',
-      linkedin: '',
-      site: '',
-      foto: ''
-    };
-    save(getUserKey('perfil'), perfil);
+  if (!perfil) return;
+
+  // ===== TEXTO INTELIGENTE =====
+  function textoOuPadrao(valor, texto) {
+    return valor && valor.trim() !== "" ? valor : texto;
   }
 
   // ===== ATUALIZA TELA =====
   nomeEl.textContent = perfil.nome;
   fotoEl.src = perfil.foto || "https://via.placeholder.com/150";
+  emailEl.textContent = perfil.email
+    ? `Email: ${perfil.email}`
+    : "Email não disponível";
 
   document.getElementById('perfil-local').innerHTML =
-    `<i class="fas fa-map-marker-alt text-primary"></i> ${perfil.local || 'Local:'}`;
+    `<i class="fas fa-map-marker-alt text-primary"></i> ${textoOuPadrao(perfil.local, "Adicione sua localização")}`;
 
   document.getElementById('perfil-telefone').innerHTML =
-    `<i class="fas fa-phone text-success"></i> ${perfil.telefone || 'Telefone:'}`;
+    `<i class="fas fa-phone text-success"></i> ${textoOuPadrao(perfil.telefone, "Adicione seu telefone")}`;
 
   document.getElementById('perfil-instagram').innerHTML =
-    `<i class="fab fa-instagram text-danger"></i> ${perfil.instagram || 'Instagram:'}`;
+    `<i class="fab fa-instagram text-danger"></i> ${textoOuPadrao(perfil.instagram, "Adicione seu Instagram")}`;
 
   document.getElementById('perfil-linkedin').innerHTML =
-    `<i class="fab fa-linkedin text-primary"></i> ${perfil.linkedin || 'LinkedIn:'}`;
+    `<i class="fab fa-linkedin text-primary"></i> ${textoOuPadrao(perfil.linkedin, "Adicione seu LinkedIn")}`;
 
   document.getElementById('perfil-site').innerHTML =
-    `<i class="fas fa-globe text-info"></i> ${perfil.site || 'Site:'}`;
+    `<i class="fas fa-globe text-info"></i> ${textoOuPadrao(perfil.site, "Adicione seu site")}`;
 }
 
 // ===== ABRIR MODAL =====
@@ -169,17 +137,20 @@ btnAbrirModal.addEventListener('click', () => {
   const usuarioLogado = getCurrentUser();
   const perfil = load(getUserKey('perfil'), {});
 
-  // 🔥 BUSCAR DO ARRAY
   const usuarios = load("usuarios", []);
   const cadastro = usuarios.find(
     u => u.emailDadosPessoais === usuarioLogado.email
   ) || {};
 
-  // 🔹 PRIORIDADE: cadastro > perfil
-  inputNome.value = cadastro.nomeDadosPessoais || perfil.nome || '';
-  inputEmail.value = cadastro.emailDadosPessoais || perfil.email || '';
-  inputTelefone.value = cadastro.telefoneDadosPessoais || perfil.telefone || '';
+  // 🔒 NÃO EDITÁVEIS
+  inputNome.value = cadastro.nomeDadosPessoais || '';
+  inputEmail.value = cadastro.emailDadosPessoais || '';
 
+  inputNome.disabled = true;
+  inputEmail.disabled = true;
+
+  // 🔓 EDITÁVEIS
+  inputTelefone.value = cadastro.telefoneDadosPessoais || perfil.telefone || '';
   inputLocal.value = perfil.local || '';
   inputInstagram.value = perfil.instagram || '';
   inputLinkedin.value = perfil.linkedin || '';
@@ -190,19 +161,20 @@ btnAbrirModal.addEventListener('click', () => {
 
 // ===== SALVAR =====
 btnSalvarPerfil.addEventListener('click', () => {
-  const valido =
-    validarNome(inputNome) &&
-    validarEmail(inputEmail) &&
-    validarTelefone(inputTelefone);
-
-  if (!valido) {
-    alert("Corrija os campos!");
+  if (!validarTelefone(inputTelefone)) {
+    alert("Corrija o telefone!");
     return;
   }
 
+  const usuarioLogado = getCurrentUser();
+  const usuarios = load("usuarios", []);
+  const cadastro = usuarios.find(
+    u => u.emailDadosPessoais === usuarioLogado.email
+  ) || {};
+
   const perfil = {
-    nome: inputNome.value.trim(),
-    email: inputEmail.value.trim(),
+    nome: cadastro.nomeDadosPessoais, // 🔒 fixo
+    email: cadastro.emailDadosPessoais, // 🔒 fixo
     telefone: inputTelefone.value.trim(),
     local: inputLocal.value.trim(),
     instagram: inputInstagram.value.trim(),
