@@ -18,7 +18,7 @@
 -   Conexão com Spring -> Gera esqueleto do projeto
         Connect: Drives
         Drive: Java
-        Application: mongodb+srv://admin:work123@workonnection.zx5zgsb.mongodb.net/?appName=Workonnection
+        Application: mongodb+srv://admin:<password>@workonnection.zx5zgsb.mongodb.net/?appName=Workonnection
 
 2.  Criei projeto Spring
 
@@ -35,6 +35,7 @@
                 Lombok -> Facilita comunicação com MongoDB, incluindo CRUD automático
 
 -   Baixei arquivo zip e joguei no projeto
+-   Criei um arquivo .env que cria a variavel da URL com informações do acesso ao banco
 -   Criei um arquivo MongoConfig.js -> Onde você configura a URL do MongoDB Atlas para que o Spring saiba onde se conectar.
 
 -   Comando para rodar Backend:
