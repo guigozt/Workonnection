@@ -1,14 +1,19 @@
-// 5-Javascript/3-Auth/auth.js
-document.addEventListener('DOMContentLoaded', () => {
-    const usuarioAtual = localStorage.getItem('usuarioLogado');
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await fetch("http://localhost:8080/usuarios/me", {
+            method: "GET",
+            credentials: "include"
+        });
 
-    if (!usuarioAtual) {
-        console.log('Nenhum usuário logado. Redirecionando para o login...');
-        // Redireciona para a página de login
-        window.location.href = '/index.html';
-    } else {
-        console.log(`Usuário logado: ${usuarioAtual}`);
-        // Opcional: mostrar uma mensagem visual na página
-        // alert(`Bem-vindo de volta, ${usuarioAtual}!`);
+        if (!response.ok) throw new Error("Não autenticado");
+
+        const usuario = await response.json();
+        if (!usuario) throw new Error("Sem sessão");
+
+        console.log("Usuário autenticado:", usuario);
+
+    } catch (error) {
+        console.log("Redirecionando para login...");
+        window.location.href = "/index.html";
     }
 });
