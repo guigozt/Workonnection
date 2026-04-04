@@ -28,15 +28,21 @@
 -   Configuração:
         Project: Maven -> Sistema de build que gerencia dependências e compila o projeto
         Language: Java
-        Spring Boot versão padrão (4.0.5) -> Framework para criar aplicações web e backend rapidamente
+        Spring Boot versão padrão (3.2.5) -> Framework para criar aplicações web e backend rapidamente
         Dependencias: 
                 Spring Web -> Permite criar rotas, controllers e APIs REST.
                 Spring Data MongoDB -> Facilita comunicação com MongoDB, incluindo CRUD automático
                 Lombok -> Facilita comunicação com MongoDB, incluindo CRUD automático
 
 -   Baixei arquivo zip e joguei no projeto
--   Criei um arquivo .env que cria a variavel da URL com informações do acesso ao banco
--   Criei um arquivo MongoConfig.js -> Onde você configura a URL do MongoDB Atlas para que o Spring saiba onde se conectar.
+
+-   No arquivo "application.properties" adiciono:
+                spring.data.mongodb.uri=${MONGO_URI}
+
+-   E no terminal rode:
+        setx MONGO_URI "mongodb+srv://admin:work123@workonnection.zx5zgsb.mongodb.net/workonnection"
+
+        Depois feche o terminal, e abra novamente
 
 -   Comando para rodar Backend:
         Comando: .\mvnw clean install -> Limpa, compila e baixa dependências.

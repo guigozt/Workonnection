@@ -46,22 +46,19 @@ git clone https://github.com/guigozt/Workonnection.git
 cd Workonnection/backend
 ````
 
-### 2️⃣ Criar o arquivo local.env
+### 2️⃣ Criar uma variavel de ambiente
 
-Crie um arquivo chamado local.env na raiz do backend com a variável de ambiente que guarda a URL de conexão com o MongoDB Atlas:
+Abra o terminal e rode o comando para criar a variável de ambiente que guarda a URL de conexão com o MongoDB Atlas:
 
 ```bash
-MONGO_URI=mongodb+srv://USUARIO:SENHA@SEU_CLUSTER.mongodb.net/?retryWrites=true&w=majority
+setx MONGO_URI "mongodb+srv://USUARIO:SENHA@SEU_CLUSTER.mongodb.net/workonnection"
 ````
 
 Troque USUARIO, SENHA e SEU_CLUSTER pelos dados do seu cluster Atlas.
-O arquivo .env não deve ser enviado para o Git, ele é local e seguro.
 
-### 3️⃣ Verificar se o .env está no .gitignore
+Feche o terminal atual e abra novamente outro terminal.
 
-Certifique-se de que o .env está listado no arquivo .gitignore para evitar que dados sensíveis vazem para o GitHub.
-
-### 4️⃣ Rodar o backend
+### 3️⃣ Rodar o backend
 
 No terminal, estando na pasta do backend, execute:
 
