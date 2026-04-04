@@ -169,10 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===== SUBMIT =====
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     let valido = true;
+
     Object.values(inputs).forEach(input => {
       if (input && (!input.value || input.classList.contains("error"))) {
         valido = false;
@@ -185,26 +186,39 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const email = inputs.email.value;
-
-    if (usuarios.find(u => u.emailDadosPessoais === email)) {
-      alert("Usuário já existe!");
-      return;
+    const novoUsuario = {
+      nome: inputs.nome.value,
+      cpf: inputs.cpf.value,
+      dataNascimento: inputs.data.value,
+      telefone: inputs.telefone.value,
+      email: inputs.email.value,
+      senha: inputs.senha.value,
+      tipoUsuario: tipoSelecionado
     }
 
-    const novoUsuario = {
-      ...Object.fromEntries(new FormData(form).entries()),
-      tipoUsuario: tipoSelecionado
-    };
+    try {
+      const response = await fetch("http://localhost:8080/usuarios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(novoUsuario)
+      });
 
-    usuarios.push(novoUsuario);
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+      if (!response.ok){
+        throw new Error("Erro no cadastro")
+      }
 
-    alert("Cadastro realizado com sucesso! Redirecionando para login...");
-    setTimeout(() => {
-      window.location.href = "../../index.html";
-    }, 1000);
+      alert("Cadastro realizado com sucesso!")
+
+      setTimeout(() => {
+        window.location.href = "../../index.html";
+      }, 1000);
+    
+    } catch (error) {
+      console.error(error)
+      alert("Erro ao conectar com o servidor!")
+    }
   });
-
 });
