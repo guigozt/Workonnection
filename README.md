@@ -67,9 +67,7 @@ No terminal, estando na pasta do backend, execute:
 .\mvnw spring-boot:run
 ````
 
-O Spring Boot vai iniciar o servidor na porta 8080 e conectar ao MongoDB Atlas usando a URL do .env.
-
 ### 5️⃣ Testar a aplicação
-Abra o navegador em http://localhost:8080
- ou use ferramentas como Postman para testar as rotas do backend.
+Abra o navegador em http://localhost:8080/modules/auth/Login.html
+
 Certifique-se de que o MongoDB Atlas permite conexão do seu IP (libere em Network Access caso necessário).
