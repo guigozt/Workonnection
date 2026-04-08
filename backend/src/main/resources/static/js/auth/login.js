@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const senha = document.getElementById("senha").value;
 
     if (!email || !senha) {
-      mostrarFeedback("Email ou senha inválidos.", "erro");
+      mostrarFeedback("Preencha todos os campos.", "erro");
       return;
     }
 
@@ -27,16 +27,21 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ email, senha })
       });
 
-      if (!response.ok) throw new Error("Email ou senha inválidos");
+      if (!response.ok) {
+        // Lê o JSON de erro vindo do GlobalExceptionHandler
+        const data = await response.json().catch(() => ({}));
+        mostrarFeedback(data.erro || "Email ou senha inválidos.", "erro");
+        return;
+      }
 
       mostrarFeedback("Login realizado com sucesso!", "sucesso");
-
       setTimeout(() => {
-        window.location.href = "/2-Paginas/Home/home.html";
+        window.location.href = "/modules/home/home.html";
       }, 1500);
 
     } catch (error) {
-      mostrarFeedback(error.message, "erro");
+      console.error(error);
+      mostrarFeedback("Erro ao conectar com o servidor.", "erro");
     }
   });
 });

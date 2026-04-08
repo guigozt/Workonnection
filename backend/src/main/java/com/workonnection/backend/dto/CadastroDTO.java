@@ -1,25 +1,14 @@
-package com.workonnection.backend.model;
+package com.workonnection.backend.dto;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-// Entidade do banco. Nunca retorne ela diretamente na API — use UsuarioResponseDTO.
-@Document(collection = "usuarios")
-public class Usuario {
-
-    @Id
-    private String id;
+public class CadastroDTO {
 
     private String nome;
     private String cpf;
     private String dataNascimento;
     private String telefone;
     private String email;
-    private String senha; // sempre em BCrypt hash
+    private String senha;
     private String tipoUsuario;
-
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

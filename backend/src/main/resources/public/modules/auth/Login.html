@@ -4,22 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Workonnection</title>
-  <link rel="stylesheet" href="2-Paginas/Login/styleLogin.css">
-  <link rel="stylesheet" href="/3-Style/global.css">
+
+  <!-- Caminhos corretos: Spring serve /static/** como raiz / -->
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/auth/styleLogin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
   <div class="container">
     <div class="left">
-      <img src="https://www.netzpiloten.de/wp-content/uploads/2021/01/work-life-balance-home-office-1000x1000-1.jpg" alt="ImagemLogin">
+      <img src="https://www.netzpiloten.de/wp-content/uploads/2021/01/work-life-balance-home-office-1000x1000-1.jpg" alt="Imagem Login">
     </div>
 
     <div class="right">
       <div class="login-form-box">
-        <img src="/6-Imagens/Logo Workonnection.png" alt="LogoWorkonnection" class="logoLogin">
+        <img src="/imagens/logo_workonnection.png" alt="Logo Workonnection" class="logoLogin">
 
-        <!-- Feedback igual React -->
         <div id="feedback" class="feedback" style="display: none;"></div>
 
         <form id="loginForm">
@@ -40,18 +41,21 @@
             <small class="error-message"></small>
           </div>
 
-          <button type="submit" class="btn-primary">➜ Entrar</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
+          </button>
 
         </form>
 
         <p class="cadastro">
           Não é cadastrado?
-          <a href="/2-Paginas/Cadastro/Cadastro.html">Cadastre-se</a>
+          <a href="/modules/auth/Cadastro.html">Cadastre-se</a>
         </p>
       </div>
     </div>
   </div>
 
-  <script src="/4-LocalStorage/login.js"></script>
+  <!-- Caminho correto para o JS -->
+  <script src="/js/auth/login.js"></script>
 </body>
 </html>
