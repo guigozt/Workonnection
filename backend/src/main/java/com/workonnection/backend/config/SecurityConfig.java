@@ -1,9 +1,7 @@
 package com.workonnection.backend.config;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,21 +13,31 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Libera todos os recursos estáticos e páginas HTML
                 .requestMatchers(
-                    "/modules/auth/**",
-                    "/usuarios",
-                    "/usuarios/login",
+                    "/",
+                    "/modules/**",
                     "/css/**",
                     "/js/**",
-                    "/imagens/**"
+                    "/imagens/**",
+                    "/favicon.ico"
                 ).permitAll()
-                .anyRequest().authenticated()
-            )
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendRedirect("/modules/auth/Login.html");
-                })
+
+                // Rotas públicas da API de autenticação
+                .requestMatchers(
+                    "/usuarios",
+                    "/usuarios/login"
+                ).permitAll()
+
+                // Todo o resto também liberado por ora
+                // Quando quiser proteger a API, troque por .authenticated()
+                .anyRequest().permitAll()
             );
+
+        // NÃO configure authenticationEntryPoint aqui.
+        // O redirect para login é responsabilidade do auth.js no frontend,
+        // não do Spring. Se o Spring redirecionar, ele intercepta o HTML
+        // antes do browser carregar e quebra a navegação.
 
         return http.build();
     }
