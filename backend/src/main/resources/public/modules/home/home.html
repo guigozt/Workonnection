@@ -21,7 +21,7 @@
             <input type="text" placeholder="Pesquisar">
         </div>
         <div class="top-icons">
-            <a href="/modules/home/home.html"><i class="fas fa-home"></i><a>
+            <a href="/modules/home/home.html"><i class="fas fa-home"></i></a>
             <a href="/modules/notificacoes/Notificacao.html"><i class="fas fa-bell"></i></a>
             <a href="/modules/vagas/Vagas.html"><i class="fas fa-briefcase"></i></a>
             <a href="/modules/colaboradores/Colaboradores.html"><i class="fas fa-users"></i></a>
@@ -29,13 +29,14 @@
             <a href="/modules/duvidas/Duvidas.html"><i class="fas fa-question-circle"></i></a>
             <a href="/modules/sobre/Sobre.html"><i class="fas fa-info-circle"></i></a>
             <a href="/modules/configuracoes/Configuracoes.html"><i class="fas fa-cog"></i></a>
+            <!-- Botão de logout -->
+            <a href="#" id="btnSair" title="Sair"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
 
     <div id="vagas-container">
-    <!-- Vagas serão renderizadas pelo JS -->
+        <!-- Vagas serão renderizadas pelo JS -->
     </div>
-
 
     <!-- Botão flutuante -->
     <button class="btn btn-primary btn-lg botao-publicar" title="Nova Publicação">
@@ -44,145 +45,141 @@
 
     <!-- Modal de criação de vaga -->
     <div class="modal fade" id="modalVaga" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Nova Vaga</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-            <form id="formVaga" class="vaga-form">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Vaga</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formVaga" class="vaga-form">
 
-            <!-- EMPRESA + CARGO -->
-            <div class="form-row">
-                <div class="input-group">
-                <label for="inputEmpresa">Empresa</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-building input-icon"></i>
-                    <input id="inputEmpresa" type="text" placeholder="Ex: Lucio Nunes">
-                    <div class="error-message"></div>
-                </div>
-                </div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="inputEmpresa">Empresa</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-building input-icon"></i>
+                                    <input id="inputEmpresa" type="text" placeholder="Ex: Lucio Nunes">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="inputCargo">Cargo</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-briefcase input-icon"></i>
+                                    <input id="inputCargo" type="text" placeholder="Ex: Desenvolvedor de Software">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="input-group">
-                <label for="inputCargo">Cargo</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-briefcase input-icon"></i>
-                    <input id="inputCargo" type="text" placeholder="Ex: Desenvolvedor de Software">
-                    <div class="error-message"></div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="inputModalidade">Modalidade</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-location-dot input-icon"></i>
+                                    <input id="inputModalidade" type="text" placeholder="Ex: Presencial">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="inputHorario">Horário</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-clock input-icon"></i>
+                                    <input id="inputHorario" type="text" placeholder="Ex: 08:00 - 18:00">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="inputLocalizacao">Localização</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-map-marker-alt input-icon"></i>
+                                    <input id="inputLocalizacao" type="text" placeholder="Ex: São Paulo">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="inputSalario">Salário</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-dollar-sign input-icon"></i>
+                                    <input id="inputSalario" type="text" placeholder="Ex: 1621,00">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="inputData">Data</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-calendar-alt input-icon"></i>
+                                    <input id="inputData" type="date">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group full">
+                                <label for="inputDescricao">Descrição</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-align-left input-icon"></i>
+                                    <textarea id="inputDescricao" placeholder="Ex: Criar, testar e manter programas"></textarea>
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label for="inputBeneficios">Benefícios</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-gift input-icon"></i>
+                                    <input id="inputBeneficios" type="text" placeholder="Ex: VT, VA...">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="input-group full">
+                                <label for="inputRequisitos">Requisitos</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-tasks input-icon"></i>
+                                    <textarea id="inputRequisitos" placeholder="Ex: Python, Lógica de Programação..."></textarea>
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group full">
+                                <label for="inputEmail">Email de Contato</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-envelope input-icon"></i>
+                                    <input id="inputEmail" type="email" placeholder="seuemail@exemplo.com">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
+                <div class="modal-footer">
+                    <button id="btnSalvarVaga" class="btn btn-primary">Salvar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </div>
-
-            <!-- MODALIDADE + HORÁRIO -->
-            <div class="form-row">
-                <div class="input-group">
-                <label for="inputModalidade">Modalidade</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-location-dot input-icon"></i>
-                    <input id="inputModalidade" type="text" placeholder="Ex: Presencial">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-
-                <div class="input-group">
-                <label for="inputHorario">Horário</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-clock input-icon"></i>
-                    <input id="inputHorario" type="text" placeholder="Ex: 08:00 - 18:00">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            <!-- LOCALIZAÇÃO + SALÁRIO -->
-            <div class="form-row">
-                <div class="input-group">
-                <label for="inputLocalizacao">Localização</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-map-marker-alt input-icon"></i>
-                    <input id="inputLocalizacao" type="text" placeholder="Ex: São Paulo">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-
-                <div class="input-group">
-                <label for="inputSalario">Salário</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-dollar-sign input-icon"></i>
-                    <input id="inputSalario" type="text" placeholder="Ex: 1621,00">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            <!-- DATA -->
-            <div class="form-row">
-                <div class="input-group">
-                <label for="inputData">Data</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-calendar-alt input-icon"></i>
-                    <input id="inputData" type="date">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            <!-- DESCRIÇÃO -->
-            <div class="form-row">
-                <div class="input-group full">
-                <label for="inputDescricao">Descrição</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-align-left input-icon"></i>
-                    <textarea id="inputDescricao" placeholder="Ex: Criar, testar, manter e atualizra programas de computadores"></textarea>
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            <!-- BENEFÍCIOS + REQUISITOS -->
-            <div class="form-row">
-                <div class="input-group">
-                <label for="inputBeneficios">Benefícios</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-gift input-icon"></i>
-                    <input id="inputBeneficios" type="text" placeholder="Ex: VT, VA...">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-
-                <div class="input-group full">
-                <label for="inputRequisitos">Requisitos</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-tasks input-icon"></i>
-                    <textarea id="inputRequisitos" placeholder="Ex: Python, Lógica de Programação..."></textarea>
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            <!-- EMAIL -->
-            <div class="form-row">
-                <div class="input-group full">
-                <label for="inputEmail">Email de Contato</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-envelope input-icon"></i>
-                    <input id="inputEmail" type="email" placeholder="seuemail@exemplo.com">
-                    <div class="error-message"></div>
-                </div>
-                </div>
-            </div>
-
-            </form>
-        </div>
-
-        <div class="modal-footer">
-            <button id="btnSalvarVaga" class="btn btn-primary">Salvar</button>
-            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        </div>
         </div>
     </div>
-    </div>
+
+    <!--
+        IMPORTANTE: auth.js DEVE vir primeiro.
+        Ele verifica a sessão antes de qualquer outro script rodar.
+    -->
+    <script src="/js/auth/auth.js"></script>
+    <script src="/js/auth/logout.js"></script>
+    <script src="/js/home/home.js"></script>
 
 </body>
 </html>
