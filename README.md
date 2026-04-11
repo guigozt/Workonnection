@@ -17,13 +17,19 @@ Ele promove oportunidades para profissionais autônomos e simplifica processos p
 ## Tecnologias Utilizadas ⚙
 
 <div align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="50" alt="html5 logo" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="50" alt="javascript logo"  />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="50" alt="css logo" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" height="50" alt="java logo"  />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="50" alt="javascript logo" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" height="50" alt="spring logo"  />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" height="50" alt="github logo" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="50" alt="mongodb logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="50" alt="html5 logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="50" alt="css logo"  />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" height="50" alt="bootstrap logo"  />
 </div>
 
 ## Arquitetura 🧱
@@ -40,15 +46,15 @@ O projeto segue o padrão MVC (Model-View-Controller):
 
 Antes de rodar o projeto, você precisa ter instalado:
 
-✅ Java 17+
-✅ Maven (ou usar o wrapper mvnw)
-✅ Git
-✅ Conta no MongoDB Atlas
+- Java 17+
+- Maven (ou usar o wrapper mvnw)
+- Git
+- Conta no MongoDB Atlas
 
 ## Observações 📌
-O frontend é servido diretamente pelo Spring Boot
-As requisições são feitas via fetch API
-O sistema utiliza autenticação baseada em sessão
+- O frontend é servido diretamente pelo Spring Boot.
+- As requisições são feitas via fetch API
+- O sistema utiliza autenticação baseada em sessão
 
 ## Professor 👤
 
@@ -100,4 +106,8 @@ No terminal, estando na pasta do backend, execute:
 ````
 
 ### 5️⃣ Testar a aplicação
-Abra o navegador em http://localhost:8080/modules/auth/Login.html
+
+Abra o navegador em: 
+```bash
+http://localhost:8080/modules/auth/Login.html
+```
