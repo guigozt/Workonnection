@@ -9,28 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/home/style.home.css">
     <link rel="stylesheet" href="/css/global.css">
+    
+    <script src="/js/components/topbar.js" defer></script>
 </head>
 <body>
-
-    <!-- Topbar -->
-    <div class="topbar">
-        <div class="logo">
-            <img src="/imagens/logo_workonnection.png" alt="WorkConnection Logo" style="height: 43px;">
-        </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Pesquisar">
-        </div>
-        <div class="top-icons">
-            <a href="/modules/home/home.html"><i class="fas fa-home"></i></a>
-            <a href="/modules/notificacoes/Notificacao.html"><i class="fas fa-bell"></i></a>
-            <a href="/modules/vagas/Vagas.html"><i class="fas fa-briefcase"></i></a>
-            <a href="/modules/colaboradores/Colaboradores.html"><i class="fas fa-users"></i></a>
-            <a href="/modules/perfil/Perfil.html"><i class="fas fa-user"></i></a>
-            <a href="/modules/duvidas/Duvidas.html"><i class="fas fa-question-circle"></i></a>
-            <a href="/modules/sobre/Sobre.html"><i class="fas fa-info-circle"></i></a>
-            <a href="/modules/configuracoes/Configuracoes.html"><i class="fas fa-cog"></i></a>
-        </div>
-    </div>
 
     <div id="vagas-container">
         <!-- Vagas serão renderizadas pelo JS -->
@@ -171,10 +153,6 @@
         </div>
     </div>
 
-    <!--
-        IMPORTANTE: auth.js DEVE vir primeiro.
-        Ele verifica a sessão antes de qualquer outro script rodar.
-    -->
     <script src="/js/auth/auth.js"></script>
     <script src="/js/auth/logout.js"></script>
     <script src="/js/home/home.js"></script>
