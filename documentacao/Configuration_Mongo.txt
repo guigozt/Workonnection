@@ -36,13 +36,8 @@
 
 -   Baixei arquivo zip e joguei no projeto
 
--   No arquivo "application.properties" adiciono:
-                spring.data.mongodb.uri=${MONGO_URI}
-
--   E no terminal rode:
-        setx MONGO_URI "mongodb+srv://admin:work123@workonnection.zx5zgsb.mongodb.net/workonnection"
-
-        Depois feche o terminal, e abra novamente
+-   Crio arquivo "application-local.properties" adiciono:
+                spring.data.mongodb.uri=mongodb+srv://admin:work123@workonnection.zx5zgsb.mongodb.net/workonnection
 
 -   Comando para rodar Backend:
         Comando: .\mvnw clean install -> Limpa, compila e baixa dependências.
