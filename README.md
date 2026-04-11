@@ -26,6 +26,34 @@ Ele promove oportunidades para profissionais autônomos e simplifica processos p
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" height="50" alt="github logo" />
 </div>
 
+## Arquitetura 🧱
+
+O projeto segue o padrão MVC (Model-View-Controller):
+
+- Model → entidades (Usuario, Vaga)
+- View → HTML + CSS + JS (frontend)
+- Controller → endpoints REST (UsuarioController, VagaController)
+- Service → regras de negócio
+- Repository → acesso ao banco MongoDB
+
+## Pré-requisitos 🖥️
+
+Antes de rodar o projeto, você precisa ter instalado:
+
+✅ Java 17+
+✅ Maven (ou usar o wrapper mvnw)
+✅ Git
+✅ Conta no MongoDB Atlas
+
+## Observações 📌
+O frontend é servido diretamente pelo Spring Boot
+As requisições são feitas via fetch API
+O sistema utiliza autenticação baseada em sessão
+
+## Professor 👤
+
+- 👤 Bruno Zolotareff
+
 ## Integrantes 👥
 
 - 👤 Hugo Aparecido  
@@ -46,19 +74,23 @@ git clone https://github.com/guigozt/Workonnection.git
 cd Workonnection/backend
 ````
 
-### 2️⃣ Criar uma variavel de ambiente
+### 2️⃣ Criar arquivo local
 
-Abra o terminal e rode o comando para criar a variável de ambiente que guarda a URL de conexão com o MongoDB Atlas:
+Crie um arquivo nesse caminho:
 
 ```bash
-setx MONGO_URI "mongodb+srv://USUARIO:SENHA@SEU_CLUSTER.mongodb.net/workonnection"
+backend\src\main\resources\application-local.properties
 ````
 
-Troque USUARIO, SENHA e SEU_CLUSTER pelos dados do seu cluster Atlas.
+E adicione o link de acesso ao banco do MongoDB Atlas
 
-Feche o terminal atual e abra novamente outro terminal.
+```bash
+spring.data.mongodb.uri=mongodb+srv://USUARIO:SENHA@CLUSTER.mongodb.net/NOME_DO_BANCO
+````
 
-### 3️⃣ Rodar o backend
+Troque USUARIO, SENHA, CLUSTER e SEU_BANCO pelos dados do seu cluster Atlas.
+
+### 3️⃣ Instalar dependencias
 
 No terminal, estando na pasta do backend, execute:
 
@@ -69,5 +101,3 @@ No terminal, estando na pasta do backend, execute:
 
 ### 5️⃣ Testar a aplicação
 Abra o navegador em http://localhost:8080/modules/auth/Login.html
-
-Certifique-se de que o MongoDB Atlas permite conexão do seu IP (libere em Network Access caso necessário).
