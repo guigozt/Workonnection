@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     cargo: document.getElementById("inputCargo"),
     descricao: document.getElementById("inputDescricao"),
     modalidade: document.getElementById("inputModalidade"),
-    horario: document.getElementById("inputHorario"),
+    horaInicio: document.getElementById("inputHoraInicio"),
+    horaFim: document.getElementById("inputHoraFim"),
     beneficios: document.getElementById("inputBeneficios"),
     localizacao: document.getElementById("inputLocalizacao"),
     salario: document.getElementById("inputSalario"),
@@ -19,14 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const vagasContainer = document.getElementById("vagas-container");
-  const usuarioLogado = localStorage.getItem("usuarioLogado") || "Guest";
-
-  const user = {
-    username: usuarioLogado,
-    profilePic: "https://as1.ftcdn.net/v2/jpg/05/16/27/58/1000_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
-  };
-
-  let vagas = JSON.parse(localStorage.getItem("vagas")) || [];
 
   // =========================
   // FEEDBACK VISUAL
@@ -77,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!regex.test(valor)) {
-      mostrarErro(input, "Email inválido (ex: exemplo@email.com)");
+      mostrarErro(input, "Email inválido");
       return false;
     }
 
@@ -95,13 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
 
-    if (isNaN(valor)) {
+    if (isNaN(valor) || valor <= 0) {
       mostrarErro(input, "Salário inválido");
-      return false;
-    }
-
-    if (valor <= 0) {
-      mostrarErro(input, "Salário deve ser maior que zero");
       return false;
     }
 
@@ -124,33 +112,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
 
-    const limite = new Date();
-    limite.setFullYear(limite.getFullYear() + 1);
-
-    if (data > limite) {
-      mostrarErro(input, "Máximo de 1 ano");
-      return false;
-    }
-
     mostrarSucesso(input);
     return true;
   }
 
-  function validarHorario(input) {
-    const valor = input.value.trim();
-    const regex = /^([01]\d|2[0-3]):([0-5]\d)\s?-\s?([01]\d|2[0-3]):([0-5]\d)$/;
+  function validarHorario() {
+    const inicio = inputs.horaInicio.value;
+    const fim = inputs.horaFim.value;
 
-    if (!valor) {
-      mostrarErro(input, "Horário obrigatório");
+    if (!inicio || !fim) {
+      mostrarErro(inputs.horaFim, "Horário obrigatório");
       return false;
     }
 
-    if (!regex.test(valor)) {
-      mostrarErro(input, "Formato: 08:00 - 18:00");
+    if (inicio >= fim) {
+      mostrarErro(inputs.horaFim, "Hora final deve ser maior");
       return false;
     }
 
-    mostrarSucesso(input);
+    mostrarSucesso(inputs.horaFim);
     return true;
   }
 
@@ -165,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (input === inputs.email) return validarEmail(input);
     if (input === inputs.salario) return validarSalario(input);
     if (input === inputs.data) return validarData(input);
-    if (input === inputs.horario) return validarHorario(input);
 
     if (input === inputs.descricao) return validarTexto(input, "Descrição", 10);
     if (input === inputs.requisitos) return validarTexto(input, "Requisitos", 5);
@@ -175,11 +154,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   Object.values(inputs).forEach(input => {
 
+    if (!input) return;
+
     input.addEventListener("input", () => {
-      if (touched.has(input)) {
-        if (input.value.length < 2) return;
-        validarCampo(input);
-      }
+      if (touched.has(input)) validarCampo(input);
     });
 
     input.addEventListener("blur", () => {
@@ -202,11 +180,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
+  // LIMITAR DATA
+  // =========================
+
+  const hoje = new Date().toISOString().split("T")[0];
+  const max = new Date();
+  max.setFullYear(max.getFullYear() + 1);
+
+  inputs.data.min = hoje;
+  inputs.data.max = max.toISOString().split("T")[0];
+
+  // =========================
   // LIMPAR CAMPOS
   // =========================
 
   function limparCampos() {
     Object.values(inputs).forEach(input => {
+      if (!input) return;
       input.value = "";
       input.classList.remove("error", "success");
       const small = input.parentElement.querySelector(".error-message");
@@ -215,126 +205,109 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // RENDER VAGAS
+  // CARREGAR VAGAS
   // =========================
 
-  function renderVagas() {
-    vagasContainer.querySelectorAll(".vaga-card[data-created]").forEach(v => v.remove());
+  async function carregarVagas() {
+    try {
+      const response = await fetch("http://localhost:8080/vagas", {
+        credentials: "include"
+      });
 
-    vagas.forEach((vaga, index) => {
-      const div = document.createElement("div");
-      div.className = "vaga-card";
-      div.dataset.created = true;
+      const vagas = await response.json();
 
-      div.innerHTML = `
-        <div class="vaga-header d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center gap-2">
-            <img src="${user.profilePic}" class="rounded-circle" style="width:50px;height:50px;">
-            <div>
-              <h5>${vaga.empresa}</h5>
-              <small>${vaga.cargo}</small>
-            </div>
+      vagasContainer.innerHTML = "";
+
+      vagas.forEach(vaga => {
+        const div = document.createElement("div");
+        div.className = "vaga-card";
+
+        div.innerHTML = `
+          <div class="vaga-body">
+            <h5>${vaga.empresa}</h5>
+            <p><b>${vaga.cargo}</b></p>
+            <p>${vaga.descricao}</p>
+            <p><b>Modalidade:</b> ${vaga.modalidade}</p>
+            <p><b>Horário:</b> ${vaga.horario}</p>
+            <p><b>Data:</b> ${new Date(vaga.data).toLocaleDateString("pt-BR")}</p>
+            <p><b>Localização:</b> ${vaga.localizacao}</p>
+            <p><b>Salário:</b> ${vaga.salario}</p>
           </div>
+        `;
 
-          ${vaga.creator === user.username ? `
-          <div class="dropdown">
-            <button class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-              <i class="fas fa-ellipsis-h"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#" onclick="editarVaga(${index})">Editar</a></li>
-              <li><a class="dropdown-item" href="#" onclick="excluirVaga(${index})">Excluir</a></li>
-            </ul>
-          </div>` : ""}
-        </div>
+        vagasContainer.appendChild(div);
+      });
 
-        <div class="vaga-body">
-          <p><b>Descrição:</b> ${vaga.descricao}</p>
-          <p><b>Modalidade:</b> ${vaga.modalidade}</p>
-          <p><b>Horário:</b> ${vaga.horario}</p>
-          <p><b>Benefícios:</b> ${vaga.beneficios}</p>
-          <p><b>Localização:</b> ${vaga.localizacao}</p>
-          <p><b>Salário:</b> ${vaga.salario}</p>
-          <p><b>Data:</b> ${vaga.data}</p>
-          <p><b>Requisitos:</b> ${vaga.requisitos}</p>
-          <p><b>Email:</b> ${vaga.email}</p>
-        </div>
-      `;
-
-      vagasContainer.appendChild(div);
-    });
+    } catch (error) {
+      console.error("Erro ao carregar vagas:", error);
+    }
   }
 
   // =========================
   // SALVAR VAGA
   // =========================
 
-  btnSalvarVaga.addEventListener("click", () => {
+  btnSalvarVaga.addEventListener("click", async () => {
 
     let valido = true;
 
     valido = validarTexto(inputs.empresa, "Empresa") && valido;
     valido = validarTexto(inputs.cargo, "Cargo") && valido;
     valido = validarTexto(inputs.modalidade, "Modalidade") && valido;
-    valido = validarHorario(inputs.horario) && valido;
     valido = validarTexto(inputs.localizacao, "Localização") && valido;
+    valido = validarTexto(inputs.beneficios, "Benefícios") && valido;
+    valido = validarTexto(inputs.descricao, "Descrição", 10) && valido;
+    valido = validarTexto(inputs.requisitos, "Requisitos", 5) && valido;
+
+    valido = validarEmail(inputs.email) && valido;
     valido = validarSalario(inputs.salario) && valido;
     valido = validarData(inputs.data) && valido;
-    valido = validarTexto(inputs.descricao, "Descrição", 10) && valido;
-    valido = validarTexto(inputs.beneficios, "Benefícios") && valido;
-    valido = validarTexto(inputs.requisitos, "Requisitos", 5) && valido;
-    valido = validarEmail(inputs.email) && valido;
+    valido = validarHorario() && valido;
 
     if (!valido) {
-      alert("Corrija os campos antes de salvar!");
+      alert("Corrija os campos!");
       return;
     }
 
-    const novaVaga = {};
-    Object.keys(inputs).forEach(key => {
-      novaVaga[key] = inputs[key].value.trim();
-    });
+    const novaVaga = {
+      empresa: inputs.empresa.value.trim(),
+      cargo: inputs.cargo.value.trim(),
+      descricao: inputs.descricao.value.trim(),
+      modalidade: inputs.modalidade.value.trim(),
+      beneficios: inputs.beneficios.value.trim(),
+      localizacao: inputs.localizacao.value.trim(),
+      salario: inputs.salario.value.trim(),
+      data: inputs.data.value,
+      requisitos: inputs.requisitos.value.trim(),
+      email: inputs.email.value.trim(),
+      horario: `${inputs.horaInicio.value} - ${inputs.horaFim.value}`
+    };
 
-    novaVaga.creator = user.username;
+    try {
+      const response = await fetch("http://localhost:8080/vagas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(novaVaga)
+      });
 
-    vagas.push(novaVaga);
-    localStorage.setItem("vagas", JSON.stringify(vagas));
+      if (!response.ok) throw new Error();
 
-    renderVagas();
-    modalVaga.hide();
+      alert("Vaga criada com sucesso!");
+
+      modalVaga.hide();
+      limparCampos();
+      carregarVagas();
+
+    } catch (error) {
+      alert("Erro ao criar vaga");
+    }
   });
 
   // =========================
-  // EDITAR / EXCLUIR
-  // =========================
-
-  window.excluirVaga = function(index) {
-    if (vagas[index].creator !== user.username) {
-      return alert("Você não pode excluir essa vaga!");
-    }
-
-    vagas.splice(index, 1);
-    localStorage.setItem("vagas", JSON.stringify(vagas));
-    renderVagas();
-  };
-
-  window.editarVaga = function(index) {
-    if (vagas[index].creator !== user.username) {
-      return alert("Você não pode editar essa vaga!");
-    }
-
-    Object.keys(inputs).forEach(key => {
-      inputs[key].value = vagas[index][key];
-    });
-
-    vagas.splice(index, 1);
-    localStorage.setItem("vagas", JSON.stringify(vagas));
-
-    modalVaga.show();
-  };
-
-  // =========================
-  // ABRIR MODAL LIMPO
+  // ABRIR MODAL
   // =========================
 
   botaoNovaVaga.addEventListener("click", () => {
@@ -342,5 +315,10 @@ document.addEventListener("DOMContentLoaded", () => {
     modalVaga.show();
   });
 
-  renderVagas();
+  // =========================
+  // INIT
+  // =========================
+
+  carregarVagas();
+
 });
