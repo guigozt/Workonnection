@@ -30,11 +30,17 @@
 }
 .top-icons i:hover { color: #ffe5e5; transform: scale(1.2); }
 
+/* ======================= */
+/* ===== FILTROS ===== */
+/* ======================= */
+
 .filtros-vagas {
     display: flex;
     gap: 15px;
     margin: 20px 50px 10px;
+    flex-wrap: wrap;
 }
+
 .filtro-item {
     display: flex;
     align-items: center;
@@ -46,7 +52,16 @@
     border-radius: 20px;
     transition: 0.3s;
 }
-.filtro-item:hover, .filtro-item.ativo { color: #d86b6b; background-color: #ffeaea; }
+
+.filtro-item:hover,
+.filtro-item.ativo {
+    color: #d86b6b;
+    background-color: #ffeaea;
+}
+
+/* ======================= */
+/* ===== VAGAS ===== */
+/* ======================= */
 
 .vaga-card {
     background: #fff;
@@ -56,185 +71,215 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     transition: transform 0.2s, box-shadow 0.3s;
 }
-.vaga-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); }
+.vaga-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
 
-.vaga-header { display: flex; align-items: center; margin-bottom: 15px; position: relative; }
-.vaga-header img { width: 55px; height: 55px; border-radius: 50%; margin-right: 12px; border: 2px solid #5ec3e6; }
-.vaga-header h5 { margin: 0; font-size: 18px; color: #333; }
-
-.vaga-body p { margin: 6px 0; font-size: 14px; color: #555; }
-
-.vaga-footer { display: flex; gap: 15px; margin-top: 12px; }
-.vaga-footer button { border-radius: 8px; font-size: 14px; padding: 6px 12px; transition: 0.3s; }
-.vaga-footer .btn-success { background-color: #47a4c4; border: none; }
-.vaga-footer .btn-success:hover { background-color: #3a8ba3; }
-.vaga-footer .btn-danger { background-color: #d86b6b; border: none; }
-.vaga-footer .btn-danger:hover { background-color: #b35959; }
-
-/* ======================= */
-/* ===== COMENTÁRIOS ===== */
-/* ======================= */
-
-.comment-wrapper {
-    flex-grow: 1;
+.vaga-header {
     display: flex;
     align-items: center;
-    gap: 5px;
+    margin-bottom: 15px;
+    position: relative;
 }
 
-.comment-input {
-    flex-grow: 1;
-    border-radius: 25px;
-    padding: 6px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s, box-shadow 0.3s;
+.vaga-header img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    margin-right: 12px;
+    border: 2px solid #5ec3e6;
 }
 
-.comment-input:focus {
-    border-color: #47a4c4;
-    box-shadow: 0 0 6px rgba(71, 164, 196, 0.4);
-    outline: none;
-}
-
-.btn-comment-send {
-    background: none;
-    border: none;
-    color: #47a4c4;
+.vaga-header h5 {
+    margin: 0;
     font-size: 18px;
-    cursor: pointer;
-    transition: transform 0.2s, color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #333;
 }
 
-.btn-comment-send:hover {
-    transform: scale(1.2);
-    color: #3490a1;
+.vaga-body p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #555;
 }
 
 /* ======================= */
-/* ===== BOTÃO FLUTUANTE === */
+/* ===== BOTÃO ===== */
 /* ======================= */
 
 .botao-publicar {
-    position: fixed; bottom: 25px; right: 25px;
-    border-radius: 50%; width: 60px; height: 60px;
-    font-size: 24px; display: flex; align-items: center; justify-content: center;
-    background-color: #47a4c4; color: #fff; box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #47a4c4;
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     transition: transform 0.2s, box-shadow 0.3s;
 }
-.botao-publicar:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+
+.botao-publicar:hover {
+    transform: scale(1.1);
+}
 
 /* ======================= */
-/* ===== MODAL CRIAR VAGA ==== */
+/* ===== MODAL ===== */
 /* ======================= */
 
-/* Modal compacto */
 .modal-lg {
-  max-width: 800px;  /* menor que antes */
+    max-width: 800px;
 }
 
 .modal-content {
-  border-radius: 20px;
-  padding: 20px; /* reduzido */
-  max-height: 90vh; /* ocupa no máximo 90% da altura da tela */
-  overflow-y: auto; /* rolagem só se necessário */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 20px;
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
+/* animação */
 .modal.fade .modal-dialog {
-  transform: translateY(-20px);
-  transition: transform 0.3s ease-out;
+    transform: translateY(-20px);
 }
 .modal.fade.show .modal-dialog {
-  transform: translateY(0);
+    transform: translateY(0);
 }
 
-/* Formulário estilo página de cadastro */
+/* ======================= */
+/* ===== FORM ===== */
+/* ======================= */
+
 .vaga-form .form-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px; /* reduzido */
-  margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .vaga-form .input-group {
-  flex: 1 1 48%;
-  display: flex;
-  flex-direction: column;
+    flex: 1 1 48%;
+    display: flex;
+    flex-direction: column;
 }
 
 .vaga-form .input-group.full {
-  flex: 1 1 100%;
+    flex: 1 1 100%;
 }
 
-/* Label acima do input */
+/* label */
 .input-group label {
-  font-weight: 500;
-  margin-bottom: 4px;
-  font-size: 14px;
-  color: #333;
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #333;
 }
 
-/* Wrapper para ícone e campo */
+/* wrapper */
 .input-wrapper {
-  position: relative;
-  width: 100%;
+    position: relative;
+    width: 100%;
 }
 
-/* Ícone dentro do input */
+/* ícone */
 .input-wrapper .input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #d86b6b;
-  font-size: 16px;
-  pointer-events: none;
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #d86b6b;
+    font-size: 16px;
 }
 
-/* Inputs e textareas */
+/* inputs padrão */
 .input-wrapper input,
 .input-wrapper textarea {
-  width: 100%;
-  padding: 8px 12px 8px 36px; /* menos padding vertical */
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border-radius: 25px;
+    border: 1px solid #ccc;
+    font-size: 14px;
 }
 
+/* textarea */
 .input-wrapper textarea {
-  min-height: 50px;
-  resize: vertical;
+    min-height: 50px;
+    resize: vertical;
 }
 
-/* Foco */
+/* foco */
 .input-wrapper input:focus,
 .input-wrapper textarea:focus {
-  border-color: #47a4c4;
-  box-shadow: 0 0 6px rgba(71,164,196,0.4);
-  outline: none;
+    border-color: #47a4c4;
+    box-shadow: 0 0 6px rgba(71,164,196,0.4);
+    outline: none;
 }
 
-/* Feedback de erro */
+/* erro */
 .input-wrapper .error-message {
-  font-size: 12px;
-  color: #dc3545;
-  margin-top: 3px;
-  display: block;
+    font-size: 12px;
+    color: #dc3545;
+    margin-top: 3px;
 }
 
-/* Botões do modal */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+/* ======================= */
+/* 🔥 FIX HORÁRIO (NOVO) */
+/* ======================= */
+
+.input-wrapper.d-flex {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.modal-footer .btn {
-  border-radius: 25px;
-  padding: 6px 16px;
-  font-size: 14px;
+/* remove ícone só no horário */
+.input-wrapper.d-flex .input-icon {
+    display: none;
+}
+
+/* inputs de horário */
+.input-wrapper.d-flex input {
+    padding: 8px 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* texto "até" */
+.input-wrapper.d-flex span {
+    font-size: 13px;
+    color: #555;
+}
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 768px) {
+
+    .vaga-card {
+        margin: 15px 20px;
+    }
+
+    .filtros-vagas {
+        margin: 20px;
+    }
+
+    .vaga-form .input-group {
+        flex: 1 1 100%;
+    }
+
+    .input-wrapper.d-flex {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-wrapper.d-flex span {
+        text-align: center;
+    }
 }

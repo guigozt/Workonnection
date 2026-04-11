@@ -14,148 +14,132 @@
 </head>
 <body>
 
-    <div id="vagas-container">
-        <!-- Vagas serão renderizadas pelo JS -->
-    </div>
+    <!-- LISTA DE VAGAS -->
+    <div id="vagas-container"></div>
 
-    <!-- Botão flutuante -->
-    <button class="btn btn-primary btn-lg botao-publicar" title="Nova Publicação">
-        <i class="fas fa-plus"></i>
-    </button>
+    <!-- BOTÃO -->
+    <button class="btn btn-primary botao-publicar">+</button>
 
-    <!-- Modal de criação de vaga -->
-    <div class="modal fade" id="modalVaga" tabindex="-1">
+    <!-- MODAL -->
+    <div class="modal fade" id="modalVaga">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h5 class="modal-title">Nova Vaga</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5>Nova Vaga</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <form id="formVaga" class="vaga-form">
+                    <form class="vaga-form">
 
+                        <!-- EMPRESA + CARGO -->
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="inputEmpresa">Empresa</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-building input-icon"></i>
-                                    <input id="inputEmpresa" type="text" placeholder="Ex: Lucio Nunes">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Empresa</label>
+                                <input id="inputEmpresa">
+                                <div class="error-message"></div>
                             </div>
+
                             <div class="input-group">
-                                <label for="inputCargo">Cargo</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-briefcase input-icon"></i>
-                                    <input id="inputCargo" type="text" placeholder="Ex: Desenvolvedor de Software">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Cargo</label>
+                                <input id="inputCargo">
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- MODALIDADE + HORARIO -->
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="inputModalidade">Modalidade</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-location-dot input-icon"></i>
-                                    <input id="inputModalidade" type="text" placeholder="Ex: Presencial">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Modalidade</label>
+                                <input id="inputModalidade">
+                                <div class="error-message"></div>
                             </div>
+
                             <div class="input-group">
-                                <label for="inputHorario">Horário</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-clock input-icon"></i>
-                                    <input id="inputHorario" type="text" placeholder="Ex: 08:00 - 18:00">
-                                    <div class="error-message"></div>
+                                <label>Horário</label>
+                                <div class="horario-group">
+                                    <input type="time" id="inputHoraInicio">
+                                    <span>até</span>
+                                    <input type="time" id="inputHoraFim">
                                 </div>
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- LOCAL + SALARIO -->
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="inputLocalizacao">Localização</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-map-marker-alt input-icon"></i>
-                                    <input id="inputLocalizacao" type="text" placeholder="Ex: São Paulo">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Localização</label>
+                                <input id="inputLocalizacao">
+                                <div class="error-message"></div>
                             </div>
+
                             <div class="input-group">
-                                <label for="inputSalario">Salário</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-dollar-sign input-icon"></i>
-                                    <input id="inputSalario" type="text" placeholder="Ex: 1621,00">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Salário</label>
+                                <input id="inputSalario">
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- DATA -->
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="inputData">Data</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-calendar-alt input-icon"></i>
-                                    <input id="inputData" type="date">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Data</label>
+                                <input type="date" id="inputData">
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- DESCRIÇÃO -->
                         <div class="form-row">
                             <div class="input-group full">
-                                <label for="inputDescricao">Descrição</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-align-left input-icon"></i>
-                                    <textarea id="inputDescricao" placeholder="Ex: Criar, testar e manter programas"></textarea>
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Descrição</label>
+                                <textarea id="inputDescricao"></textarea>
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- BENEFICIOS + REQUISITOS -->
                         <div class="form-row">
                             <div class="input-group">
-                                <label for="inputBeneficios">Benefícios</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-gift input-icon"></i>
-                                    <input id="inputBeneficios" type="text" placeholder="Ex: VT, VA...">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Benefícios</label>
+                                <input id="inputBeneficios">
+                                <div class="error-message"></div>
                             </div>
-                            <div class="input-group full">
-                                <label for="inputRequisitos">Requisitos</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-tasks input-icon"></i>
-                                    <textarea id="inputRequisitos" placeholder="Ex: Python, Lógica de Programação..."></textarea>
-                                    <div class="error-message"></div>
-                                </div>
+
+                            <div class="input-group">
+                                <label>Requisitos</label>
+                                <textarea id="inputRequisitos"></textarea>
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
+                        <!-- EMAIL -->
                         <div class="form-row">
                             <div class="input-group full">
-                                <label for="inputEmail">Email de Contato</label>
-                                <div class="input-wrapper">
-                                    <i class="fa-solid fa-envelope input-icon"></i>
-                                    <input id="inputEmail" type="email" placeholder="seuemail@exemplo.com">
-                                    <div class="error-message"></div>
-                                </div>
+                                <label>Email</label>
+                                <input id="inputEmail">
+                                <div class="error-message"></div>
                             </div>
                         </div>
 
                     </form>
                 </div>
+
                 <div class="modal-footer">
                     <button id="btnSalvarVaga" class="btn btn-primary">Salvar</button>
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
+
             </div>
         </div>
     </div>
 
+    <!-- SCRIPTS -->
     <script src="/js/auth/auth.js"></script>
     <script src="/js/auth/logout.js"></script>
     <script src="/js/home/home.js"></script>
+    <script src="/js/vagas/criarVaga.js"></script>
 
 </body>
 </html>
