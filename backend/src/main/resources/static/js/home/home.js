@@ -1,23 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("http://localhost:8080/usuarios/me", {
-    credentials: "include"
-  })
-  .then(res => {
-    if (!res.ok) throw new Error();
-    return res.json();
-  })
-  .then(usuario => {
-    if (!usuario) {
-      window.location.href = "/index.html";
-      return;
-    }
+  // auth.js já verificou a sessão e populou window.usuarioLogado
+  // aqui só usamos os dados, sem novo fetch
+  const usuario = window.usuarioLogado;
 
-    console.log("Usuário logado: ", usuario.nome);
-
+  if (usuario) {
     const nomeEl = document.getElementById("nomeUsuario");
     if (nomeEl) nomeEl.textContent = usuario.nome;
-  })
-  .catch(() => {
-    window.location.href = "/index.html";
-  });
+
+    console.log("Usuário logado:", usuario.nome);
+  }
+
+  // restante da lógica da home (vagas, modal, etc.)
 });
