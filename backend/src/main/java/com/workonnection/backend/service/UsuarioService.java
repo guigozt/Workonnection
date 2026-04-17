@@ -107,6 +107,15 @@ public class UsuarioService {
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private UsuarioResponseDTO toResponse(Usuario u) {
+
+        //Garante que o perfil nunca seja null
+        Usuario.Perfil perfil = u.getPerfil();
+
+        //fallback - usa dados do cadastro se perfil estiver vazio
+        if (perfil.getTelefone() == null || perfil.getTelefone().isEmpty()) {
+            perfil.setTelefone(u.getTelefone());
+        }
+
         return new UsuarioResponseDTO(u.getId(), u.getNome(), u.getEmail(), u.getTipoUsuario(), u.getPerfil());
     }
 }
