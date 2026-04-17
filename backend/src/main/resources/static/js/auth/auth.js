@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const usuario = await response.json();
         console.log("Sessão ativa:", usuario.nome);
 
-        // Opcional: exporta os dados do usuário para outros scripts da página
-        window.usuarioLogado = usuario;
+        // Avisa os outros scripts que o usuário está pronto
+        document.dispatchEvent(new CustomEvent("usuarioCarregado", 
+            {detail: usuario}
+        ))
 
     } catch (error) {
         // Servidor fora do ar ou erro de rede → vai para login

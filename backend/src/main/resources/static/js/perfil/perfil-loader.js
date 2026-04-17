@@ -2,8 +2,8 @@
 // Carrega e salva dados do perfil no backend (PUT /usuarios/perfil)
 // Os dados do usuário logado já estão em window.usuarioLogado (via auth.js)
 
-document.addEventListener("DOMContentLoaded", () => {
-  const usuario = window.usuarioLogado;
+document.addEventListener("usuarioCarregado", (event) => {
+  const usuario = event.detail;
   if (!usuario) return; // auth.js já redirecionou se não logado
 
   // Estado local do perfil (sincronizado com o banco ao salvar)
