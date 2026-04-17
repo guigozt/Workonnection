@@ -2,6 +2,7 @@ package com.workonnection.backend.service;
 
 import com.workonnection.backend.dto.CadastroDTO;
 import com.workonnection.backend.dto.LoginDTO;
+import com.workonnection.backend.dto.PerfilDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.Usuario;
@@ -19,16 +20,13 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository repository;
 
-    // BCrypt para hash de senha. Nunca salve senha em texto puro.
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     // ── Cadastro ──────────────────────────────────────────────────────────────
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
-
-        // Verifica se já existe usuário com esse email
         if (repository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new ApiException("Email já cadastrado", HttpStatus.CONFLICT); // 409
+            throw new ApiException("Email já cadastrado", HttpStatus.CONFLICT);
         }
 
         Usuario usuario = new Usuario();
@@ -37,7 +35,7 @@ public class UsuarioService {
         usuario.setDataNascimento(dto.getDataNascimento());
         usuario.setTelefone(dto.getTelefone());
         usuario.setEmail(dto.getEmail());
-        usuario.setSenha(encoder.encode(dto.getSenha())); // hash aqui
+        usuario.setSenha(encoder.encode(dto.getSenha()));
         usuario.setTipoUsuario(dto.getTipoUsuario());
 
         Usuario salvo = repository.save(usuario);
@@ -49,21 +47,20 @@ public class UsuarioService {
     public UsuarioResponseDTO login(LoginDTO dto) {
         Optional<Usuario> encontrado = repository.findByEmail(dto.getEmail());
 
-        // Mesma mensagem para email e senha: não revela qual está errado
         if (encontrado.isEmpty()) {
-            throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED); // 401
+            throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED);
         }
 
         Usuario usuario = encontrado.get();
 
         if (!encoder.matches(dto.getSenha(), usuario.getSenha())) {
-            throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED); // 401
+            throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED);
         }
 
         return toResponse(usuario);
     }
 
-    // ── Busca por ID (para sessão) ────────────────────────────────────────────
+    // ── Busca por ID ──────────────────────────────────────────────────────────
 
     public UsuarioResponseDTO buscarPorId(String id) {
         Usuario usuario = repository.findById(id)
@@ -71,10 +68,45 @@ public class UsuarioService {
         return toResponse(usuario);
     }
 
+    // ── Atualizar perfil ──────────────────────────────────────────────────────
+
+    public UsuarioResponseDTO atualizarPerfil(String id, PerfilDTO dto) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        // Atualiza o nome no documento principal se vier no DTO via perfil
+        Usuario.Perfil perfil = new Usuario.Perfil();
+        perfil.setSobre(dto.getSobre());
+        perfil.setLocal(dto.getLocal());
+        perfil.setTelefone(dto.getTelefone());
+        perfil.setInstagram(dto.getInstagram());
+        perfil.setLinkedin(dto.getLinkedin());
+        perfil.setSite(dto.getSite());
+        perfil.setHabilidades(dto.getHabilidades());
+        perfil.setFormacoes(dto.getFormacoes() != null
+                ? dto.getFormacoes().stream()
+                    .map(o -> (java.util.Map<String, Object>) o)
+                    .toList()
+                : null);
+        perfil.setExperiencias(dto.getExperiencias() != null
+                ? dto.getExperiencias().stream()
+                    .map(o -> (java.util.Map<String, Object>) o)
+                    .toList()
+                : null);
+        perfil.setCursos(dto.getCursos() != null
+                ? dto.getCursos().stream()
+                    .map(o -> (java.util.Map<String, Object>) o)
+                    .toList()
+                : null);
+
+        usuario.setPerfil(perfil);
+        repository.save(usuario);
+        return toResponse(usuario);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    // Converte entidade → DTO de resposta (sem senha)
     private UsuarioResponseDTO toResponse(Usuario u) {
-        return new UsuarioResponseDTO(u.getId(), u.getNome(), u.getEmail(), u.getTipoUsuario());
+        return new UsuarioResponseDTO(u.getId(), u.getNome(), u.getEmail(), u.getTipoUsuario(), u.getPerfil());
     }
 }
