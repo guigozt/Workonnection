@@ -2,6 +2,7 @@ package com.workonnection.backend.controller;
 
 import com.workonnection.backend.dto.CadastroDTO;
 import com.workonnection.backend.dto.LoginDTO;
+import com.workonnection.backend.dto.PerfilDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.UsuarioService;
@@ -46,10 +47,10 @@ public class UsuarioController {
 
         UsuarioResponseDTO response = service.login(dto);
 
-        // 🔐 salva na sessão (como já fazia)
+        // salva na sessão (como já fazia)
         session.setAttribute("usuarioId", response.getId());
 
-        // 🔥 AGORA INTEGRA COM SPRING SECURITY
+        // AGORA INTEGRA COM SPRING SECURITY
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(
                         response.getEmail(),
@@ -72,6 +73,17 @@ public class UsuarioController {
         }
 
         return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    // ── PUT /usuarios/perfil  →  Atualiza perfil do usuário logado ───────────
+    @PutMapping("/perfil")
+    public ResponseEntity<UsuarioResponseDTO> atualizarPerfil(
+        @RequestBody PerfilDTO dto,
+        HttpSession session) {
+            String id = (String) session.getAttribute("usuarioId");
+            if (id == null) throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+
+            return ResponseEntity.ok(service.atualizarPerfil(id, dto));
     }
 
     // ── POST /usuarios/logout  →  Logout ─────────────────────────────────────
