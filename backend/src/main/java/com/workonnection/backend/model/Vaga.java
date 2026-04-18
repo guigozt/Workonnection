@@ -2,6 +2,7 @@ package com.workonnection.backend.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
 
 @Document(collection = "vagas")
 public class Vaga {
@@ -20,9 +21,11 @@ public class Vaga {
     private String data;
     private String requisitos;
     private String email;
-
     // 🔥 vínculo com usuário
     private String usuarioId;
+
+    //Valores possíveis: "todos/estudantes"
+    private List<String> tiposUsuario;
 
     // getters e setters
 
@@ -64,4 +67,7 @@ public class Vaga {
 
     public String getUsuarioId() { return usuarioId; }
     public void setUsuarioId(String usuarioId) { this.usuarioId = usuarioId; }
+
+    public List<String> getTiposUsuario() { return tiposUsuario; }
+    public void setTiposUsuario(List<String> tiposUsuario) { this.tiposUsuario = tiposUsuario; }
 }

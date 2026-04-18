@@ -1,9 +1,16 @@
+/* ======================= */
 /* ===== LAYOUT ===== */
-.container {
+/* ======================= */
+
+.login-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
 }
+
+/* ======================= */
+/* ===== LADOS ===== */
+/* ======================= */
 
 .left,
 .right {
@@ -23,53 +30,180 @@
   object-fit: cover;
 }
 
+/* ======================= */
 /* ===== FORM BOX ===== */
+/* ======================= */
+
 .login-form-box {
   max-width: 420px;
   width: 100%;
   padding: 36px;
+
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+
   text-align: center;
 }
 
+/* ======================= */
 /* ===== LOGO ===== */
+/* ======================= */
+
 .logoLogin {
-  width: 240px;
-  margin-bottom: 32px;
-  transition: transform 0.3s ease;
+  width: 220px;
+  margin-bottom: 28px;
+  transition: transform 0.25s ease;
 }
 
 .logoLogin:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 
+/* ======================= */
 /* ===== FORM ===== */
+/* ======================= */
+
 form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   text-align: left;
 }
 
-/* ===== LINK CADASTRO ===== */
+/* ======================= */
+/* ===== INPUT COM ÍCONE ===== */
+/* ======================= */
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper input {
+  width: 100%;
+  height: 44px;
+
+  padding: 10px 12px 10px 40px;
+
+  border-radius: var(--radius);
+  border: 1.5px solid #e8ecef;
+
+  background: #f8fafb;
+  color: var(--text);
+
+  font-size: var(--font-input);
+
+  transition: 0.18s;
+}
+
+/* ÍCONE */
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--primary-dark);
+  transition: 0.18s;
+}
+
+/* FOCO */
+.input-wrapper input:focus {
+  border-color: var(--primary-dark);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(71,164,196,0.15);
+  outline: none;
+}
+
+/* ÍCONE MUDA NO FOCO */
+.input-wrapper:focus-within .input-icon {
+  color: var(--primary);
+}
+
+/* ERRO */
+input.error {
+  border-color: var(--danger);
+  background: #fff5f5;
+}
+
+input.error ~ .input-icon {
+  color: var(--danger);
+}
+
+/* SUCESSO */
+input.success {
+  border-color: var(--success);
+  background: #f0fff4;
+}
+
+input.success ~ .input-icon {
+  color: var(--success);
+}
+
+/* MENSAGEM */
+.error-message {
+  font-size: var(--font-small);
+  color: var(--danger);
+}
+
+/* ======================= */
+/* ===== BOTÃO ===== */
+/* ======================= */
+
+button.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ======================= */
+/* ===== CADASTRO ===== */
+/* ======================= */
+
 .cadastro {
-  margin-top: 22px;
-  font-size: 15px;
+  margin-top: 20px;
+  font-size: var(--font-input);
   text-align: center;
+  color: var(--text-light);
 }
 
 .cadastro a {
-  color: #d80000;
+  color: var(--primary-dark);
   text-decoration: none;
-  font-weight: bold;
+  font-weight: 600;
+  transition: 0.2s;
 }
 
 .cadastro a:hover {
-  color: #a00000;
+  opacity: 0.8;
 }
 
+/* ======================= */
 /* ===== RESPONSIVO ===== */
-@media (max-width: 768px) {
+/* ======================= */
+
+@media (max-width: 900px) {
   .left {
     display: none;
+  }
+
+  .login-container {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .login-form-box {
+    padding: 28px;
   }
 }

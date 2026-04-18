@@ -1,5 +1,7 @@
 package com.workonnection.backend.dto;
 
+import java.util.List;
+
 public class VagaResponseDTO {
 
     private String id;
@@ -15,11 +17,13 @@ public class VagaResponseDTO {
     private String requisitos;
     private String email;
     private String usuarioId;
+    private List<String> tiposUsuario;
 
     public VagaResponseDTO(String id, String empresa, String cargo, String descricao,
                            String modalidade, String horario, String beneficios,
                            String localizacao, String salario, String data,
-                           String requisitos, String email, String usuarioId) {
+                           String requisitos, String email, String usuarioId,
+                           List<String> tiposUsuario) {
         this.id = id;
         this.empresa = empresa;
         this.cargo = cargo;
@@ -33,6 +37,7 @@ public class VagaResponseDTO {
         this.requisitos = requisitos;
         this.email = email;
         this.usuarioId = usuarioId;
+        this.tiposUsuario = tiposUsuario;
     }
 
     // getters
@@ -50,4 +55,5 @@ public class VagaResponseDTO {
     public String getRequisitos() { return requisitos; }
     public String getEmail() { return email; }
     public String getUsuarioId() { return usuarioId; }
+    public List<String> getTiposUsuario() { return tiposUsuario; }
 }

@@ -1,285 +1,65 @@
 /* ======================= */
-/* ==== TOPBAR / HOME ==== */
+/* ===== LAYOUT HOME ===== */
 /* ======================= */
 
-.topbar {
-    background: #d86b6b;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-.topbar .logo img { height: 45px; }
-
-.search-bar { flex-grow: 1; margin: 0 20px; }
-.search-bar input {
-    width: 100%;
-    border-radius: 25px;
-    border: none;
-    padding: 8px 16px;
-}
-
-.top-icons i {
-    font-size: 20px;
-    margin: 0 8px;
-    cursor: pointer;
-    color: white;
-    transition: color 0.3s, transform 0.2s;
-}
-.top-icons i:hover { color: #ffe5e5; transform: scale(1.2); }
-
-/* ======================= */
-/* ===== FILTROS ===== */
-/* ======================= */
-
-.filtros-vagas {
-    display: flex;
-    gap: 15px;
-    margin: 20px 50px 10px;
-    flex-wrap: wrap;
-}
-
-.filtro-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    color: #555;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.filtro-item:hover,
-.filtro-item.ativo {
-    color: #d86b6b;
-    background-color: #ffeaea;
+.home-wrapper {
+    padding-top: calc(var(--topbar-height) + 20px);
 }
 
 /* ======================= */
-/* ===== VAGAS ===== */
-/* ======================= */
-
-.vaga-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 20px;
-    margin: 15px 50px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.3s;
-}
-.vaga-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-}
-
-.vaga-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    position: relative;
-}
-
-.vaga-header img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    margin-right: 12px;
-    border: 2px solid #5ec3e6;
-}
-
-.vaga-header h5 {
-    margin: 0;
-    font-size: 18px;
-    color: #333;
-}
-
-.vaga-body p {
-    margin: 6px 0;
-    font-size: 14px;
-    color: #555;
-}
-
-/* ======================= */
-/* ===== BOTÃO ===== */
+/* ===== BOTÃO PUBLICAR ===== */
 /* ======================= */
 
 .botao-publicar {
     position: fixed;
     bottom: 25px;
     right: 25px;
-    border-radius: 50%;
+
     width: 60px;
     height: 60px;
-    font-size: 24px;
+    border-radius: 50%;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #47a4c4;
-    color: #fff;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s, box-shadow 0.3s;
+
+    background: #fff;
+    color: var(--primary-dark);
+
+    border: 2px solid #eef0f2;
+
+    font-size: 22px;
+
+    box-shadow: var(--shadow-md);
+
+    cursor: pointer;
+
+    transition: all 0.18s ease;
 }
 
 .botao-publicar:hover {
-    transform: scale(1.1);
+    transform: translateY(-3px);
+
+    background: var(--gradient);
+    color: #fff;
+
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
 }
 
-/* ======================= */
-/* ===== MODAL ===== */
-/* ======================= */
-
-.modal-lg {
-    max-width: 800px;
-}
-
-.modal-content {
-    border-radius: 20px;
-    padding: 20px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-/* animação */
-.modal.fade .modal-dialog {
-    transform: translateY(-20px);
-}
-.modal.fade.show .modal-dialog {
-    transform: translateY(0);
-}
-
-/* ======================= */
-/* ===== FORM ===== */
-/* ======================= */
-
-.vaga-form .form-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.vaga-form .input-group {
-    flex: 1 1 48%;
-    display: flex;
-    flex-direction: column;
-}
-
-.vaga-form .input-group.full {
-    flex: 1 1 100%;
-}
-
-/* label */
-.input-group label {
-    font-weight: 500;
-    margin-bottom: 4px;
-    font-size: 14px;
-    color: #333;
-}
-
-/* wrapper */
-.input-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-/* ícone */
-.input-wrapper .input-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #d86b6b;
-    font-size: 16px;
-}
-
-/* inputs padrão */
-.input-wrapper input,
-.input-wrapper textarea {
-    width: 100%;
-    padding: 8px 12px 8px 36px;
-    border-radius: 25px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-
-/* textarea */
-.input-wrapper textarea {
-    min-height: 50px;
-    resize: vertical;
-}
-
-/* foco */
-.input-wrapper input:focus,
-.input-wrapper textarea:focus {
-    border-color: #47a4c4;
-    box-shadow: 0 0 6px rgba(71,164,196,0.4);
-    outline: none;
-}
-
-/* erro */
-.input-wrapper .error-message {
-    font-size: 12px;
-    color: #dc3545;
-    margin-top: 3px;
-}
-
-/* ======================= */
-/* 🔥 FIX HORÁRIO (NOVO) */
-/* ======================= */
-
-.input-wrapper.d-flex {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* remove ícone só no horário */
-.input-wrapper.d-flex .input-icon {
-    display: none;
-}
-
-/* inputs de horário */
-.input-wrapper.d-flex input {
-    padding: 8px 10px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-}
-
-/* texto "até" */
-.input-wrapper.d-flex span {
-    font-size: 13px;
-    color: #555;
+.botao-publicar:active {
+    transform: scale(0.95);
 }
 
 /* ======================= */
 /* ===== RESPONSIVO ===== */
 /* ======================= */
 
-@media (max-width: 768px) {
-
-    .vaga-card {
-        margin: 15px 20px;
-    }
-
-    .filtros-vagas {
-        margin: 20px;
-    }
-
-    .vaga-form .input-group {
-        flex: 1 1 100%;
-    }
-
-    .input-wrapper.d-flex {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .input-wrapper.d-flex span {
-        text-align: center;
+@media (max-width: 600px) {
+    .botao-publicar {
+        width: 52px;
+        height: 52px;
+        font-size: 20px;
+        bottom: 20px;
+        right: 20px;
     }
 }
