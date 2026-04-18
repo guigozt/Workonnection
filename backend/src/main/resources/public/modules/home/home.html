@@ -4,141 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkConnection</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/home/style.home.css">
+
+    <!-- ORDEM IMPORTA -->
     <link rel="stylesheet" href="/css/global.css">
-    
+    <link rel="stylesheet" href="/css/home/style.home.css">
+
     <script src="/js/components/topbar.js" defer></script>
 </head>
+
 <body>
 
-    <!-- LISTA DE VAGAS -->
-    <div id="vagas-container"></div>
-
-    <!-- BOTÃO -->
-    <button class="btn btn-primary botao-publicar">+</button>
-
-    <!-- MODAL -->
-    <div class="modal fade" id="modalVaga">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5>Nova Vaga</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form class="vaga-form">
-
-                        <!-- EMPRESA + CARGO -->
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Empresa</label>
-                                <input id="inputEmpresa">
-                                <div class="error-message"></div>
-                            </div>
-
-                            <div class="input-group">
-                                <label>Cargo</label>
-                                <input id="inputCargo">
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- MODALIDADE + HORARIO -->
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Modalidade</label>
-                                <input id="inputModalidade">
-                                <div class="error-message"></div>
-                            </div>
-
-                            <div class="input-group">
-                                <label>Horário</label>
-                                <div class="horario-group">
-                                    <input type="time" id="inputHoraInicio">
-                                    <span>até</span>
-                                    <input type="time" id="inputHoraFim">
-                                </div>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- LOCAL + SALARIO -->
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Localização</label>
-                                <input id="inputLocalizacao">
-                                <div class="error-message"></div>
-                            </div>
-
-                            <div class="input-group">
-                                <label>Salário</label>
-                                <input id="inputSalario">
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- DATA -->
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Data</label>
-                                <input type="date" id="inputData">
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- DESCRIÇÃO -->
-                        <div class="form-row">
-                            <div class="input-group full">
-                                <label>Descrição</label>
-                                <textarea id="inputDescricao"></textarea>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- BENEFICIOS + REQUISITOS -->
-                        <div class="form-row">
-                            <div class="input-group">
-                                <label>Benefícios</label>
-                                <input id="inputBeneficios">
-                                <div class="error-message"></div>
-                            </div>
-
-                            <div class="input-group">
-                                <label>Requisitos</label>
-                                <textarea id="inputRequisitos"></textarea>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                        <!-- EMAIL -->
-                        <div class="form-row">
-                            <div class="input-group full">
-                                <label>Email</label>
-                                <input id="inputEmail">
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button id="btnSalvarVaga" class="btn btn-primary">Salvar</button>
-                </div>
-
-            </div>
-        </div>
+    <!-- 🔥 WRAPPER CORRETO -->
+    <div class="home-wrapper">
+        <div id="vagas-container"></div>
     </div>
 
-    <!-- SCRIPTS -->
+    <button class="btn btn-primary botao-publicar" title="Nova Publicação">
+        <i class="fas fa-plus"></i>
+    </button>
+
     <script src="/js/auth/auth.js"></script>
     <script src="/js/auth/logout.js"></script>
-    <script src="/js/home/home.js"></script>
+    <script src="/js/components/modal-vaga.js"></script>
     <script src="/js/vagas/criarVaga.js"></script>
 
 </body>

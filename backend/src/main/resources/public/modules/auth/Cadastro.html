@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - Workonnection</title>
 
-  <!-- Caminhos corretos: Spring serve /static/** como raiz / -->
   <link rel="stylesheet" href="/css/global.css">
   <link rel="stylesheet" href="/css/auth/styleCadastro.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -25,80 +24,86 @@
 
     <div id="feedback" class="feedback"></div>
 
-    <form id="cadastroForm">
+    <form id="cadastroForm" novalidate>
 
       <!-- NOME + CPF -->
       <div class="form-row">
+
         <div class="input-group">
-          <label>Nome</label>
+          <label for="nome">Nome</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-user input-icon"></i>
-            <input name="nomeDadosPessoais" required>
-            <small class="error-message"></small>
+            <input id="nome" name="nomeDadosPessoais" placeholder="Seu nome completo" autocomplete="name">
           </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
-          <label>CPF</label>
+          <label for="cpf">CPF</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-id-card input-icon"></i>
-            <input name="cpfDadosPessoais" required>
-            <small class="error-message"></small>
+            <input id="cpf" name="cpfDadosPessoais" placeholder="000.000.000-00" inputmode="numeric">
           </div>
+          <small class="error-message"></small>
         </div>
+
       </div>
 
       <!-- DATA + TELEFONE -->
       <div class="form-row">
+
         <div class="input-group">
-          <label>Data de Nascimento</label>
+          <label for="data">Data de Nascimento</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-calendar input-icon"></i>
-            <input type="date" name="dataNascimentoDadosPessoais" required>
-            <small class="error-message"></small>
+            <input type="date" id="data" name="dataNascimentoDadosPessoais">
           </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
-          <label>Telefone</label>
+          <label for="telefone">Telefone</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-phone input-icon"></i>
-            <input name="telefoneDadosPessoais" required>
-            <small class="error-message"></small>
+            <input id="telefone" name="telefoneDadosPessoais" placeholder="(11) 99999-9999" inputmode="tel">
           </div>
+          <small class="error-message"></small>
         </div>
+
       </div>
 
       <!-- EMAIL + SENHA -->
       <div class="form-row">
+
         <div class="input-group">
-          <label>Email</label>
+          <label for="email">Email</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-envelope input-icon"></i>
-            <input type="email" name="emailDadosPessoais" required>
-            <small class="error-message"></small>
+            <input type="email" id="email" name="emailDadosPessoais" placeholder="seu@email.com" autocomplete="email">
           </div>
+          <small class="error-message"></small>
         </div>
 
         <div class="input-group">
-          <label>Senha</label>
+          <label for="senha">Senha</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" name="senhaDadosPessoais" required>
-            <small class="error-message"></small>
+            <input type="password" id="senha" name="senhaDadosPessoais" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
           </div>
+          <small class="error-message"></small>
         </div>
+
       </div>
 
       <!-- CONFIRMAR SENHA -->
       <div class="form-row">
         <div class="input-group">
-          <label>Confirmar Senha</label>
+          <label for="confirmarSenha">Confirmar Senha</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock input-icon"></i>
-            <input type="password" name="confirmarSenha" required>
-            <small class="error-message"></small>
+            <input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Repita a senha">
           </div>
+          <small class="error-message"></small>
         </div>
       </div>
 
@@ -120,27 +125,28 @@
         </button>
       </div>
 
-      <div id="tipoBox" class="user-box collapsible">
+      <div id="tipoBox" class="user-box">
         <h3 id="tipoTitulo"></h3>
         <p>Campos específicos podem ser adicionados aqui futuramente.</p>
       </div>
 
       <!-- BOTÕES -->
       <div class="buttons">
+
         <button type="button" class="btn-back">
           <i class="fa-solid fa-arrow-left"></i> Voltar
         </button>
 
-        <button type="submit" class="btn-submit btn-primary">
+        <button type="submit" class="btn-primary btn-submit">
           <i class="fa-solid fa-user-plus"></i> Cadastrar
         </button>
+
       </div>
 
     </form>
   </section>
 </main>
 
-<!-- Caminho correto para o JS -->
 <script src="/js/auth/cadastro.js"></script>
 
 </body>

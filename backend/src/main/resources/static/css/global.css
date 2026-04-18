@@ -1,135 +1,196 @@
+/* ======================= */
 /* ===== RESET ===== */
+/* ======================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ======================= */
 /* ===== VARIÁVEIS ===== */
+/* ======================= */
+
 :root {
   --primary: #007B8A;
   --primary-light: #5ec3e6;
   --primary-dark: #47a4c4;
 
+  --gradient: linear-gradient(135deg, #47a4c4, #d86b6b);
+
   --danger: #dc3545;
   --success: #28a745;
 
   --bg: #f4f8fb;
+  --card-bg: #ffffff;
+
   --text: #333;
+  --text-light: #777;
 
   --font-base: 16px;
   --font-input: 15px;
   --font-small: 13px;
 
+  --spacing-xs: 6px;
+  --spacing-sm: 10px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
   --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.12);
+
+  /* 🔥 importante pra topbar */
+  --topbar-height: 70px;
 }
 
+/* ======================= */
 /* ===== BASE ===== */
+/* ======================= */
+
 body {
-  background-color: var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-size: var(--font-base);
+  font-family: 'Segoe UI', sans-serif;
 }
 
+/* ======================= */
+/* ===== UTILITÁRIOS ===== */
+/* ======================= */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ======================= */
+/* ===== CARD ===== */
+/* ======================= */
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
+  border: 1px solid #eef0f2;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ======================= */
 /* ===== INPUT ===== */
-input {
-  padding: 12px;
+/* ======================= */
+
+input,
+textarea {
+  padding: 10px;
   border-radius: var(--radius);
   border: 1px solid #ccc;
   font-size: var(--font-input);
+  width: 100%;
 }
 
-input:focus {
+input:focus,
+textarea:focus {
   border-color: var(--primary-light);
-  box-shadow: 0 0 10px rgba(94,195,230,.4);
+  box-shadow: 0 0 8px rgba(94,195,230,.4);
   outline: none;
 }
 
-/* ===== BOTÃO ===== */
+/* ======================= */
+/* ===== BOTÕES ===== */
+/* ======================= */
+
 button {
-  padding: 12px;
   border-radius: var(--radius);
-  font-size: var(--font-input);
-  font-weight: bold;
   cursor: pointer;
   border: none;
+  transition: 0.18s;
 }
 
 .btn-primary {
-  background: var(--primary-light);
+  background: var(--gradient);
   color: #fff;
+  padding: 10px 16px;
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
-/* ===== FEEDBACK ===== */
-.feedback {
-  margin-bottom: 16px;
-  padding: 12px;
-  border-radius: var(--radius);
-  display: none;
+.btn-secondary {
+  background: #eff1f3;
+  color: #777;
+  padding: 10px 16px;
 }
 
-.feedback.erro {
-  background: #fdecea;
-  color: #b00020;
-}
-
-.feedback.sucesso {
-  background: #e6f4ea;
-  color: #1e7e34;
-}
-
-/* ===== INPUT COM ÍCONE ===== */
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.input-wrapper input {
-  width: 100%;
-  padding-left: 40px;
-  height: 44px;
-}
-
-.input-wrapper .input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #007B8A;
-}
-
-/* estados */
-input.error {
-  border: 2px solid var(--danger);
-  background-color: #fdecea;
-}
-
-input.success {
-  border: 2px solid var(--success);
-  background-color: #e6f4ea;
-}
+/* ======================= */
+/* ===== ERROR MESSAGE ===== */
+/* ======================= */
 
 .error-message {
   font-size: var(--font-small);
   color: var(--danger);
-  margin-top: 4px;
+  font-weight: 600;
+
+  min-height: 14px;
+
+  opacity: 0;
+  transform: translateY(-4px);
+
+  transition: all 0.2s ease;
 }
 
-/* reação do ícone */
-.input-group:focus-within .input-icon {
-  color: var(--primary-light);
+/* quando tem texto */
+.error-message:not(:empty) {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-input.error ~ .input-icon {
-  color: var(--danger);
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 900px) {
+  .grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-input.success ~ .input-icon {
-  color: var(--success);
+@media (max-width: 600px) {
+  :root {
+    --font-base: 14px;
+  }
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
 }

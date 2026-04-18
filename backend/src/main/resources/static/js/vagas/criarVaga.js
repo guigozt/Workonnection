@@ -1,324 +1,130 @@
-document.addEventListener("DOMContentLoaded", () => {
+// criarVaga.js
+// Renderiza vagas e controla botões de editar/excluir/candidatar
+// O modal vive em /js/components/modal-vaga.js
 
-  const botaoNovaVaga = document.querySelector(".botao-publicar");
-  const modalVaga = new bootstrap.Modal(document.getElementById("modalVaga"));
-  const btnSalvarVaga = document.getElementById("btnSalvarVaga");
-
-  const inputs = {
-    empresa: document.getElementById("inputEmpresa"),
-    cargo: document.getElementById("inputCargo"),
-    descricao: document.getElementById("inputDescricao"),
-    modalidade: document.getElementById("inputModalidade"),
-    horaInicio: document.getElementById("inputHoraInicio"),
-    horaFim: document.getElementById("inputHoraFim"),
-    beneficios: document.getElementById("inputBeneficios"),
-    localizacao: document.getElementById("inputLocalizacao"),
-    salario: document.getElementById("inputSalario"),
-    data: document.getElementById("inputData"),
-    requisitos: document.getElementById("inputRequisitos"),
-    email: document.getElementById("inputEmail")
-  };
-
+document.addEventListener("usuarioCarregado", (event) => {
+  const usuario        = event.detail;
   const vagasContainer = document.getElementById("vagas-container");
+  const botaoPublicar  = document.querySelector(".botao-publicar");
 
-  // =========================
-  // FEEDBACK VISUAL
-  // =========================
+  botaoPublicar?.addEventListener("click", () => window.ModalVaga.abrirParaCriar());
+  window.ModalVaga.onSalvar(() => carregarVagas());
 
-  function mostrarErro(input, mensagem) {
-    const small = input.parentElement.querySelector(".error-message");
-    if (small) small.textContent = mensagem;
-    input.classList.add("error");
-    input.classList.remove("success");
+  // ── Verifica se o tipo do usuário pode se candidatar ───────────────────────
+  // tiposUsuario na vaga: ["todos"] | ["prestador"] | ["estudante"] | combinações
+  // tipoUsuario do usuário: "empresa" | "mei" | "me" | "estudante"
+
+  function podeSeCandidar(vaga) {
+    if (!usuario) return false;
+    if (vaga.usuarioId === usuario.id) return false; // dono não se candidata
+
+    const tipos = vaga.tiposUsuario || [];
+    if (!tipos.length || tipos.includes("todos")) return true;
+
+    const tipo = (usuario.tipoUsuario || "").toLowerCase();
+    const ehPrestador = ["empresa", "mei", "me"].includes(tipo);
+    const ehEstudante = tipo === "estudante";
+
+    if (tipos.includes("prestador") && ehPrestador) return true;
+    if (tipos.includes("estudante") && ehEstudante) return true;
+
+    return false;
   }
 
-  function mostrarSucesso(input) {
-    const small = input.parentElement.querySelector(".error-message");
-    if (small) small.textContent = "";
-    input.classList.remove("error");
-    input.classList.add("success");
+  function labelTipos(tipos) {
+    if (!tipos || !tipos.length || tipos.includes("todos")) return ["Todos"];
+    return tipos.map(t => t === "prestador" ? "Prestadores" : "Estudantes");
   }
 
-  // =========================
-  // VALIDAÇÕES
-  // =========================
-
-  function validarTexto(input, nome, min = 3) {
-    const valor = input.value.trim();
-
-    if (!valor) {
-      mostrarErro(input, `${nome} é obrigatório`);
-      return false;
-    }
-
-    if (valor.length < min) {
-      mostrarErro(input, `${nome} deve ter pelo menos ${min} caracteres`);
-      return false;
-    }
-
-    mostrarSucesso(input);
-    return true;
-  }
-
-  function validarEmail(input) {
-    const valor = input.value.trim();
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!valor) {
-      mostrarErro(input, "Email é obrigatório");
-      return false;
-    }
-
-    if (!regex.test(valor)) {
-      mostrarErro(input, "Email inválido");
-      return false;
-    }
-
-    mostrarSucesso(input);
-    return true;
-  }
-
-  function validarSalario(input) {
-    const valor = parseFloat(
-      input.value.replace(/\./g, "").replace(",", ".")
-    );
-
-    if (!input.value.trim()) {
-      mostrarErro(input, "Salário é obrigatório");
-      return false;
-    }
-
-    if (isNaN(valor) || valor <= 0) {
-      mostrarErro(input, "Salário inválido");
-      return false;
-    }
-
-    mostrarSucesso(input);
-    return true;
-  }
-
-  function validarData(input) {
-    if (!input.value) {
-      mostrarErro(input, "Data obrigatória");
-      return false;
-    }
-
-    const data = new Date(input.value);
-    const hoje = new Date();
-    hoje.setHours(0,0,0,0);
-
-    if (data < hoje) {
-      mostrarErro(input, "Data não pode ser no passado");
-      return false;
-    }
-
-    mostrarSucesso(input);
-    return true;
-  }
-
-  function validarHorario() {
-    const inicio = inputs.horaInicio.value;
-    const fim = inputs.horaFim.value;
-
-    if (!inicio || !fim) {
-      mostrarErro(inputs.horaFim, "Horário obrigatório");
-      return false;
-    }
-
-    if (inicio >= fim) {
-      mostrarErro(inputs.horaFim, "Hora final deve ser maior");
-      return false;
-    }
-
-    mostrarSucesso(inputs.horaFim);
-    return true;
-  }
-
-  // =========================
-  // VALIDAÇÃO EM TEMPO REAL
-  // =========================
-
-  const touched = new WeakSet();
-
-  function validarCampo(input) {
-
-    if (input === inputs.email) return validarEmail(input);
-    if (input === inputs.salario) return validarSalario(input);
-    if (input === inputs.data) return validarData(input);
-
-    if (input === inputs.descricao) return validarTexto(input, "Descrição", 10);
-    if (input === inputs.requisitos) return validarTexto(input, "Requisitos", 5);
-
-    return validarTexto(input, input.placeholder || "Campo");
-  }
-
-  Object.values(inputs).forEach(input => {
-
-    if (!input) return;
-
-    input.addEventListener("input", () => {
-      if (touched.has(input)) validarCampo(input);
-    });
-
-    input.addEventListener("blur", () => {
-      touched.add(input);
-      validarCampo(input);
-    });
-
-  });
-
-  // =========================
-  // MÁSCARA SALÁRIO
-  // =========================
-
-  inputs.salario.addEventListener("input", () => {
-    let v = inputs.salario.value.replace(/\D/g, "");
-    v = (v / 100).toFixed(2)
-      .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    inputs.salario.value = v;
-  });
-
-  // =========================
-  // LIMITAR DATA
-  // =========================
-
-  const hoje = new Date().toISOString().split("T")[0];
-  const max = new Date();
-  max.setFullYear(max.getFullYear() + 1);
-
-  inputs.data.min = hoje;
-  inputs.data.max = max.toISOString().split("T")[0];
-
-  // =========================
-  // LIMPAR CAMPOS
-  // =========================
-
-  function limparCampos() {
-    Object.values(inputs).forEach(input => {
-      if (!input) return;
-      input.value = "";
-      input.classList.remove("error", "success");
-      const small = input.parentElement.querySelector(".error-message");
-      if (small) small.textContent = "";
-    });
-  }
-
-  // =========================
-  // CARREGAR VAGAS
-  // =========================
+  // ── Carregar vagas ─────────────────────────────────────────────────────────
 
   async function carregarVagas() {
     try {
-      const response = await fetch("http://localhost:8080/vagas", {
-        credentials: "include"
-      });
-
-      const vagas = await response.json();
-
-      vagasContainer.innerHTML = "";
-
-      vagas.forEach(vaga => {
-        const div = document.createElement("div");
-        div.className = "vaga-card";
-
-        div.innerHTML = `
-          <div class="vaga-body">
-            <h5>${vaga.empresa}</h5>
-            <p><b>${vaga.cargo}</b></p>
-            <p>${vaga.descricao}</p>
-            <p><b>Modalidade:</b> ${vaga.modalidade}</p>
-            <p><b>Horário:</b> ${vaga.horario}</p>
-            <p><b>Data:</b> ${new Date(vaga.data).toLocaleDateString("pt-BR")}</p>
-            <p><b>Localização:</b> ${vaga.localizacao}</p>
-            <p><b>Salário:</b> ${vaga.salario}</p>
-          </div>
-        `;
-
-        vagasContainer.appendChild(div);
-      });
-
-    } catch (error) {
-      console.error("Erro ao carregar vagas:", error);
+      const res   = await fetch("http://localhost:8080/vagas", { credentials: "include" });
+      const vagas = await res.json();
+      renderizarVagas(vagas);
+    } catch (e) {
+      console.error("Erro ao carregar vagas:", e);
     }
   }
 
-  // =========================
-  // SALVAR VAGA
-  // =========================
+  // ── Renderizar ─────────────────────────────────────────────────────────────
 
-  btnSalvarVaga.addEventListener("click", async () => {
+  function renderizarVagas(vagas) {
+    if (!vagasContainer) return;
+    vagasContainer.innerHTML = "";
 
-    let valido = true;
-
-    valido = validarTexto(inputs.empresa, "Empresa") && valido;
-    valido = validarTexto(inputs.cargo, "Cargo") && valido;
-    valido = validarTexto(inputs.modalidade, "Modalidade") && valido;
-    valido = validarTexto(inputs.localizacao, "Localização") && valido;
-    valido = validarTexto(inputs.beneficios, "Benefícios") && valido;
-    valido = validarTexto(inputs.descricao, "Descrição", 10) && valido;
-    valido = validarTexto(inputs.requisitos, "Requisitos", 5) && valido;
-
-    valido = validarEmail(inputs.email) && valido;
-    valido = validarSalario(inputs.salario) && valido;
-    valido = validarData(inputs.data) && valido;
-    valido = validarHorario() && valido;
-
-    if (!valido) {
-      alert("Corrija os campos!");
+    if (!vagas.length) {
+      vagasContainer.innerHTML = `<p style="text-align:center;color:#aaa;margin-top:40px;">Nenhuma vaga publicada ainda.</p>`;
       return;
     }
 
-    const novaVaga = {
-      empresa: inputs.empresa.value.trim(),
-      cargo: inputs.cargo.value.trim(),
-      descricao: inputs.descricao.value.trim(),
-      modalidade: inputs.modalidade.value.trim(),
-      beneficios: inputs.beneficios.value.trim(),
-      localizacao: inputs.localizacao.value.trim(),
-      salario: inputs.salario.value.trim(),
-      data: inputs.data.value,
-      requisitos: inputs.requisitos.value.trim(),
-      email: inputs.email.value.trim(),
-      horario: `${inputs.horaInicio.value} - ${inputs.horaFim.value}`
-    };
+    vagas.forEach(vaga => {
+      const isDono    = usuario && vaga.usuarioId === usuario.id;
+      const podeCand  = podeSeCandidar(vaga);
+      const chips     = labelTipos(vaga.tiposUsuario);
 
-    try {
-      const response = await fetch("http://localhost:8080/vagas", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify(novaVaga)
-      });
+      const card = document.createElement("div");
+      card.className = "vaga-card";
+      card.innerHTML = `
+        <div class="vaga-card-header">
+          <div class="vaga-card-titulo">
+            <h5>${vaga.cargo}</h5>
+            <span class="empresa">${vaga.empresa}</span>
+          </div>
+          ${isDono ? `
+            <div class="vaga-acoes">
+              <button class="btn-editar-vaga" title="Editar"><i class="fas fa-pen"></i></button>
+              <button class="btn-excluir-vaga" title="Excluir"><i class="fas fa-trash"></i></button>
+            </div>` : ""}
+        </div>
 
-      if (!response.ok) throw new Error();
+        <div class="vaga-info-linha">
+          <span class="vaga-info-item"><i class="fas fa-location-dot"></i> ${vaga.localizacao}</span>
+          <span class="vaga-info-item"><i class="fas fa-clock"></i> ${vaga.horario}</span>
+          <span class="vaga-info-item"><i class="fas fa-laptop-house"></i> ${vaga.modalidade}</span>
+          <span class="vaga-info-item"><i class="fas fa-dollar-sign"></i> ${vaga.salario}</span>
+        </div>
 
-      alert("Vaga criada com sucesso!");
+        <p class="vaga-descricao">${vaga.descricao}</p>
 
-      modalVaga.hide();
-      limparCampos();
-      carregarVagas();
+        <div class="vaga-footer-row">
+          <div class="vaga-chips">
+            ${chips.map(c => `<span class="vaga-chip">${c}</span>`).join("")}
+          </div>
+          ${isDono
+            ? `<span style="font-size:11px;color:#aaa;font-weight:600;">Sua vaga</span>`
+            : podeCand
+              ? `<a href="mailto:${vaga.email}" class="btn-candidatar ativo">Candidatar-se</a>`
+              : `<span class="btn-candidatar bloqueado">Não disponível para seu perfil</span>`
+          }
+        </div>
+      `;
 
-    } catch (error) {
-      alert("Erro ao criar vaga");
-    }
-  });
+      if (isDono) {
+        card.querySelector(".btn-editar-vaga").addEventListener("click", () => {
+          window.ModalVaga.abrirParaEditar(vaga);
+        });
 
-  // =========================
-  // ABRIR MODAL
-  // =========================
+        card.querySelector(".btn-excluir-vaga").addEventListener("click", async () => {
+          if (!confirm(`Excluir a vaga "${vaga.cargo}"?`)) return;
+          try {
+            const res = await fetch(`http://localhost:8080/vagas/${vaga.id}`, {
+              method: "DELETE",
+              credentials: "include"
+            });
+            if (!res.ok) { const err = await res.json().catch(() => ({})); alert(err.erro || "Erro ao excluir."); return; }
+            carregarVagas();
+          } catch (e) {
+            console.error(e);
+            alert("Erro ao conectar com o servidor.");
+          }
+        });
+      }
 
-  botaoNovaVaga.addEventListener("click", () => {
-    limparCampos();
-    modalVaga.show();
-  });
-
-  // =========================
-  // INIT
-  // =========================
+      vagasContainer.appendChild(card);
+    });
+  }
 
   carregarVagas();
-
 });

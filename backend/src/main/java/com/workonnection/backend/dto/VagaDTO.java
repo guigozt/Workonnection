@@ -1,5 +1,7 @@
 package com.workonnection.backend.dto;
 
+import java.util.List;
+
 public class VagaDTO {
 
     private String empresa;
@@ -13,6 +15,7 @@ public class VagaDTO {
     private String data;
     private String requisitos;
     private String email;
+    private List<String> tiposUsuario;
 
     // getters e setters
 
@@ -48,4 +51,7 @@ public class VagaDTO {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public List<String> getTiposUsuario() { return tiposUsuario; }
+    public void setTiposUsuario(List<String> tiposUsuario) { this.tiposUsuario = tiposUsuario; }
 }
