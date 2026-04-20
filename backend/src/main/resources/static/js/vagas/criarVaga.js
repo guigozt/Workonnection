@@ -2,18 +2,15 @@
 
 const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png";
 
-// ── Injetar estilos dos cards e do painel de comentários ─────────────────────
 (function injetarEstilos() {
     const s = document.createElement("style");
     s.textContent = `
-        /* ── Feed wrapper ── */
         .feed {
             max-width: 680px;
             margin: 0 auto;
             padding: 0 16px 80px;
         }
 
-        /* ── Card ── */
         .vaga-card {
             background: var(--card-bg, #fff);
             border-radius: 18px;
@@ -26,7 +23,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
 
         .vaga-card:hover { box-shadow: 0 6px 22px rgba(0,0,0,0.09); }
 
-        /* Header do card */
+        /* ── Header: avatar + nome + empresa · data + ações do dono ── */
         .vc-header {
             display: flex;
             align-items: center;
@@ -82,23 +79,63 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         .vc-btn-excluir { border-color: #d86b6b; color: #d86b6b; }
         .vc-btn-excluir:hover { background: #d86b6b; color: #fff; }
 
-        /* Corpo */
+        /* ── Corpo ── */
         .vc-body { padding: 0 16px 12px; }
 
-        .vc-titulo {
-            font-size: 17px;
+        /* Cargo destaque */
+        .vc-cargo {
+            font-size: 18px;
             font-weight: 800;
             color: #111;
             margin-bottom: 2px;
         }
 
-        .vc-empresa {
+        /* Empresa */
+        .vc-empresa-nome {
             font-size: 13px;
-            color: #888;
-            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--primary-dark, #47a4c4);
+            margin-bottom: 12px;
         }
 
-        /* Info tags */
+        /* Descrição — sem clamp, sempre completa */
+        .vc-descricao {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.7;
+            margin-bottom: 14px;
+        }
+
+        /* Seção de detalhes: benefícios + requisitos lado a lado */
+        .vc-detalhes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .vc-detalhe-bloco {
+            background: #f7f9fb;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .vc-detalhe-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+
+        .vc-detalhe-valor {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Tags de info (modalidade, local, horário, salário) */
         .vc-tags {
             display: flex;
             flex-wrap: wrap;
@@ -120,37 +157,8 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
 
         .vc-tag i { color: var(--primary-dark, #47a4c4); font-size: 10px; }
 
-        /* Descrição colapsável */
-        .vc-descricao {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.65;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .vc-descricao.expandido {
-            display: block;
-            -webkit-line-clamp: unset;
-        }
-
-        .vc-ver-mais {
-            font-size: 12px;
-            color: var(--primary-dark, #47a4c4);
-            font-weight: 700;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        /* Chips de tipo */
-        .vc-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+        /* Chips de quem pode se candidatar */
+        .vc-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
 
         .vc-chip {
             font-size: 10px;
@@ -163,7 +171,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             letter-spacing: 0.4px;
         }
 
-        /* Barra de ações */
+        /* ── Barra de ações ── */
         .vc-acoes {
             display: flex;
             align-items: center;
@@ -188,10 +196,8 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .vc-acao-btn:hover { background: #f4f6f8; color: #444; }
-
         .vc-acao-btn.liked    { color: #47a4c4; }
         .vc-acao-btn.disliked { color: #d86b6b; }
-
         .vc-acao-btn i { font-size: 14px; }
 
         .vc-spacer { flex: 1; }
@@ -230,7 +236,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             cursor: default;
         }
 
-        /* ── Painel de comentários (drawer lateral tipo Instagram) ── */
+        /* ── Drawer de comentários ── */
         .comentarios-overlay {
             position: fixed;
             inset: 0;
@@ -248,9 +254,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
 
         .comentarios-drawer {
             position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
+            right: 0; top: 0; bottom: 0;
             width: min(420px, 100vw);
             background: #fff;
             display: flex;
@@ -282,8 +286,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .btn-fechar-drawer {
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             border-radius: 50%;
             border: none;
             background: #f4f6f8;
@@ -311,8 +314,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .comentario-avatar {
-            width: 34px;
-            height: 34px;
+            width: 34px; height: 34px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
@@ -384,8 +386,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .btn-enviar-comentario {
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             border-radius: 50%;
             border: none;
             background: var(--gradient, linear-gradient(135deg, #47a4c4, #d86b6b));
@@ -403,15 +404,16 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
 
         @media (max-width: 600px) {
             .feed { padding: 0 8px 80px; }
+            .vc-detalhes { grid-template-columns: 1fr; }
             .comentarios-drawer { width: 100vw; }
         }
     `;
     document.head.appendChild(s);
 })();
 
-// ── Painel de comentários (singleton) ────────────────────────────────────────
+// ── Drawer de comentários ─────────────────────────────────────────────────────
 
-let vagaAtiva = null; // vaga atualmente aberta no drawer
+let vagaAtiva = null;
 
 function criarDrawer() {
     const overlay = document.createElement("div");
@@ -430,12 +432,9 @@ function criarDrawer() {
                 </button>
             </div>
         </div>`;
-
     document.body.appendChild(overlay);
-
     overlay.querySelector(".btn-fechar-drawer").addEventListener("click", fecharDrawer);
     overlay.addEventListener("click", e => { if (e.target === overlay) fecharDrawer(); });
-
     return overlay;
 }
 
@@ -485,21 +484,17 @@ function renderDrawer(vaga, usuarioLogado) {
                         method: "DELETE", credentials: "include"
                     });
                     if (!res.ok) return;
-                    const vagaAtualizada = await res.json();
-                    // Atualiza referência local e re-renderiza
-                    Object.assign(vaga, vagaAtualizada);
-                    renderDrawer(vagaAtualizada, usuarioLogado);
-                    atualizarContadorComentarios(vaga.id, vagaAtualizada.comentarios?.length || 0);
+                    const v = await res.json();
+                    Object.assign(vaga, v);
+                    renderDrawer(v, usuarioLogado);
+                    atualizarContadorComentarios(vaga.id, v.comentarios?.length || 0);
                 } catch (e) { console.error(e); }
             });
         });
     }
 
-    // Enviar comentário
     const input  = drawer.querySelector("#drawerInput");
     const btnEnv = drawer.querySelector("#drawerEnviar");
-
-    // Clona para remover listeners antigos
     const novoBtnEnv = btnEnv.cloneNode(true);
     btnEnv.replaceWith(novoBtnEnv);
 
@@ -514,11 +509,11 @@ function renderDrawer(vaga, usuarioLogado) {
                 body: JSON.stringify({ texto })
             });
             if (!res.ok) return;
-            const vagaAtualizada = await res.json();
-            Object.assign(vaga, vagaAtualizada);
+            const v = await res.json();
+            Object.assign(vaga, v);
             input.value = "";
-            renderDrawer(vagaAtualizada, usuarioLogado);
-            atualizarContadorComentarios(vaga.id, vagaAtualizada.comentarios?.length || 0);
+            renderDrawer(v, usuarioLogado);
+            atualizarContadorComentarios(vaga.id, v.comentarios?.length || 0);
         } catch (e) { console.error(e); }
     }
 
@@ -538,15 +533,12 @@ document.addEventListener("usuarioCarregado", (event) => {
     const vagasContainer = document.getElementById("vagas-container");
     const botaoPublicar  = document.querySelector(".botao-publicar");
 
-    // Cria o wrapper feed se não existir
     if (!vagasContainer.classList.contains("feed")) {
         vagasContainer.classList.add("feed");
     }
 
     botaoPublicar?.addEventListener("click", () => window.ModalVaga.abrirParaCriar());
     window.ModalVaga.onSalvar(() => carregarVagas());
-
-    // ── Permissão de candidatura ──────────────────────────────────────────────
 
     function podeSeCandidar(vaga) {
         if (!usuarioLogado || vaga.usuarioId === usuarioLogado.id) return false;
@@ -563,8 +555,6 @@ document.addEventListener("usuarioCarregado", (event) => {
         return tipos.map(t => t === "prestador" ? "Prestadores" : "Estudantes");
     }
 
-    // ── Carregar vagas ────────────────────────────────────────────────────────
-
     async function carregarVagas() {
         try {
             const res   = await fetch("http://localhost:8080/vagas", { credentials: "include" });
@@ -573,17 +563,13 @@ document.addEventListener("usuarioCarregado", (event) => {
         } catch (e) { console.error("Erro ao carregar vagas:", e); }
     }
 
-    // ── Renderizar cards ──────────────────────────────────────────────────────
-
     function renderizarVagas(vagas) {
         if (!vagasContainer) return;
         vagasContainer.innerHTML = "";
-
         if (!vagas.length) {
             vagasContainer.innerHTML = `<p style="text-align:center;color:#aaa;margin-top:60px;font-size:14px;">Nenhuma vaga publicada ainda.</p>`;
             return;
         }
-
         vagas.forEach(vaga => criarCard(vaga));
     }
 
@@ -595,15 +581,16 @@ document.addEventListener("usuarioCarregado", (event) => {
         const euCurtiu    = usuarioLogado && (vaga.likes    || []).includes(usuarioLogado.id);
         const euDescurtiu = usuarioLogado && (vaga.dislikes || []).includes(usuarioLogado.id);
 
-        const nLikes      = (vaga.likes    || []).length;
-        const nDislikes   = (vaga.dislikes || []).length;
-        const nComentarios= (vaga.comentarios || []).length;
+        const nLikes       = (vaga.likes       || []).length;
+        const nDislikes    = (vaga.dislikes    || []).length;
+        const nComentarios = (vaga.comentarios || []).length;
 
         const card = document.createElement("div");
         card.className = "vaga-card";
         card.dataset.vagaId = vaga.id;
 
         card.innerHTML = `
+            <!-- Header: foto + nome do usuário + cargo/empresa + data + ações do dono -->
             <div class="vc-header">
                 <img class="vc-avatar" src="${FOTO_DEFAULT}" alt="Foto do autor">
                 <div class="vc-autor">
@@ -617,25 +604,39 @@ document.addEventListener("usuarioCarregado", (event) => {
                 </div>` : ""}
             </div>
 
+            <!-- Corpo: cargo → empresa → descrição → benefícios/requisitos → modalidade e info -->
             <div class="vc-body">
-                <div class="vc-titulo">${vaga.cargo}</div>
-                <div class="vc-empresa">${vaga.empresa}</div>
 
-                <div class="vc-tags">
-                    <span class="vc-tag"><i class="fas fa-location-dot"></i>${vaga.localizacao}</span>
-                    <span class="vc-tag"><i class="fas fa-clock"></i>${vaga.horario}</span>
-                    <span class="vc-tag"><i class="fas fa-laptop-house"></i>${vaga.modalidade}</span>
-                    <span class="vc-tag"><i class="fas fa-dollar-sign"></i>${vaga.salario}</span>
-                </div>
+                <div class="vc-cargo">${vaga.cargo}</div>
+                <div class="vc-empresa-nome">${vaga.empresa}</div>
 
                 <p class="vc-descricao">${vaga.descricao}</p>
-                <button class="vc-ver-mais">Ver mais</button>
+
+                <div class="vc-detalhes">
+                    <div class="vc-detalhe-bloco">
+                        <div class="vc-detalhe-label">Benefícios</div>
+                        <div class="vc-detalhe-valor">${vaga.beneficios || "—"}</div>
+                    </div>
+                    <div class="vc-detalhe-bloco">
+                        <div class="vc-detalhe-label">Requisitos</div>
+                        <div class="vc-detalhe-valor">${vaga.requisitos || "—"}</div>
+                    </div>
+                </div>
+
+                <div class="vc-tags">
+                    <span class="vc-tag"><i class="fas fa-laptop-house"></i>${vaga.modalidade}</span>
+                    <span class="vc-tag"><i class="fas fa-location-dot"></i>${vaga.localizacao}</span>
+                    <span class="vc-tag"><i class="fas fa-clock"></i>${vaga.horario}</span>
+                    <span class="vc-tag"><i class="fas fa-dollar-sign"></i>${vaga.salario}</span>
+                </div>
 
                 <div class="vc-chips">
                     ${chips.map(c => `<span class="vc-chip">${c}</span>`).join("")}
                 </div>
+
             </div>
 
+            <!-- Ações: like, dislike, comentários + candidatar -->
             <div class="vc-acoes">
                 <button class="vc-acao-btn btn-like ${euCurtiu ? "liked" : ""}" title="Curtir">
                     <i class="fa${euCurtiu ? "s" : "r"} fa-thumbs-up"></i>
@@ -660,14 +661,6 @@ document.addEventListener("usuarioCarregado", (event) => {
                 }
             </div>
         `;
-
-        // Ver mais / ver menos
-        const desc   = card.querySelector(".vc-descricao");
-        const verMais = card.querySelector(".vc-ver-mais");
-        verMais.addEventListener("click", () => {
-            const expandido = desc.classList.toggle("expandido");
-            verMais.textContent = expandido ? "Ver menos" : "Ver mais";
-        });
 
         // Like
         card.querySelector(".btn-like").addEventListener("click", async () => {
@@ -700,7 +693,7 @@ document.addEventListener("usuarioCarregado", (event) => {
             abrirDrawer(vaga, usuarioLogado);
         });
 
-        // Editar / Excluir (dono)
+        // Editar / Excluir (só dono)
         if (isDono) {
             card.querySelector(".vc-btn-editar").addEventListener("click", () => {
                 window.ModalVaga.abrirParaEditar(vaga);

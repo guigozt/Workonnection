@@ -173,6 +173,7 @@ public class VagaService {
     }
 
     private void preencherVaga(Vaga vaga, VagaDTO dto) {
+        // REMOVA esta linha: vaga.setNomeUsuario(dto.getNomeUsuario());
         vaga.setEmpresa(dto.getEmpresa());
         vaga.setCargo(dto.getCargo());
         vaga.setDescricao(dto.getDescricao());
@@ -189,13 +190,24 @@ public class VagaService {
 
     private VagaResponseDTO toDTO(Vaga v) {
         return new VagaResponseDTO(
-                v.getId(), v.getEmpresa(), v.getCargo(), v.getDescricao(),
-                v.getModalidade(), v.getHorario(), v.getBeneficios(),
-                v.getLocalizacao(), v.getSalario(), v.getData(),
-                v.getRequisitos(), v.getEmail(), v.getUsuarioId(),
-                v.getNomeUsuario(), v.getTiposUsuario(),
-                orEmpty(v.getLikes()), orEmpty(v.getDislikes()),
-                orEmptyC(v.getComentarios())
+            v.getId(),
+            v.getNomeUsuario(),
+            v.getEmpresa(),
+            v.getCargo(),
+            v.getDescricao(),
+            v.getModalidade(),
+            v.getHorario(),
+            v.getBeneficios(),
+            v.getLocalizacao(),
+            v.getSalario(),
+            v.getData(),
+            v.getRequisitos(),
+            v.getEmail(),
+            v.getUsuarioId(),
+            v.getTiposUsuario(),
+            orEmpty(v.getLikes()),
+            orEmpty(v.getDislikes()),
+            orEmptyC(v.getComentarios())
         );
     }
 
