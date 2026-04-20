@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - Workonnection</title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/auth/styleCadastro.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<header class="header">
+  <img src="/imagens/logo_workonnection.png" alt="Logo" class="logo">
+  <h1>Cadastro</h1>
+</header>
+
+<main class="cadastro-container">
+  <section class="form-box">
+
+    <h2>Dados Pessoais</h2>
+
+    <div id="feedback" class="feedback"></div>
+
+    <form id="cadastroForm" novalidate>
+
+      <!-- NOME + CPF -->
+      <div class="form-row">
+
+        <div class="input-group">
+          <label for="nome">Nome</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input id="nome" name="nomeDadosPessoais" placeholder="Seu nome completo" autocomplete="name">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+        <div class="input-group">
+          <label for="cpf">CPF</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-id-card input-icon"></i>
+            <input id="cpf" name="cpfDadosPessoais" placeholder="000.000.000-00" inputmode="numeric">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+      </div>
+
+      <!-- DATA + TELEFONE -->
+      <div class="form-row">
+
+        <div class="input-group">
+          <label for="data">Data de Nascimento</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-calendar input-icon"></i>
+            <input type="date" id="data" name="dataNascimentoDadosPessoais">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+        <div class="input-group">
+          <label for="telefone">Telefone</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-phone input-icon"></i>
+            <input id="telefone" name="telefoneDadosPessoais" placeholder="(11) 99999-9999" inputmode="tel">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+      </div>
+
+      <!-- EMAIL + SENHA -->
+      <div class="form-row">
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope input-icon"></i>
+            <input type="email" id="email" name="emailDadosPessoais" placeholder="seu@email.com" autocomplete="email">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+        <div class="input-group">
+          <label for="senha">Senha</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="senha" name="senhaDadosPessoais" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+          </div>
+          <small class="error-message"></small>
+        </div>
+
+      </div>
+
+      <!-- CONFIRMAR SENHA -->
+      <div class="form-row">
+        <div class="input-group">
+          <label for="confirmarSenha">Confirmar Senha</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Repita a senha">
+          </div>
+          <small class="error-message"></small>
+        </div>
+      </div>
+
+      <!-- TIPO USUÁRIO -->
+      <p class="user-label">Tipo de Usuário</p>
+
+      <div class="user-type-box">
+        <button type="button" class="user-btn" data-tipo="empresa">
+          <i class="fa-solid fa-building"></i> Empresa
+        </button>
+        <button type="button" class="user-btn" data-tipo="me">
+          <i class="fa-solid fa-briefcase"></i> ME
+        </button>
+        <button type="button" class="user-btn" data-tipo="mei">
+          <i class="fa-solid fa-file-invoice"></i> MEI
+        </button>
+        <button type="button" class="user-btn" data-tipo="estudante">
+          <i class="fa-solid fa-user-graduate"></i> Estudante
+        </button>
+      </div>
+
+      <div id="tipoBox" class="user-box">
+        <h3 id="tipoTitulo"></h3>
+        <p>Campos específicos podem ser adicionados aqui futuramente.</p>
+      </div>
+
+      <!-- BOTÕES -->
+      <div class="buttons">
+
+        <button type="button" class="btn-back">
+          <i class="fa-solid fa-arrow-left"></i> Voltar
+        </button>
+
+        <button type="submit" class="btn-primary btn-submit">
+          <i class="fa-solid fa-user-plus"></i> Cadastrar
+        </button>
+
+      </div>
+
+    </form>
+  </section>
+</main>
+
+<script src="/js/auth/cadastro.js"></script>
+
+</body>
+</html>

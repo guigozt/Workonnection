@@ -1,0 +1,65 @@
+/* ======================= */
+/* ===== LAYOUT HOME ===== */
+/* ======================= */
+
+.home-wrapper {
+    padding-top: calc(var(--topbar-height) + 20px);
+}
+
+/* ======================= */
+/* ===== BOTÃO PUBLICAR ===== */
+/* ======================= */
+
+.botao-publicar {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    color: var(--primary-dark);
+
+    border: 2px solid #eef0f2;
+
+    font-size: 22px;
+
+    box-shadow: var(--shadow-md);
+
+    cursor: pointer;
+
+    transition: all 0.18s ease;
+}
+
+.botao-publicar:hover {
+    transform: translateY(-3px);
+
+    background: var(--gradient);
+    color: #fff;
+
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+.botao-publicar:active {
+    transform: scale(0.95);
+}
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 600px) {
+    .botao-publicar {
+        width: 52px;
+        height: 52px;
+        font-size: 20px;
+        bottom: 20px;
+        right: 20px;
+    }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorkConnection - Configurações</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/configuracoes/styleConfiguracoes.css">
+  <link rel="stylesheet" href="/css/global.css">
+
+  <script src="/js/components/topbar.js" defer></script>
+</head>
+<body>
+  <div class="container-config">
+    <h4>Configurações</h4>
+
+    <!-- Gerenciamento de Perfis -->
+    <div class="card-config">
+      <h5>Gerenciamento de Perfis</h5>
+      <div id="containerPerfis">
+        <!-- Perfis serão inseridos aqui via JS -->
+      </div>
+    </div>
+
+    <!-- Tema do sistema -->
+    <div class="card-config">
+      <h5>Tema do sistema</h5>
+      <div class="tema-toggle">
+        <label><input type="radio" name="tema" value="claro" checked> Claro</label>
+        <label><input type="radio" name="tema" value="escuro"> Escuro</label>
+      </div>
+    </div>
+
+    <!-- Notificações -->
+    <div class="card-config">
+      <h5>Notificações</h5>
+      <div class="config-item">
+        <label><input type="checkbox" checked> Receber notificações por e-mail</label>
+      </div>
+      <div class="config-item">
+        <label><input type="checkbox"> Receber notificações no aplicativo</label>
+      </div>
+      <div class="config-item">
+        <label><input type="checkbox" checked> Sons de alerta ativados</label>
+      </div>
+    </div>
+
+    <!-- Idioma -->
+    <div class="card-config">
+      <h5>Idioma</h5>
+      <div class="config-item">
+        <select class="form-select" style="max-width: 200px;">
+          <option selected>Português (BR)</option>
+          <option>English (US)</option>
+          <option>Español</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Integrações -->
+    <div class="card-config">
+      <h5>Integrações</h5>
+      <div class="config-item">
+        <button class="btn btn-outline-secondary">Conectar ao Google</button>
+        <button class="btn btn-outline-secondary">Conectar ao Slack</button>
+        <button class="btn btn-outline-secondary">Conectar ao Teams</button>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <div class="card-config">
+      <h5>Logout</h5>
+      <div class="botoes-logout">
+        <button class="btn btn-outline-success">Adicionar perfil</button>
+        <button id="btnSair" class="btn btn-outline-secondary">Sair</button>
+        <button class="btn btn-outline-danger">Excluir conta</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    ORDEM IMPORTA:
+    1. auth.js   → verifica sessão, redireciona se não logado
+    2. logout.js → depende do #btnSair já existir no DOM
+    3. demais scripts da página
+  -->
+  <script src="/js/auth/auth.js"></script>
+  <script src="/js/auth/logout.js"></script>
+  <script src="/js/configuracoes/configuracoes.js"></script>
+  <script src="/js/configuracoes/gerenciarPerfils.js"></script>
+
+</body>
+</html>

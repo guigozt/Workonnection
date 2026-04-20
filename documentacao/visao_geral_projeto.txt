@@ -1,0 +1,235 @@
+🧠 Visão Geral do Projeto
+
+Seu projeto segue uma arquitetura Full Stack:
+
+🔙 Backend: Spring Boot (Java)
+🔜 Frontend: HTML + CSS + JavaScript
+🗂️ Organização: baseada no padrão MVC (Model-View-Controller)
+
+🧱 🧩 PADRÃO MVC
+
+Você aplicou o MVC assim:
+
+🔹 Model (Modelo)
+
+Representa os dados da aplicação
+
+📂 model/
+
+Usuario.java
+Vaga.java
+
+👉 São as entidades (dados que vão pro banco)
+
+🔹 Controller (Controle)
+
+Recebe requisições do front
+
+📂 controller/
+
+UsuarioController.java
+VagaController.java
+
+👉 Aqui ficam as rotas:
+
+/usuarios/login
+/vagas
+/vagas/minhas
+🔹 View (Visão)
+
+Interface com o usuário
+
+📂 resources/public/modules/
+
+HTMLs (home, login, cadastro, etc.)
+
+👉 Ex:
+
+home.html
+Login.html
+Cadastro.html
+
+⚙️ CAMADAS DO BACKEND (SPRING)
+
+Além do MVC, você aplicou uma arquitetura em camadas 👇
+
+🔹 1. Controller (Entrada da API)
+
+📂 controller/
+
+Responsável por:
+
+Receber requisições HTTP
+Validar sessão
+Chamar o service
+
+Ex:
+
+@PostMapping("/vagas")
+public VagaResponseDTO criar(...)
+🔹 2. Service (Regra de negócio)
+
+📂 service/
+
+UsuarioService.java
+VagaService.java
+
+Responsável por:
+
+Lógica da aplicação
+Processamento de dados
+Conversão DTO ↔ Model
+🔹 3. Repository (Acesso ao banco)
+
+📂 repository/
+
+UsuarioRepository.java
+VagaRepository.java
+
+👉 Usa Spring Data (provavelmente Mongo ou JPA)
+
+Responsável por:
+
+Salvar
+Buscar
+Filtrar dados
+🔹 4. DTO (Transferência de dados)
+
+📂 dto/
+
+CadastroDTO
+LoginDTO
+VagaDTO
+VagaResponseDTO
+
+👉 Você usou MUITO bem aqui 👏
+
+Serve para:
+
+Separar dados da API dos models
+Evitar expor dados sensíveis
+🔹 5. Config (Segurança)
+
+📂 config/
+
+SecurityConfig.java
+
+👉 Configura:
+
+autenticação
+permissões
+integração com Spring Security
+🔹 6. Exception
+
+📂 exception/
+
+ApiException.java
+GlobalExceptionHandler.java
+
+👉 Tratamento global de erros
+
+🌐 FRONTEND (HTML + CSS + JS)
+
+Agora a parte que conversa com o backend 👇
+
+📂 HTML (estrutura das páginas)
+
+📂 public/modules/
+
+Cada pasta representa uma funcionalidade:
+
+auth/ → login/cadastro
+home/ → feed principal
+vagas/ → tela de vagas
+perfil/ → usuário
+etc
+
+👉 Ex:
+
+home/home.html
+auth/Login.html
+🎨 CSS (estilização)
+
+📂 static/css/
+
+Organizado por módulo (isso é MUITO bom 👏):
+
+auth/styleLogin.css
+home/style.home.css
+vagas/styleVagas.css
+
+👉 + global.css (estilo geral)
+
+⚙️ JavaScript (lógica do front)
+
+📂 static/js/
+
+Separado por responsabilidade:
+
+🔹 auth
+login.js
+cadastro.js
+auth.js (controle de sessão)
+🔹 home
+home.js → renderização de vagas
+interacaoHome.js → interação UI
+🔹 vagas
+criarVaga.js → criação + validação + integração com backend
+
+🔗 INTEGRAÇÃO FRONT ↔ BACK
+
+Você fez via fetch API:
+
+fetch("http://localhost:8080/vagas", {
+  method: "POST",
+  credentials: "include",
+  body: JSON.stringify(novaVaga)
+})
+
+👉 E usa:
+
+HttpSession no backend
+credentials: "include" no front
+
+✔️ Isso mantém o usuário logado
+
+🗂️ ESTRUTURA GERAL RESUMIDA
+
+backend/
+ ├── controller   → rotas (API)
+ ├── service      → regras de negócio
+ ├── repository   → banco
+ ├── model        → entidades
+ ├── dto          → comunicação
+ ├── config       → segurança
+ └── exception    → erros
+
+resources/
+ ├── public/modules → HTML (views)
+ └── static
+     ├── css       → estilos
+     └── js        → lógica frontend
+
+
+✅ Pontos fortes
+    MVC aplicado corretamente
+    Separação por camadas (Controller, Service, Repository)
+    Uso de DTO (nível profissional)
+    Front modularizado
+    Integração com sessão funcionando
+
+⚠️ Pontos que você pode evoluir (próximo nível)
+
+Se quiser subir de nível:
+
+    🔐 usar JWT ao invés de sessão
+    🎯 validação no backend (Bean Validation)
+    🔄 usar Mapper (ex: MapStruct)
+    🎨 componentizar mais o frontend
+    
+
+🚀 Resumo simples (pra usar em README)
+
+O projeto segue arquitetura MVC utilizando Spring Boot no backend e HTML/CSS/JS no frontend.
+O backend é estruturado em camadas (Controller, Service, Repository), com uso de DTOs para comunicação.
+O frontend é modularizado por funcionalidades e integrado via API REST com controle de sessão.

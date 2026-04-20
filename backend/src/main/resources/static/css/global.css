@@ -1,0 +1,196 @@
+/* ======================= */
+/* ===== RESET ===== */
+/* ======================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ======================= */
+/* ===== VARIÁVEIS ===== */
+/* ======================= */
+
+:root {
+  --primary: #007B8A;
+  --primary-light: #5ec3e6;
+  --primary-dark: #47a4c4;
+
+  --gradient: linear-gradient(135deg, #47a4c4, #d86b6b);
+
+  --danger: #dc3545;
+  --success: #28a745;
+
+  --bg: #f4f8fb;
+  --card-bg: #ffffff;
+
+  --text: #333;
+  --text-light: #777;
+
+  --font-base: 16px;
+  --font-input: 15px;
+  --font-small: 13px;
+
+  --spacing-xs: 6px;
+  --spacing-sm: 10px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.12);
+
+  /* 🔥 importante pra topbar */
+  --topbar-height: 70px;
+}
+
+/* ======================= */
+/* ===== BASE ===== */
+/* ======================= */
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--font-base);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ======================= */
+/* ===== UTILITÁRIOS ===== */
+/* ======================= */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ======================= */
+/* ===== CARD ===== */
+/* ======================= */
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-lg);
+  border: 1px solid #eef0f2;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ======================= */
+/* ===== INPUT ===== */
+/* ======================= */
+
+input,
+textarea {
+  padding: 10px;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  font-size: var(--font-input);
+  width: 100%;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 8px rgba(94,195,230,.4);
+  outline: none;
+}
+
+/* ======================= */
+/* ===== BOTÕES ===== */
+/* ======================= */
+
+button {
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: none;
+  transition: 0.18s;
+}
+
+.btn-primary {
+  background: var(--gradient);
+  color: #fff;
+  padding: 10px 16px;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #eff1f3;
+  color: #777;
+  padding: 10px 16px;
+}
+
+/* ======================= */
+/* ===== ERROR MESSAGE ===== */
+/* ======================= */
+
+.error-message {
+  font-size: var(--font-small);
+  color: var(--danger);
+  font-weight: 600;
+
+  min-height: 14px;
+
+  opacity: 0;
+  transform: translateY(-4px);
+
+  transition: all 0.2s ease;
+}
+
+/* quando tem texto */
+.error-message:not(:empty) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 900px) {
+  .grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --font-base: 14px;
+  }
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+}
