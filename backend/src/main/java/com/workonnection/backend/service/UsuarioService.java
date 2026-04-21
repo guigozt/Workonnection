@@ -105,17 +105,34 @@ public class UsuarioService {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
-
+    
     private UsuarioResponseDTO toResponse(Usuario u) {
 
-        //Garante que o perfil nunca seja null
+        // Conta notificações não lidas
+        long naoLidas = (u.getNotificacoes() == null) ? 0 :
+                u.getNotificacoes().stream()
+                        .filter(n -> !n.isLida())
+                        .count();
+
+        // Garante que o perfil nunca seja null
         Usuario.Perfil perfil = u.getPerfil();
 
-        //fallback - usa dados do cadastro se perfil estiver vazio
+        if (perfil == null) {
+            perfil = new Usuario.Perfil();
+        }
+
+        // fallback - usa dados do cadastro se perfil estiver vazio
         if (perfil.getTelefone() == null || perfil.getTelefone().isEmpty()) {
             perfil.setTelefone(u.getTelefone());
         }
 
-        return new UsuarioResponseDTO(u.getId(), u.getNome(), u.getEmail(), u.getTipoUsuario(), u.getPerfil());
+        return new UsuarioResponseDTO(
+                u.getId(),
+                u.getNome(),
+                u.getEmail(),
+                u.getTipoUsuario(),
+                perfil,
+                naoLidas
+        );
     }
 }

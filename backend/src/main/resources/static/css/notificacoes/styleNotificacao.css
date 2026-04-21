@@ -1,139 +1,199 @@
-body {
-    background: #f9f9f9;
-    font-family: Arial, sans-serif;
+/* ======================= */
+/* ===== LAYOUT ===== */
+/* ======================= */
+
+.notif-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: calc(var(--topbar-height) + 24px) 16px 60px;
+}
+
+/* ======================= */
+/* ===== HEADER ===== */
+/* ======================= */
+
+.notif-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.notif-header h5 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #111;
     margin: 0;
-    padding: 0;
 }
 
-/* Topbar */
-.topbar {
-    background: #d86b6b;
-    padding: 12px 20px;
+.notif-header-acoes {
     display: flex;
+    gap: 8px;
+}
+
+.btn-notif-acao {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.topbar .logo img {
-    height: 45px;
-}
-
-.search-bar {
-    flex-grow: 1;
-    margin: 0 20px;
-}
-
-.search-bar input {
-    width: 100%;
-    border-radius: 25px;
-    border: none;
-    padding: 8px 16px;
-    font-size: 14px;
-}
-
-.top-icons i {
-    font-size: 20px;
-    margin: 0 8px;
-    cursor: pointer;
-    color: white;
-    transition: color 0.3s, transform 0.2s;
-}
-
-.top-icons i:hover {
-    color: #ffe5e5;
-    transform: scale(1.2);
-}
-
-/* Filtros de vagas */
-.filtros-vagas {
-    display: flex;
-    justify-content: flex-start;
-    gap: 15px;
-    margin: 20px 50px 10px;
-}
-
-.filtro-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    color: #555;
-    font-weight: 500;
+    gap: 5px;
     padding: 6px 12px;
-    border-radius: 20px;
-    transition: 0.3s;
+    border-radius: 8px;
+    border: 1.5px solid #e8ecef;
+    background: #f8fafb;
+    color: #555;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.16s;
 }
 
-.filtro-item i {
-    font-size: 16px;
+.btn-notif-acao:hover {
+    border-color: #47a4c4;
+    color: #47a4c4;
+    background: #eef7fb;
 }
 
-.filtro-item:hover,
-.filtro-item.ativo {
+.btn-notif-acao.danger:hover {
+    border-color: #d86b6b;
     color: #d86b6b;
-    background-color: #ffeaea;
+    background: #fff5f5;
 }
-/* Notificação */
+
+/* ======================= */
+/* ===== CARD ===== */
+/* ======================= */
+
 .notificacao-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 12px 15px;
-    margin: 12px 0;
-    border: 1px solid #ddd;
+    background: var(--card-bg, #fff);
+    border-radius: 14px;
+    border: 1px solid #eef0f2;
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.05));
+    padding: 14px 16px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.3s;
+    gap: 12px;
+    transition: box-shadow 0.18s, transform 0.18s;
+    cursor: pointer;
+    position: relative;
 }
 
 .notificacao-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+    box-shadow: var(--shadow-md, 0 6px 18px rgba(0,0,0,0.1));
+    transform: translateY(-1px);
 }
 
-.notificacao-card img {
-    width: 50px;
-    height: 50px;
+/* Não lida: borda azul à esquerda */
+.notificacao-card.nao-lida {
+    border-left: 3px solid #47a4c4;
+    background: #f5fbfe;
+}
+
+/* Avatar */
+.notif-avatar {
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 12px;
-    border: 2px solid #5ec3e6;
+    flex-shrink: 0;
+    border: 2px solid #eef0f2;
 }
 
-.notificacao-card p {
-    margin: 0;
-    flex-grow: 1;
-    font-size: 15px;
+/* Ícone de tipo (quando não há avatar) */
+.notif-icone {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.notif-icone.like      { background: #eef7fb; color: #47a4c4; }
+.notif-icone.dislike   { background: #fff5f5; color: #d86b6b; }
+.notif-icone.comentario{ background: #f0fdf4; color: #28a745; }
+.notif-icone.vaga_nova { background: #fffbeb; color: #f59e0b; }
+
+/* Corpo da notificação */
+.notif-corpo {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-mensagem {
+    font-size: 14px;
     color: #333;
+    line-height: 1.5;
+    margin-bottom: 3px;
 }
 
-.notificacao-card i {
-    color: #555;
+.notif-mensagem b { color: #111; }
+
+.notif-tempo {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 500;
+}
+
+/* Ponto de não lida */
+.notif-ponto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #47a4c4;
+    flex-shrink: 0;
+}
+
+/* Botão excluir */
+.btn-excluir-notif {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1.5px solid #eef0f2;
+    background: transparent;
+    color: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
     cursor: pointer;
-    transition: color 0.3s, transform 0.2s;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    opacity: 0;
 }
 
-.notificacao-card i:hover {
+.notificacao-card:hover .btn-excluir-notif {
+    opacity: 1;
+}
+
+.btn-excluir-notif:hover {
+    border-color: #d86b6b;
     color: #d86b6b;
-    transform: scale(1.2);
+    background: #fff5f5;
 }
 
-/* Dropdown menu */
-.dropdown-menu {
-    min-width: 120px;
-}
+/* ======================= */
+/* ===== VAZIO ===== */
+/* ======================= */
 
-/* Mensagem de vazio */
-#sem-notificacoes {
+.notif-vazio {
+    text-align: center;
+    color: #bbb;
     font-size: 15px;
-    color: #888;
-    margin-top: 20px;
+    margin-top: 60px;
+    line-height: 2;
 }
 
-/* Container */
-.container {
-    margin-top: 30px;
+.notif-vazio i { font-size: 32px; display: block; margin-bottom: 8px; }
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 600px) {
+    .notif-wrapper { padding: calc(var(--topbar-height) + 12px) 10px 50px; }
+    .notif-header { flex-direction: column; align-items: flex-start; }
 }

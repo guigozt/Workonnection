@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+ 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+ 
 import com.workonnection.backend.dto.ComentarioDTO;
 import com.workonnection.backend.dto.VagaDTO;
 import com.workonnection.backend.dto.VagaResponseDTO;
@@ -24,10 +24,12 @@ public class VagaService {
 
     private final VagaRepository vagaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final NotificacaoService notificacaoService;
 
-    public VagaService(VagaRepository vagaRepository, UsuarioRepository usuarioRepository) {
+    public VagaService(VagaRepository vagaRepository, UsuarioRepository usuarioRepository, NotificacaoService notificacaoService) {
         this.vagaRepository = vagaRepository;
         this.usuarioRepository = usuarioRepository;
+        this.notificacaoService = notificacaoService;
     }
 
     // ── Criar ─────────────────────────────────────────────────────────────────
@@ -64,6 +66,7 @@ public class VagaService {
 
     public VagaResponseDTO like(String vagaId, String usuarioId) {
         Vaga vaga = buscarOuErro(vagaId);
+        Usuario remetente = usuarioRepository.findById(usuarioId).orElse(null);
 
         List<String> likes    = new ArrayList<>(orEmpty(vaga.getLikes()));
         List<String> dislikes = new ArrayList<>(orEmpty(vaga.getDislikes()));
@@ -74,6 +77,17 @@ public class VagaService {
         } else {
             likes.add(usuarioId);
             dislikes.remove(usuarioId); // remove dislike se existia
+
+            if (remetente != null) {
+                notificacaoService.criar(
+                    vaga.getUsuarioId(),
+                    usuarioId,
+                    remetente.getNome(),
+                    "like",
+                    remetente.getNome() + " curtiu sua vaga \"" + vaga.getCargo() + "\"",
+                    vagaId
+                );
+            }
         }
 
         vaga.setLikes(likes);
@@ -123,8 +137,21 @@ public class VagaService {
         ));
 
         vaga.setComentarios(lista);
-        return toDTO(vagaRepository.save(vaga));
+        VagaResponseDTO result = toDTO(vagaRepository.save(vaga));
+
+        //Notifica o dono da vaga
+        notificacaoService.criar(
+            vaga.getUsuarioId(),
+            usuarioId,
+            usuario.getNome(),
+            "comentario",
+            usuario.getNome() + " comentou na sua vaga \"" + vaga.getCargo() + "\"",
+            vagaId
+        );
+        
+        return result;
     }
+    
 
     // ── Excluir comentário ────────────────────────────────────────────────────
 
