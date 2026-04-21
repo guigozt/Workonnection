@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 @Document(collection = "usuarios")
@@ -22,6 +23,9 @@ public class Usuario {
 
     // Campo embutido — salvo dentro do mesmo documento no MongoDB
     private Perfil perfil = new Perfil();
+
+    // Notificações embutidas no documento do usuário (máx. 50 — as mais recentes)
+    private List<Notificacao> notificacoes = new ArrayList<>();
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -49,6 +53,9 @@ public class Usuario {
 
     public Perfil getPerfil() { return perfil; }
     public void setPerfil(Perfil perfil) { this.perfil = perfil; }
+
+    public List<Notificacao> getNotificacoes() { return notificacoes; }
+    public void setNotificacoes(List<Notificacao> n) { this.notificacoes = n; }
 
     // ── Classe interna Perfil ──────────────────────────────────────────────
 

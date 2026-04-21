@@ -12,6 +12,8 @@ public class UsuarioResponseDTO {
 
     private Usuario.Perfil perfil;
 
+    private long notificacoesNaoLidas; // badge no sino da topbar
+
     public UsuarioResponseDTO(String id, String nome, String email, String tipoUsuario) {
         this.id = id;
         this.nome = nome;
@@ -19,9 +21,10 @@ public class UsuarioResponseDTO {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public UsuarioResponseDTO(String id, String nome, String email, String tipoUsuario, Usuario.Perfil perfil) {
+    public UsuarioResponseDTO(String id, String nome, String email, String tipoUsuario, Usuario.Perfil perfil, long notificacoesNaoLidas) {
         this(id, nome, email, tipoUsuario);
         this.perfil = perfil;
+        this.notificacoesNaoLidas = notificacoesNaoLidas;
     }
 
     public String getId() { return id; }
@@ -29,4 +32,5 @@ public class UsuarioResponseDTO {
     public String getEmail() { return email; }
     public String getTipoUsuario() { return tipoUsuario; }
     public Usuario.Perfil getPerfil() { return perfil; }
+    public long getNotificacoesNaoLidas() { return notificacoesNaoLidas; }
 }
