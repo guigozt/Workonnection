@@ -390,7 +390,7 @@
                                 <div class="mv-msg-erro" id="erroSalario"></div>
                             </div>
                             <div class="mv-campo">
-                                <label>Data limite</label>
+                                <label>Data de expiração</label>
                                 <input type="date" id="mvData">
                                 <div class="mv-msg-erro" id="erroData"></div>
                             </div>
@@ -546,7 +546,7 @@
         campo("mvModalidade", "erroModalidade", !d.modalidade ? "Obrigatório" : "");
         campo("mvLocalizacao","erroLocalizacao",!d.localizacao? "Obrigatório" : "");
         campo("mvSalario",    "erroSalario",    !d.salario    ? "Obrigatório" : "");
-        campo("mvData",       "erroData",       !d.data       ? "Obrigatório" : "");
+        campo("mvData",       "erroData",       !d.data       ? "Obrigatório" : d.data < hoje ? "Data não pode ser no passada" : "");
         campo("mvBeneficios", "erroBeneficios", !d.beneficios ? "Obrigatório" : "");
         campo("mvDescricao",  "erroDescricao",  d.descricao.length < 10 ? "Mínimo 10 caracteres" : "");
         campo("mvRequisitos", "erroRequisitos", d.requisitos.length < 5  ? "Mínimo 5 caracteres"  : "");
