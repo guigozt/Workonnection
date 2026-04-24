@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
- 
+import java.time.Instant;
+import java.time.LocalDate;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
  
@@ -54,12 +56,40 @@ public class VagaService {
         return toDTO(vagaRepository.save(vaga));
     }
 
+    private void validarData(String data) {
+        try {
+            LocalDate dataVaga = LocalDate.parse(data);
+            LocalDate hoje = LocalDate.now();
+
+            if (dataVaga.isBefore(hoje)) {
+                throw new ApiException("Data limite não pode ser no passado", HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e) {
+            throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // ── Excluir ───────────────────────────────────────────────────────────────
 
     public void excluir(String vagaId, String usuarioId) {
         Vaga vaga = buscarOuErro(vagaId);
         verificarDono(vaga, usuarioId, "excluir");
         vagaRepository.deleteById(vagaId);
+    }
+
+    private Instant converterParaTTL(String data) {
+        try {
+            LocalDate dataLocal = LocalDate.parse(data);
+
+            return dataLocal
+                    .atTime(23, 59, 59) // expira no fim do dia
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toInstant();
+
+        } catch (Exception e) {
+            throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+        }
     }
 
     // ── Like ──────────────────────────────────────────────────────────────────
@@ -200,7 +230,8 @@ public class VagaService {
     }
 
     private void preencherVaga(Vaga vaga, VagaDTO dto) {
-        // REMOVA esta linha: vaga.setNomeUsuario(dto.getNomeUsuario());
+        validarData(dto.getData());
+        
         vaga.setEmpresa(dto.getEmpresa());
         vaga.setCargo(dto.getCargo());
         vaga.setDescricao(dto.getDescricao());
@@ -213,6 +244,8 @@ public class VagaService {
         vaga.setRequisitos(dto.getRequisitos());
         vaga.setEmail(dto.getEmail());
         vaga.setTiposUsuario(dto.getTiposUsuario());
+
+        vaga.setDataExpiracao(converterParaTTL(dto.getData()));
     }
 
     private VagaResponseDTO toDTO(Vaga v) {
