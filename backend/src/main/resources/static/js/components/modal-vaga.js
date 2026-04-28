@@ -535,6 +535,7 @@
 
     function validar(d) {
         let ok = true;
+        const hoje = new Date().toISOString().split("T")[0]
         function campo(inputId, erroId, msg) {
             const el  = document.getElementById(inputId);
             const err = document.getElementById(erroId);
