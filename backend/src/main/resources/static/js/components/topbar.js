@@ -95,6 +95,7 @@
             <a href="/modules/chat/Chat.html"                   title="Chat">          <i class="fas fa-comment"></i></a>
             <a href="/modules/sobre/Sobre.html"                 title="Sobre">         <i class="fas fa-info-circle"></i></a>
             <a href="/modules/configuracoes/Configuracoes.html" title="Configurações"> <i class="fas fa-cog"></i></a>
+            <a href="#" id="btnSair"                            title="Sair">          <i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>`);
 
