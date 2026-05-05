@@ -1,6 +1,7 @@
 package com.workonnection.backend.controller;
 
 import com.workonnection.backend.dto.CadastroDTO;
+import com.workonnection.backend.dto.ConfiguracoesDTO;
 import com.workonnection.backend.dto.LoginDTO;
 import com.workonnection.backend.dto.PerfilDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
@@ -86,10 +87,33 @@ public class UsuarioController {
             return ResponseEntity.ok(service.atualizarPerfil(id, dto));
     }
 
+    // ── POST /usuarios/configuracoes ─────────────────────────────────────
+
+    @PutMapping("/configuracoes")
+    public ResponseEntity<UsuarioResponseDTO> atualizarConfiguracoes(
+            @RequestBody ConfiguracoesDTO dto,
+            HttpSession session) {
+
+        String id = (String) session.getAttribute("usuarioId");
+
+        if (id == null) {
+            throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+        }
+
+        return ResponseEntity.ok(service.atualizarConfiguracoes(id, dto));
+    }
+
     // ── POST /usuarios/logout  →  Logout ─────────────────────────────────────
-    @PostMapping("/logout")
+   @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.noContent().build(); // 204
+        try {
+            if (session != null) {
+                session.invalidate();
+            }
+            SecurityContextHolder.clearContext();
+            return ResponseEntity.noContent().build(); // 204
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

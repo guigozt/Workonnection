@@ -12,8 +12,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
-                // Libera todos os recursos estáticos e páginas HTML
+                // Arquivos estáticos e páginas
                 .requestMatchers(
                     "/",
                     "/modules/**",
@@ -23,21 +24,25 @@ public class SecurityConfig {
                     "/favicon.ico"
                 ).permitAll()
 
-                // Rotas públicas da API de autenticação
+                // Rotas públicas
                 .requestMatchers(
                     "/usuarios",
                     "/usuarios/login"
                 ).permitAll()
 
-                // Todo o resto também liberado por ora
-                // Quando quiser proteger a API, troque por .authenticated()
+                // TODO: futuramente trocar pra authenticated()
                 .anyRequest().permitAll()
-            );
+            )
 
-        // NÃO configure authenticationEntryPoint aqui.
-        // O redirect para login é responsabilidade do auth.js no frontend,
-        // não do Spring. Se o Spring redirecionar, ele intercepta o HTML
-        // antes do browser carregar e quebra a navegação.
+            // 🔥 LOGOUT FUNCIONANDO
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessHandler((req, res, auth) -> {
+                    res.setStatus(200);
+                })
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+            );
 
         return http.build();
     }

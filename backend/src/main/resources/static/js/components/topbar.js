@@ -99,6 +99,33 @@
         </div>
     </div>`);
 
+    // Logout (funciona em todas as páginas)
+    document.addEventListener("click", async (e) => {
+        const btn = e.target.closest("#btnSair");
+
+        if (!btn) return;
+
+        e.preventDefault();
+
+        try {
+            const res = await fetch("http://localhost:8080/usuarios/logout", {
+                method: "POST",
+                credentials: "include"
+            });
+
+            if (res.status === 204) {
+                window.location.href = "/modules/auth/login.html";
+            } else {
+                console.error("Status:", res.status);
+                alert("Erro ao sair");
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Erro de conexão com servidor");
+        }
+    });
+
     // Marca link ativo
     const paginaAtual = window.location.pathname;
     document.querySelectorAll(".top-icons a[href]").forEach(link => {
