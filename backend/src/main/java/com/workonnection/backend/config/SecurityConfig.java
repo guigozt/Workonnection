@@ -20,6 +20,7 @@ public class SecurityConfig {
                     "/modules/**",
                     "/css/**",
                     "/js/**",
+                    "/global/**",
                     "/imagens/**",
                     "/favicon.ico"
                 ).permitAll()
