@@ -114,6 +114,12 @@ public class UsuarioService {
 
         Usuario.Configuracoes config = usuario.getConfiguracoes();
 
+        // Garante que o objeto de configurações não seja nulo
+        Usuario.Configuracoes config = usuario.getConfiguracoes();
+        if (config == null) {
+            config = new Usuario.Configuracoes();
+        }
+
         if (dto.getTema() != null) {
             config.setTema(dto.getTema());
         }
@@ -150,6 +156,14 @@ public class UsuarioService {
             perfil.setTelefone(u.getTelefone());
         }
 
+        Usuario.Configuracoes config = u.getConfiguracoes();
+        if (config == null) {
+            config = new Usuario.Configuracoes();
+            // Você pode até setar valores default aqui se quiser
+            config.setTema("light"); 
+            config.setIdioma("pt-BR");
+        }
+
         return new UsuarioResponseDTO(
                 u.getId(),
                 u.getNome(),
@@ -157,7 +171,7 @@ public class UsuarioService {
                 u.getTipoUsuario(),
                 perfil,
                 naoLidas,
-                u.getConfiguracoes()
+                config
         );
     }
 }
