@@ -28,6 +28,8 @@
   --text: #333;
   --text-light: #777;
 
+  --border: #eef0f2;
+
   --font-base: 16px;
   --font-input: 15px;
   --font-small: 13px;
@@ -43,8 +45,24 @@
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
   --shadow-md: 0 6px 18px rgba(0,0,0,0.12);
 
-  /* 🔥 importante pra topbar */
   --topbar-height: 70px;
+}
+
+/* ======================= */
+/* ===== TEMA ESCURO ===== */
+/* ======================= */
+
+html[data-tema="escuro"] {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+
+  --text: #e2e8f0;
+  --text-light: #94a3b8;
+
+  --border: #2e3340;
+
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md: 0 6px 18px rgba(0,0,0,0.6);
 }
 
 /* ======================= */
@@ -59,29 +77,6 @@ body {
 }
 
 /* ======================= */
-/* ===== UTILITÁRIOS ===== */
-/* ======================= */
-
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-}
-
-.grid {
-  display: grid;
-  gap: var(--spacing-md);
-}
-
-.grid-2 {
-  grid-template-columns: 1fr 1fr;
-}
-
-.grid-3 {
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
-/* ======================= */
 /* ===== CARD ===== */
 /* ======================= */
 
@@ -90,13 +85,8 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-lg);
-  border: 1px solid #eef0f2;
+  border: 1px solid var(--border);
   transition: 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
 /* ======================= */
@@ -107,16 +97,11 @@ input,
 textarea {
   padding: 10px;
   border-radius: var(--radius);
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   font-size: var(--font-input);
   width: 100%;
-}
-
-input:focus,
-textarea:focus {
-  border-color: var(--primary-light);
-  box-shadow: 0 0 8px rgba(94,195,230,.4);
-  outline: none;
+  background: var(--card-bg);
+  color: var(--text);
 }
 
 /* ======================= */
@@ -136,61 +121,9 @@ button {
   padding: 10px 16px;
 }
 
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
 .btn-secondary {
-  background: #eff1f3;
-  color: #777;
+  background: var(--card-bg);
+  color: var(--text-light);
   padding: 10px 16px;
-}
-
-/* ======================= */
-/* ===== ERROR MESSAGE ===== */
-/* ======================= */
-
-.error-message {
-  font-size: var(--font-small);
-  color: var(--danger);
-  font-weight: 600;
-
-  min-height: 14px;
-
-  opacity: 0;
-  transform: translateY(-4px);
-
-  transition: all 0.2s ease;
-}
-
-/* quando tem texto */
-.error-message:not(:empty) {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ======================= */
-/* ===== RESPONSIVO ===== */
-/* ======================= */
-
-@media (max-width: 900px) {
-  .grid-3 {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  :root {
-    --font-base: 14px;
-  }
-
-  .grid-2,
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .container {
-    padding: 0 var(--spacing-sm);
-  }
+  border: 1px solid var(--border);
 }

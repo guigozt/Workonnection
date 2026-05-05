@@ -14,7 +14,7 @@
 .config-page-title {
     font-size: 20px;
     font-weight: 800;
-    color: #111;
+    color: var(--text);
     margin: 0;
 }
 
@@ -23,16 +23,16 @@
 /* ======================= */
 
 .config-section {
-    background: var(--card-bg, #fff);
+    background: var(--card-bg);
     border-radius: var(--radius-lg, 16px);
-    border: 1px solid #eef0f2;
-    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.05));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
     padding: 20px 22px;
     transition: box-shadow 0.2s;
 }
 
 .config-section:hover {
-    box-shadow: var(--shadow-md, 0 6px 18px rgba(0,0,0,0.09));
+    box-shadow: var(--shadow-md);
 }
 
 .config-section-titulo {
@@ -40,10 +40,10 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    color: #47a4c4;
+    color: var(--primary);
     margin-bottom: 16px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #f0f4f6;
+    border-bottom: 2px solid var(--border);
 }
 
 /* ======================= */
@@ -57,13 +57,13 @@
     padding: 14px;
     background: linear-gradient(135deg, rgba(71,164,196,0.06), rgba(216,107,107,0.04));
     border-radius: 12px;
-    border: 1px solid #eef0f2;
+    border: 1px solid var(--border);
     cursor: pointer;
     transition: all 0.18s;
 }
 
 .sessao-conta-card:hover {
-    border-color: #d86b6b;
+    border-color: var(--danger);
     background: rgba(216,107,107,0.05);
 }
 
@@ -82,8 +82,8 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid transparent;
-    background: linear-gradient(#fff, #fff) padding-box,
-                linear-gradient(135deg, #47a4c4, #d86b6b) border-box;
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                var(--gradient) border-box;
 }
 
 .sessao-online {
@@ -93,8 +93,8 @@
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: #28a745;
-    border: 2px solid #fff;
+    background: var(--success);
+    border: 2px solid var(--card-bg);
 }
 
 .sessao-info { flex: 1; min-width: 0; }
@@ -102,7 +102,7 @@
 .sessao-nome {
     font-size: 15px;
     font-weight: 700;
-    color: #111;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -110,7 +110,7 @@
 
 .sessao-email {
     font-size: 12px;
-    color: #888;
+    color: var(--text-light);
     margin-top: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -123,8 +123,8 @@
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 20px;
-    background: #eef7fb;
-    color: #47a4c4;
+    background: var(--border);
+    color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.4px;
     margin-top: 4px;
@@ -132,7 +132,7 @@
 
 .sessao-hint {
     font-size: 11px;
-    color: #d86b6b;
+    color: var(--danger);
     font-weight: 600;
     opacity: 0;
     transition: opacity 0.16s;
@@ -146,7 +146,7 @@
 
 .config-info-text {
     font-size: 12px;
-    color: #aaa;
+    color: var(--text-light);
     margin-bottom: 12px;
     display: flex;
     align-items: center;
@@ -158,17 +158,17 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: #f8fafb;
+    background: var(--card-bg);
     border-radius: 10px;
-    border: 1px solid #eef0f2;
+    border: 1px solid var(--border);
     margin-bottom: 8px;
     transition: all 0.16s;
     cursor: pointer;
 }
 
 .conta-item:hover {
-    border-color: #47a4c4;
-    background: #eef7fb;
+    border-color: var(--primary);
+    background: rgba(71,164,196,0.08);
 }
 
 .conta-item:last-child { margin-bottom: 0; }
@@ -179,7 +179,7 @@
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    border: 1.5px solid #eef0f2;
+    border: 1.5px solid var(--border);
 }
 
 .conta-info { flex: 1; min-width: 0; }
@@ -187,7 +187,7 @@
 .conta-nome {
     font-size: 13px;
     font-weight: 700;
-    color: #222;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -195,7 +195,7 @@
 
 .conta-email {
     font-size: 11px;
-    color: #999;
+    color: var(--text-light);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -204,7 +204,7 @@
 .conta-entrar {
     font-size: 12px;
     font-weight: 700;
-    color: #47a4c4;
+    color: var(--primary);
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -215,9 +215,9 @@
     gap: 6px;
     padding: 8px 16px;
     border-radius: 10px;
-    border: 1.5px solid #e8ecef;
-    background: #f8fafb;
-    color: #555;
+    border: 1.5px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-light);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -225,14 +225,14 @@
 }
 
 .btn-config-acao:hover {
-    border-color: #47a4c4;
-    color: #47a4c4;
-    background: #eef7fb;
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(71,164,196,0.08);
 }
 
 .config-placeholder {
     font-size: 13px;
-    color: #bbb;
+    color: var(--text-light);
     font-style: italic;
     margin: 8px 0 0;
 }
@@ -261,24 +261,24 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: #f0f4f6;
+    background: var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    color: #47a4c4;
+    color: var(--primary);
     flex-shrink: 0;
 }
 
 .config-row-info strong {
     display: block;
     font-size: 14px;
-    color: #222;
+    color: var(--text);
 }
 
 .config-row-info small {
     font-size: 11px;
-    color: #aaa;
+    color: var(--text-light);
 }
 
 /* ======================= */
@@ -297,24 +297,24 @@
     gap: 6px;
     padding: 7px 14px;
     border-radius: 50px;
-    border: 2px solid #e8ecef;
-    background: #f8fafb;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
     font-size: 12px;
     font-weight: 600;
-    color: #777;
+    color: var(--text-light);
     cursor: pointer;
     transition: all 0.16s;
     user-select: none;
 }
 
 .tema-chip:hover {
-    border-color: #47a4c4;
-    color: #47a4c4;
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .tema-chip.ativo {
-    border-color: #47a4c4;
-    background: #47a4c4;
+    border-color: var(--primary);
+    background: var(--primary);
     color: #fff;
 }
 
@@ -323,12 +323,12 @@
 /* ======================= */
 
 .config-select {
-    border: 1.5px solid #e8ecef;
+    border: 1.5px solid var(--border);
     border-radius: 10px;
     padding: 8px 12px;
     font-size: 13px;
-    color: #333;
-    background: #f8fafb;
+    color: var(--text);
+    background: var(--card-bg);
     outline: none;
     cursor: pointer;
     transition: border-color 0.16s;
@@ -336,7 +336,7 @@
 }
 
 .config-select:focus {
-    border-color: #47a4c4;
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(71,164,196,0.12);
 }
 
@@ -350,7 +350,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid #f0f2f4;
+    border-bottom: 1px solid var(--border);
 }
 
 .config-toggle-item:last-child { border-bottom: none; padding-bottom: 0; }
@@ -369,7 +369,7 @@
 .config-switch-slider {
     position: absolute;
     inset: 0;
-    background: #e0e0e0;
+    background: var(--border);
     border-radius: 24px;
     transition: background 0.2s;
 }
@@ -388,78 +388,9 @@
 }
 
 .config-switch input:checked + .config-switch-slider {
-    background: #47a4c4;
+    background: var(--primary);
 }
 
 .config-switch input:checked + .config-switch-slider::before {
     transform: translateX(20px);
-}
-
-/* ======================= */
-/* ===== TEMA ESCURO ===== */
-/* ======================= */
-
-[data-tema="escuro"] body,
-body[data-tema="escuro"] {
-    --bg: #1a1d23;
-    --card-bg: #23272f;
-    --text: #e8e8e8;
-    --text-light: #aaa;
-    background: #1a1d23;
-    color: #e8e8e8;
-}
-
-[data-tema="escuro"] .config-section,
-body[data-tema="escuro"] .config-section {
-    background: #23272f;
-    border-color: #2e3340;
-}
-
-[data-tema="escuro"] .config-row-icone,
-body[data-tema="escuro"] .config-row-icone {
-    background: #2e3340;
-}
-
-[data-tema="escuro"] .conta-item,
-body[data-tema="escuro"] .conta-item {
-    background: #2a2f3a;
-    border-color: #2e3340;
-}
-
-[data-tema="escuro"] .config-select,
-[data-tema="escuro"] .tema-chip,
-[data-tema="escuro"] .btn-config-acao,
-body[data-tema="escuro"] .config-select,
-body[data-tema="escuro"] .tema-chip,
-body[data-tema="escuro"] .btn-config-acao {
-    background: #2a2f3a;
-    border-color: #3a4050;
-    color: #ccc;
-}
-
-[data-tema="escuro"] .sessao-conta-card,
-body[data-tema="escuro"] .sessao-conta-card {
-    background: #2a2f3a;
-    border-color: #3a4050;
-}
-
-[data-tema="escuro"] .config-toggle-item,
-body[data-tema="escuro"] .config-toggle-item {
-    border-color: #2e3340;
-}
-
-[data-tema="escuro"] .config-section-titulo,
-body[data-tema="escuro"] .config-section-titulo {
-    border-color: #2e3340;
-}
-
-/* ======================= */
-/* ===== RESPONSIVO ===== */
-/* ======================= */
-
-@media (max-width: 600px) {
-    .config-wrapper { padding: calc(var(--topbar-height) + 12px) 10px 50px; }
-    .config-row { flex-direction: column; align-items: flex-start; }
-    .tema-chips { width: 100%; }
-    .config-select { width: 100%; }
 }
