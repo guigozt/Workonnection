@@ -1,6 +1,7 @@
 package com.workonnection.backend.service;
 
 import com.workonnection.backend.dto.CadastroDTO;
+import com.workonnection.backend.dto.ConfiguracoesDTO;
 import com.workonnection.backend.dto.LoginDTO;
 import com.workonnection.backend.dto.PerfilDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
@@ -104,6 +105,29 @@ public class UsuarioService {
         return toResponse(usuario);
     }
 
+    // ── Configurações ──────────────────────────────────────────────────────
+
+    public UsuarioResponseDTO atualizarConfiguracoes(String id, ConfiguracoesDTO dto) {
+
+        Usuario usuario = repository.findById(id)
+            .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        Usuario.Configuracoes config = usuario.getConfiguracoes();
+
+        if (dto.getTema() != null) {
+            config.setTema(dto.getTema());
+        }
+
+        if (dto.getIdioma() != null) {
+            config.setIdioma(dto.getIdioma());
+        }
+
+        usuario.setConfiguracoes(config);
+        repository.save(usuario);
+
+        return toResponse(usuario);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
     
     private UsuarioResponseDTO toResponse(Usuario u) {
@@ -132,7 +156,8 @@ public class UsuarioService {
                 u.getEmail(),
                 u.getTipoUsuario(),
                 perfil,
-                naoLidas
+                naoLidas,
+                u.getConfiguracoes()
         );
     }
 }

@@ -1,44 +1,465 @@
-.perfil-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px;
-  border-radius: 12px;
-  transition: background 0.2s;
-  cursor: pointer;
+/* ======================= */
+/* ===== LAYOUT ===== */
+/* ======================= */
+
+.config-wrapper {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: calc(var(--topbar-height) + 24px) 16px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
-.perfil-item:hover {
-  background: #f4f6f8;
+.config-page-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
 }
 
-.perfil-item img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+/* ======================= */
+/* ===== SECTION ===== */
+/* ======================= */
+
+.config-section {
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid #eef0f2;
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.05));
+    padding: 20px 22px;
+    transition: box-shadow 0.2s;
 }
 
-.perfil-info {
-  flex: 1;
+.config-section:hover {
+    box-shadow: var(--shadow-md, 0 6px 18px rgba(0,0,0,0.09));
 }
 
-.perfil-status {
-  font-size: 11px;
-  color: #888;
+.config-section-titulo {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #47a4c4;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f4f6;
 }
 
-/* bolinha online */
-.online-dot {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #4caf50;
-  border-radius: 50%;
-  bottom: 2px;
-  right: 2px;
-  border: 2px solid #fff;
+/* ======================= */
+/* ===== SESSÃO ATUAL ===== */
+/* ======================= */
+
+.sessao-conta-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(71,164,196,0.06), rgba(216,107,107,0.04));
+    border-radius: 12px;
+    border: 1px solid #eef0f2;
+    cursor: pointer;
+    transition: all 0.18s;
 }
 
-.perfil-avatar-wrapper {
-  position: relative;
+.sessao-conta-card:hover {
+    border-color: #d86b6b;
+    background: rgba(216,107,107,0.05);
+}
+
+.sessao-conta-card:hover .sessao-hint {
+    opacity: 1;
+}
+
+.sessao-foto-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sessao-foto {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    background: linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(135deg, #47a4c4, #d86b6b) border-box;
+}
+
+.sessao-online {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #28a745;
+    border: 2px solid #fff;
+}
+
+.sessao-info { flex: 1; min-width: 0; }
+
+.sessao-nome {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sessao-email {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sessao-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #eef7fb;
+    color: #47a4c4;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 4px;
+}
+
+.sessao-hint {
+    font-size: 11px;
+    color: #d86b6b;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.16s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* ======================= */
+/* ===== TROCAR CONTA ===== */
+/* ======================= */
+
+.config-info-text {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.conta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8fafb;
+    border-radius: 10px;
+    border: 1px solid #eef0f2;
+    margin-bottom: 8px;
+    transition: all 0.16s;
+    cursor: pointer;
+}
+
+.conta-item:hover {
+    border-color: #47a4c4;
+    background: #eef7fb;
+}
+
+.conta-item:last-child { margin-bottom: 0; }
+
+.conta-foto {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1.5px solid #eef0f2;
+}
+
+.conta-info { flex: 1; min-width: 0; }
+
+.conta-nome {
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conta-email {
+    font-size: 11px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conta-entrar {
+    font-size: 12px;
+    font-weight: 700;
+    color: #47a4c4;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-config-acao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #e8ecef;
+    background: #f8fafb;
+    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.16s;
+}
+
+.btn-config-acao:hover {
+    border-color: #47a4c4;
+    color: #47a4c4;
+    background: #eef7fb;
+}
+
+.config-placeholder {
+    font-size: 13px;
+    color: #bbb;
+    font-style: italic;
+    margin: 8px 0 0;
+}
+
+/* ======================= */
+/* ===== CONFIG ROW ===== */
+/* ======================= */
+
+.config-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.config-row-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.config-row-icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f0f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #47a4c4;
+    flex-shrink: 0;
+}
+
+.config-row-info strong {
+    display: block;
+    font-size: 14px;
+    color: #222;
+}
+
+.config-row-info small {
+    font-size: 11px;
+    color: #aaa;
+}
+
+/* ======================= */
+/* ===== TEMA CHIPS ===== */
+/* ======================= */
+
+.tema-chips {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.tema-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 50px;
+    border: 2px solid #e8ecef;
+    background: #f8fafb;
+    font-size: 12px;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    transition: all 0.16s;
+    user-select: none;
+}
+
+.tema-chip:hover {
+    border-color: #47a4c4;
+    color: #47a4c4;
+}
+
+.tema-chip.ativo {
+    border-color: #47a4c4;
+    background: #47a4c4;
+    color: #fff;
+}
+
+/* ======================= */
+/* ===== SELECT IDIOMA ===== */
+/* ======================= */
+
+.config-select {
+    border: 1.5px solid #e8ecef;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #333;
+    background: #f8fafb;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.16s;
+    min-width: 160px;
+}
+
+.config-select:focus {
+    border-color: #47a4c4;
+    box-shadow: 0 0 0 3px rgba(71,164,196,0.12);
+}
+
+/* ======================= */
+/* ===== TOGGLE SWITCH ===== */
+/* ======================= */
+
+.config-toggle-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f4;
+}
+
+.config-toggle-item:last-child { border-bottom: none; padding-bottom: 0; }
+.config-toggle-item:first-child { padding-top: 0; }
+
+.config-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.config-switch input { opacity: 0; width: 0; height: 0; }
+
+.config-switch-slider {
+    position: absolute;
+    inset: 0;
+    background: #e0e0e0;
+    border-radius: 24px;
+    transition: background 0.2s;
+}
+
+.config-switch-slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    left: 3px;
+    top: 3px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.config-switch input:checked + .config-switch-slider {
+    background: #47a4c4;
+}
+
+.config-switch input:checked + .config-switch-slider::before {
+    transform: translateX(20px);
+}
+
+/* ======================= */
+/* ===== TEMA ESCURO ===== */
+/* ======================= */
+
+[data-tema="escuro"] body,
+body[data-tema="escuro"] {
+    --bg: #1a1d23;
+    --card-bg: #23272f;
+    --text: #e8e8e8;
+    --text-light: #aaa;
+    background: #1a1d23;
+    color: #e8e8e8;
+}
+
+[data-tema="escuro"] .config-section,
+body[data-tema="escuro"] .config-section {
+    background: #23272f;
+    border-color: #2e3340;
+}
+
+[data-tema="escuro"] .config-row-icone,
+body[data-tema="escuro"] .config-row-icone {
+    background: #2e3340;
+}
+
+[data-tema="escuro"] .conta-item,
+body[data-tema="escuro"] .conta-item {
+    background: #2a2f3a;
+    border-color: #2e3340;
+}
+
+[data-tema="escuro"] .config-select,
+[data-tema="escuro"] .tema-chip,
+[data-tema="escuro"] .btn-config-acao,
+body[data-tema="escuro"] .config-select,
+body[data-tema="escuro"] .tema-chip,
+body[data-tema="escuro"] .btn-config-acao {
+    background: #2a2f3a;
+    border-color: #3a4050;
+    color: #ccc;
+}
+
+[data-tema="escuro"] .sessao-conta-card,
+body[data-tema="escuro"] .sessao-conta-card {
+    background: #2a2f3a;
+    border-color: #3a4050;
+}
+
+[data-tema="escuro"] .config-toggle-item,
+body[data-tema="escuro"] .config-toggle-item {
+    border-color: #2e3340;
+}
+
+[data-tema="escuro"] .config-section-titulo,
+body[data-tema="escuro"] .config-section-titulo {
+    border-color: #2e3340;
+}
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 600px) {
+    .config-wrapper { padding: calc(var(--topbar-height) + 12px) 10px 50px; }
+    .config-row { flex-direction: column; align-items: flex-start; }
+    .tema-chips { width: 100%; }
+    .config-select { width: 100%; }
 }

@@ -27,6 +27,8 @@ public class Usuario {
     // Notificações embutidas no documento do usuário (máx. 50 — as mais recentes)
     private List<Notificacao> notificacoes = new ArrayList<>();
 
+    private Configuracoes configuracoes = new Configuracoes();
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -56,6 +58,9 @@ public class Usuario {
 
     public List<Notificacao> getNotificacoes() { return notificacoes; }
     public void setNotificacoes(List<Notificacao> n) { this.notificacoes = n; }
+
+    public Configuracoes getConfiguracoes() { return configuracoes; }
+    public void setConfiguracoes(Configuracoes configuracoes) { this.configuracoes = configuracoes; }
 
     // ── Classe interna Perfil ──────────────────────────────────────────────
 
@@ -100,5 +105,17 @@ public class Usuario {
 
         public List<Map<String, Object>> getCursos() { return cursos; }
         public void setCursos(List<Map<String, Object>> cursos) { this.cursos = cursos; }
+    }
+
+    // ── Classe interna Configuracoes ─────────────────────────────
+    public static class Configuracoes {
+        private String tema = "claro"; // padrão
+        private String idioma = "pt-BR"; // padrão
+
+        public String getTema() { return tema; }
+        public void setTema(String tema) { this.tema = tema; }
+
+        public String getIdioma() { return idioma; }
+        public void setIdioma(String idioma) { this.idioma = idioma; }
     }
 }
