@@ -40,7 +40,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    color: var(--primary);
+    color: var(--primary-dark);
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 2px solid var(--border);
@@ -124,7 +124,7 @@
     padding: 2px 8px;
     border-radius: 20px;
     background: var(--border);
-    color: var(--primary);
+    color: var(--primary-dark);
     text-transform: uppercase;
     letter-spacing: 0.4px;
     margin-top: 4px;
@@ -167,7 +167,7 @@
 }
 
 .conta-item:hover {
-    border-color: var(--primary);
+    border-color: var(--primary-dark);
     background: rgba(71,164,196,0.08);
 }
 
@@ -204,7 +204,7 @@
 .conta-entrar {
     font-size: 12px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--primary-dark);
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -225,8 +225,8 @@
 }
 
 .btn-config-acao:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
     background: rgba(71,164,196,0.08);
 }
 
@@ -266,7 +266,7 @@
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    color: var(--primary);
+    color: var(--primary-dark);
     flex-shrink: 0;
 }
 
@@ -307,15 +307,17 @@
     user-select: none;
 }
 
-.tema-chip:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+/* Estilo para o chip quando estiver selecionado */
+.tema-chip.ativo {
+    background: var(--primary-dark); /* O azul #47a4c4 */
+    color: #fff;
+    border-color: var(--primary-dark);
 }
 
-.tema-chip.ativo {
-    border-color: var(--primary);
-    background: var(--primary);
-    color: #fff;
+/* Efeito de hover básico se não tiver */
+.tema-chip:hover {
+    border-color: var(--primary-dark);
+    opacity: 0.8;
 }
 
 /* ======================= */
@@ -336,7 +338,7 @@
 }
 
 .config-select:focus {
-    border-color: var(--primary);
+    border-color: var(--primary-dark);
     box-shadow: 0 0 0 3px rgba(71,164,196,0.12);
 }
 

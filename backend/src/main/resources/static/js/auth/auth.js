@@ -18,6 +18,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         const usuario = await response.json();
         console.log("Sessão ativa:", usuario.nome);
 
+        const tema = usuario.configuracoes?.tema || "claro";
+        if (tema === "escuro") {
+            document.body.classList.add("dark-mode");
+        } else {
+            document.body.classList.remove("dark-mode");
+        }
+
+        localStorage.setItem("temaUsuario", tema);
+
         // Avisa os outros scripts que o usuário está pronto
         document.dispatchEvent(new CustomEvent("usuarioCarregado", 
             {detail: usuario}
