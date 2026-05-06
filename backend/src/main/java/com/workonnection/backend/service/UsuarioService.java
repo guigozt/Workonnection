@@ -112,8 +112,6 @@ public class UsuarioService {
         Usuario usuario = repository.findById(id)
             .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
-        Usuario.Configuracoes config = usuario.getConfiguracoes();
-
         // Garante que o objeto de configurações não seja nulo
         Usuario.Configuracoes config = usuario.getConfiguracoes();
         if (config == null) {

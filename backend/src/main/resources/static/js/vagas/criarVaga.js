@@ -12,18 +12,18 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .vaga-card {
-            background: var(--card-bg, #fff);
+            background: var(--card-bg);
             border-radius: 18px;
-            border: 1px solid #eef0f2;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.05));
             margin-bottom: 18px;
             overflow: hidden;
             transition: box-shadow 0.2s;
         }
 
-        .vaga-card:hover { box-shadow: 0 6px 22px rgba(0,0,0,0.09); }
+        .vaga-card:hover { box-shadow: var(--shadow-md, 0 6px 22px rgba(0,0,0,0.09)); }
 
-        /* ── Header: avatar + nome + empresa · data + ações do dono ── */
+        /* ── Header ── */
         .vc-header {
             display: flex;
             align-items: center;
@@ -37,7 +37,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
-            border: 2px solid #eef0f2;
+            border: 2px solid var(--border);
         }
 
         .vc-autor { flex: 1; min-width: 0; }
@@ -45,7 +45,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         .vc-autor-nome {
             font-size: 14px;
             font-weight: 700;
-            color: #222;
+            color: var(--text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -53,7 +53,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
 
         .vc-autor-meta {
             font-size: 11px;
-            color: #aaa;
+            color: var(--text-light);
             margin-top: 1px;
         }
 
@@ -74,39 +74,36 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             padding: 0;
         }
 
-        .vc-btn-editar  { border-color: var(--primary-dark, #47a4c4); color: var(--primary-dark, #47a4c4); }
-        .vc-btn-editar:hover  { background: var(--primary-dark, #47a4c4); color: #fff; }
-        .vc-btn-excluir { border-color: #d86b6b; color: #d86b6b; }
-        .vc-btn-excluir:hover { background: #d86b6b; color: #fff; }
+        .vc-btn-editar  { border-color: var(--primary-dark); color: var(--primary-dark); }
+        .vc-btn-editar:hover  { background: var(--primary); color: #fff; }
+        .vc-btn-excluir { border-color: var(--danger); color: var(--danger); }
+        .vc-btn-excluir:hover { background: var(--danger); color: #fff; }
 
         /* ── Corpo ── */
         .vc-body { padding: 0 16px 12px; }
 
-        /* Cargo destaque */
         .vc-cargo {
             font-size: 18px;
             font-weight: 800;
-            color: #111;
+            color: var(--text);
             margin-bottom: 2px;
         }
 
-        /* Empresa */
         .vc-empresa-nome {
             font-size: 13px;
             font-weight: 600;
-            color: var(--primary-dark, #47a4c4);
+            color: var(--primary-dark);
             margin-bottom: 12px;
         }
 
-        /* Descrição — sem clamp, sempre completa */
         .vc-descricao {
             font-size: 13px;
-            color: #444;
+            color: var(--text);
             line-height: 1.7;
             margin-bottom: 14px;
+            opacity: 0.9;
         }
 
-        /* Seção de detalhes: benefícios + requisitos lado a lado */
         .vc-detalhes {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -115,9 +112,10 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .vc-detalhe-bloco {
-            background: #f7f9fb;
+            background: var(--border);
             border-radius: 10px;
             padding: 10px 12px;
+            opacity: 0.8;
         }
 
         .vc-detalhe-label {
@@ -125,17 +123,16 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #aaa;
+            color: var(--text-light);
             margin-bottom: 4px;
         }
 
         .vc-detalhe-valor {
             font-size: 12px;
-            color: #555;
+            color: var(--text);
             line-height: 1.5;
         }
 
-        /* Tags de info (modalidade, local, horário, salário) */
         .vc-tags {
             display: flex;
             flex-wrap: wrap;
@@ -148,16 +145,15 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             align-items: center;
             gap: 4px;
             font-size: 11px;
-            color: #666;
-            background: #f4f6f8;
+            color: var(--text-light);
+            background: var(--border);
             border-radius: 20px;
             padding: 4px 10px;
             font-weight: 500;
         }
 
-        .vc-tag i { color: var(--primary-dark, #47a4c4); font-size: 10px; }
+        .vc-tag i { color: var(--primary-dark); font-size: 10px; }
 
-        /* Chips de quem pode se candidatar */
         .vc-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
 
         .vc-chip {
@@ -165,8 +161,8 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             font-weight: 700;
             padding: 3px 9px;
             border-radius: 20px;
-            background: #eef7fb;
-            color: var(--primary-dark, #47a4c4);
+            background: rgba(71,164,196,0.12);
+            color: var(--primary-dark);
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
@@ -177,7 +173,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             align-items: center;
             gap: 4px;
             padding: 8px 12px;
-            border-top: 1px solid #f0f2f4;
+            border-top: 1px solid var(--border);
         }
 
         .vc-acao-btn {
@@ -190,15 +186,14 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             background: transparent;
             font-size: 13px;
             font-weight: 600;
-            color: #777;
+            color: var(--text-light);
             cursor: pointer;
             transition: all 0.15s;
         }
 
-        .vc-acao-btn:hover { background: #f4f6f8; color: #444; }
-        .vc-acao-btn.liked    { color: #47a4c4; }
-        .vc-acao-btn.disliked { color: #d86b6b; }
-        .vc-acao-btn i { font-size: 14px; }
+        .vc-acao-btn:hover { background: var(--border); color: var(--text); }
+        .vc-acao-btn.liked  { color: var(--primary-dark); }
+        .vc-acao-btn.disliked { color: var(--danger); }
 
         .vc-spacer { flex: 1; }
 
@@ -216,22 +211,19 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         }
 
         .btn-candidatar-card.ativo {
-            background: var(--gradient, linear-gradient(135deg, #47a4c4, #d86b6b));
+            background: var(--gradient);
             color: #fff;
         }
 
-        .btn-candidatar-card.ativo:hover { opacity: 0.88; transform: translateY(-1px); }
-
         .btn-candidatar-card.bloqueado {
-            background: #f0f2f4;
-            color: #bbb;
+            background: var(--border);
+            color: var(--text-light);
             cursor: default;
-            font-size: 11px;
         }
 
         .btn-candidatar-card.dono {
             background: transparent;
-            color: #aaa;
+            color: var(--text-light);
             font-size: 11px;
             cursor: default;
         }
@@ -240,7 +232,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
         .comentarios-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(0,0,0,0.6);
             z-index: 1050;
             opacity: 0;
             pointer-events: none;
@@ -256,13 +248,14 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             position: fixed;
             right: 0; top: 0; bottom: 0;
             width: min(420px, 100vw);
-            background: #fff;
+            background: var(--card-bg);
             display: flex;
             flex-direction: column;
             z-index: 1051;
             transform: translateX(100%);
             transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -8px 0 32px rgba(0,0,0,0.12);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.2);
+            border-left: 1px solid var(--border);
         }
 
         .comentarios-overlay.aberto .comentarios-drawer {
@@ -274,7 +267,7 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             align-items: center;
             justify-content: space-between;
             padding: 16px 20px;
-            border-bottom: 1px solid #f0f2f4;
+            border-bottom: 1px solid var(--border);
             flex-shrink: 0;
         }
 
@@ -282,24 +275,20 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             margin: 0;
             font-size: 15px;
             font-weight: 700;
-            color: #222;
+            color: var(--text);
         }
 
         .btn-fechar-drawer {
             width: 32px; height: 32px;
             border-radius: 50%;
             border: none;
-            background: #f4f6f8;
-            color: #777;
+            background: var(--border);
+            color: var(--text-light);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            transition: background 0.15s;
         }
-
-        .btn-fechar-drawer:hover { background: #e8ecef; }
 
         .comentarios-lista {
             flex: 1;
@@ -317,90 +306,61 @@ const FOTO_DEFAULT = "https://newcastle-online.org/uploads/set_resources_2/84c1e
             width: 34px; height: 34px;
             border-radius: 50%;
             object-fit: cover;
-            flex-shrink: 0;
-            border: 1.5px solid #eef0f2;
+            border: 1.5px solid var(--border);
         }
-
-        .comentario-corpo { flex: 1; }
 
         .comentario-nome {
             font-size: 13px;
             font-weight: 700;
-            color: #222;
+            color: var(--text);
             margin-bottom: 2px;
         }
 
         .comentario-texto {
             font-size: 13px;
-            color: #444;
+            color: var(--text);
+            opacity: 0.85;
             line-height: 1.5;
         }
 
         .comentario-meta {
             font-size: 11px;
-            color: #bbb;
+            color: var(--text-light);
             margin-top: 3px;
             display: flex;
-            align-items: center;
             gap: 8px;
-        }
-
-        .comentario-excluir {
-            background: none;
-            border: none;
-            color: #d86b6b;
-            font-size: 11px;
-            cursor: pointer;
-            padding: 0;
-            font-weight: 600;
-        }
-
-        .comentarios-vazio {
-            text-align: center;
-            color: #bbb;
-            font-size: 13px;
-            margin-top: 40px;
         }
 
         .comentarios-footer {
             padding: 12px 20px;
-            border-top: 1px solid #f0f2f4;
+            border-top: 1px solid var(--border);
             display: flex;
             gap: 8px;
-            flex-shrink: 0;
+            background: var(--card-bg);
         }
 
         .comentarios-footer input {
             flex: 1;
-            border: 1.5px solid #e8ecef;
+            border: 1.5px solid var(--border);
             border-radius: 20px;
             padding: 9px 14px;
             font-size: 13px;
             outline: none;
-            font-family: inherit;
-        }
-
-        .comentarios-footer input:focus {
-            border-color: var(--primary-dark, #47a4c4);
-            box-shadow: 0 0 0 3px rgba(71,164,196,0.12);
+            background: var(--card-bg);
+            color: var(--text);
         }
 
         .btn-enviar-comentario {
             width: 38px; height: 38px;
             border-radius: 50%;
             border: none;
-            background: var(--gradient, linear-gradient(135deg, #47a4c4, #d86b6b));
+            background: var(--gradient);
             color: #fff;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-            transition: opacity 0.15s, transform 0.12s;
         }
-
-        .btn-enviar-comentario:hover { opacity: 0.88; transform: scale(1.05); }
 
         @media (max-width: 600px) {
             .feed { padding: 0 8px 80px; }
