@@ -1,3 +1,5 @@
+/* styleNotificacao.css — Adaptado para Temas */
+
 /* ======================= */
 /* ===== LAYOUT ===== */
 /* ======================= */
@@ -6,6 +8,7 @@
     max-width: 680px;
     margin: 0 auto;
     padding: calc(var(--topbar-height) + 24px) 16px 60px;
+    color: var(--text); /* Garante que o texto base siga o tema */
 }
 
 /* ======================= */
@@ -24,7 +27,7 @@
 .notif-header h5 {
     font-size: 18px;
     font-weight: 800;
-    color: #111;
+    color: var(--text); /* Antes: #111 */
     margin: 0;
 }
 
@@ -39,9 +42,9 @@
     gap: 5px;
     padding: 6px 12px;
     border-radius: 8px;
-    border: 1.5px solid #e8ecef;
-    background: #f8fafb;
-    color: #555;
+    border: 1.5px solid var(--border); /* Antes: #e8ecef */
+    background: var(--bg); /* Antes: #f8fafb */
+    color: var(--text-light); /* Antes: #555 */
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -49,15 +52,15 @@
 }
 
 .btn-notif-acao:hover {
-    border-color: #47a4c4;
-    color: #47a4c4;
-    background: #eef7fb;
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+    background: var(--card-bg); /* Sutil destaque no hover */
 }
 
 .btn-notif-acao.danger:hover {
-    border-color: #d86b6b;
-    color: #d86b6b;
-    background: #fff5f5;
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(216, 107, 107, 0.1); /* Sutil vermelho transparente */
 }
 
 /* ======================= */
@@ -67,27 +70,29 @@
 .notificacao-card {
     background: var(--card-bg, #fff);
     border-radius: 14px;
-    border: 1px solid #eef0f2;
+    border: 1px solid var(--border); /* Antes: #eef0f2 */
     box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.05));
     padding: 14px 16px;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 12px;
-    transition: box-shadow 0.18s, transform 0.18s;
+    transition: box-shadow 0.18s, transform 0.18s, background 0.18s;
     cursor: pointer;
     position: relative;
+    color: var(--text);
 }
 
 .notificacao-card:hover {
     box-shadow: var(--shadow-md, 0 6px 18px rgba(0,0,0,0.1));
     transform: translateY(-1px);
+    background: var(--bg); /* Leve mudança de cor no hover */
 }
 
-/* Não lida: borda azul à esquerda */
+/* Não lida: fundo sutilmente diferente e borda azul */
 .notificacao-card.nao-lida {
-    border-left: 3px solid #47a4c4;
-    background: #f5fbfe;
+    border-left: 3px solid var(--primary-dark);
+    background: rgba(71, 164, 196, 0.08); /* Substitui o #f5fbfe por um tom do tema */
 }
 
 /* Avatar */
@@ -97,10 +102,10 @@
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
-    border: 2px solid #eef0f2;
+    border: 2px solid var(--border);
 }
 
-/* Ícone de tipo (quando não há avatar) */
+/* Ícones de tipo - Cores adaptadas para transparência (melhor no Dark Mode) */
 .notif-icone {
     width: 44px;
     height: 44px;
@@ -112,10 +117,10 @@
     flex-shrink: 0;
 }
 
-.notif-icone.like      { background: #eef7fb; color: #47a4c4; }
-.notif-icone.dislike   { background: #fff5f5; color: #d86b6b; }
-.notif-icone.comentario{ background: #f0fdf4; color: #28a745; }
-.notif-icone.vaga_nova { background: #fffbeb; color: #f59e0b; }
+.notif-icone.like       { background: rgba(71, 164, 196, 0.15); color: var(--primary-dark); }
+.notif-icone.dislike    { background: rgba(216, 107, 107, 0.15); color: var(--danger); }
+.notif-icone.comentario { background: rgba(40, 167, 69, 0.15); color: #28a745; }
+.notif-icone.vaga_nova  { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
 
 /* Corpo da notificação */
 .notif-corpo {
@@ -125,16 +130,19 @@
 
 .notif-mensagem {
     font-size: 14px;
-    color: #333;
+    color: var(--text); /* Antes: #333 */
     line-height: 1.5;
     margin-bottom: 3px;
 }
 
-.notif-mensagem b { color: #111; }
+.notif-mensagem b { 
+    color: var(--text); /* Antes: #111 */
+    font-weight: 700;
+}
 
 .notif-tempo {
     font-size: 11px;
-    color: #aaa;
+    color: var(--text-light); /* Antes: #aaa */
     font-weight: 500;
 }
 
@@ -143,7 +151,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #47a4c4;
+    background: var(--primary-dark);
     flex-shrink: 0;
 }
 
@@ -152,9 +160,9 @@
     width: 28px;
     height: 28px;
     border-radius: 8px;
-    border: 1.5px solid #eef0f2;
+    border: 1.5px solid var(--border);
     background: transparent;
-    color: #bbb;
+    color: var(--text-light); /* Antes: #bbb */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -170,9 +178,9 @@
 }
 
 .btn-excluir-notif:hover {
-    border-color: #d86b6b;
-    color: #d86b6b;
-    background: #fff5f5;
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(216, 107, 107, 0.1);
 }
 
 /* ======================= */
@@ -181,7 +189,7 @@
 
 .notif-vazio {
     text-align: center;
-    color: #bbb;
+    color: var(--text-light); /* Antes: #bbb */
     font-size: 15px;
     margin-top: 60px;
     line-height: 2;
