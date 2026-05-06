@@ -1,21 +1,17 @@
 // modal-vaga.js — componente isolado e reutilizável
 // Injeta estilos + modal no DOM e expõe window.ModalVaga
-//
-// API:
-//   window.ModalVaga.abrirParaCriar()
-//   window.ModalVaga.abrirParaEditar(vaga)
-//   window.ModalVaga.onSalvar(callback)
 
 (function () {
 
-    // ── Estilos ───────────────────────────────────────────────────────────────
+    // ── Estilos Adaptados ao Tema ──────────────────────────────────────────────
 
     const style = document.createElement("style");
     style.textContent = `
         #modalVaga .modal-dialog { max-width: 700px; }
 
         #modalVaga .modal-content {
-            border: none;
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border, #eef0f2);
             border-radius: 20px;
             box-shadow: 0 24px 60px rgba(0,0,0,0.16);
             overflow: hidden;
@@ -25,7 +21,7 @@
         }
 
         #modalVaga .modal-header {
-            background: linear-gradient(135deg, #47a4c4 0%, #d86b6b 100%);
+            background: var(--gradient, linear-gradient(135deg, #47a4c4 0%, #d86b6b 100%));
             border: none;
             padding: 20px 28px;
             flex-shrink: 0;
@@ -45,6 +41,7 @@
             padding: 22px 28px;
             overflow-y: auto;
             flex: 1;
+            color: var(--text, #333);
         }
 
         .mv-secao { margin-bottom: 22px; }
@@ -54,10 +51,10 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            color: #47a4c4;
+            color: var(--primary-dark, #47a4c4);
             margin-bottom: 12px;
             padding-bottom: 6px;
-            border-bottom: 2px solid #f0f4f6;
+            border-bottom: 2px solid var(--border, #f0f4f6);
         }
 
         .mv-grid {
@@ -73,19 +70,19 @@
         .mv-campo label {
             font-size: 11px;
             font-weight: 700;
-            color: #777;
+            color: var(--text-light, #777);
             text-transform: uppercase;
             letter-spacing: 0.6px;
         }
 
         .mv-campo input,
         .mv-campo textarea {
-            border: 1.5px solid #e8ecef;
+            border: 1.5px solid var(--border, #e8ecef);
             border-radius: 10px;
             padding: 9px 13px;
             font-size: 14px;
-            color: #333;
-            background: #f8fafb;
+            color: var(--text, #333);
+            background: var(--bg, #f8fafb);
             transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
             outline: none;
             width: 100%;
@@ -94,22 +91,22 @@
 
         .mv-campo input:focus,
         .mv-campo textarea:focus {
-            border-color: #47a4c4;
-            background: #fff;
+            border-color: var(--primary-dark, #47a4c4);
+            background: var(--card-bg, #fff);
             box-shadow: 0 0 0 3px rgba(71,164,196,0.13);
         }
 
         .mv-campo input.mv-erro,
         .mv-campo textarea.mv-erro {
-            border-color: #d86b6b;
-            background: #fff9f9;
+            border-color: var(--danger, #d86b6b);
+            background: rgba(216, 107, 107, 0.05);
         }
 
         .mv-campo textarea { resize: vertical; min-height: 68px; }
 
         .mv-msg-erro {
             font-size: 11px;
-            color: #d86b6b;
+            color: var(--danger, #d86b6b);
             font-weight: 600;
             min-height: 14px;
         }
@@ -121,7 +118,7 @@
         }
 
         .mv-horario input { flex: 1; }
-        .mv-horario span { color: #aaa; font-size: 12px; white-space: nowrap; }
+        .mv-horario span { color: var(--text-light, #aaa); font-size: 12px; white-space: nowrap; }
 
         /* Chips de tipo de candidato */
         .mv-tipos-grid {
@@ -137,25 +134,25 @@
             gap: 7px;
             padding: 9px 16px;
             border-radius: 50px;
-            border: 2px solid #e8ecef;
-            background: #f8fafb;
+            border: 2px solid var(--border, #e8ecef);
+            background: var(--bg, #f8fafb);
             cursor: pointer;
             transition: all 0.16s;
             font-size: 13px;
             font-weight: 600;
-            color: #777;
+            color: var(--text-light, #777);
             user-select: none;
         }
 
         .mv-tipo-chip:hover {
-            border-color: #47a4c4;
-            color: #47a4c4;
-            background: #eef7fb;
+            border-color: var(--primary-dark, #47a4c4);
+            color: var(--primary-dark, #47a4c4);
+            background: var(--bg);
         }
 
         .mv-tipo-chip.selecionado {
-            border-color: #47a4c4;
-            background: #47a4c4;
+            border-color: var(--primary-dark, #47a4c4);
+            background: var(--primary-dark, #47a4c4);
             color: #fff;
         }
 
@@ -172,14 +169,14 @@
         #modalVaga .modal-footer {
             border: none;
             padding: 14px 28px 18px;
-            background: #f8fafb;
-            border-top: 1px solid #eef0f2;
+            background: var(--bg, #f8fafb);
+            border-top: 1px solid var(--border, #eef0f2);
             gap: 8px;
             flex-shrink: 0;
         }
 
         #btnSalvarVaga {
-            background: linear-gradient(135deg, #47a4c4, #2d8aae);
+            background: var(--gradient, linear-gradient(135deg, #47a4c4, #2d8aae));
             border: none;
             border-radius: 10px;
             padding: 10px 26px;
@@ -194,33 +191,33 @@
         #btnSalvarVaga:disabled { opacity: 0.6; cursor: not-allowed; }
 
         #btnCancelarVaga {
-            background: #eff1f3;
+            background: var(--border, #eff1f3);
             border: none;
             border-radius: 10px;
             padding: 10px 18px;
             font-weight: 600;
             font-size: 14px;
-            color: #777;
+            color: var(--text-light, #777);
             cursor: pointer;
             transition: background 0.16s;
         }
 
-        #btnCancelarVaga:hover { background: #e4e7ea; }
+        #btnCancelarVaga:hover { background: var(--bg); opacity: 0.8; }
 
-        /* ── Cards de vaga ── */
+        /* ── Cards de vaga (Lista fora do modal) ── */
         .vaga-card {
-            background: #fff;
+            background: var(--card-bg, #fff);
             border-radius: 16px;
             padding: 20px 24px;
             margin: 14px 40px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            border: 1px solid #eef0f2;
+            border: 1px solid var(--border, #eef0f2);
             transition: transform 0.18s, box-shadow 0.18s;
         }
 
         .vaga-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,0.1));
         }
 
         .vaga-card-header {
@@ -234,10 +231,10 @@
             margin: 0 0 2px;
             font-size: 16px;
             font-weight: 700;
-            color: #222;
+            color: var(--text, #222);
         }
 
-        .vaga-card-titulo .empresa { font-size: 13px; color: #888; }
+        .vaga-card-titulo .empresa { font-size: 13px; color: var(--text-light, #888); }
 
         .vaga-acoes { display: flex; gap: 6px; }
 
@@ -256,10 +253,10 @@
             padding: 0;
         }
 
-        .btn-editar-vaga  { border-color: #47a4c4 !important; color: #47a4c4 !important; }
-        .btn-editar-vaga:hover  { background: #47a4c4 !important; color: #fff !important; }
-        .btn-excluir-vaga { border-color: #d86b6b !important; color: #d86b6b !important; }
-        .btn-excluir-vaga:hover { background: #d86b6b !important; color: #fff !important; }
+        .btn-editar-vaga  { border-color: var(--primary-dark, #47a4c4) !important; color: var(--primary-dark, #47a4c4) !important; }
+        .btn-editar-vaga:hover  { background: var(--primary-dark, #47a4c4) !important; color: #fff !important; }
+        .btn-excluir-vaga { border-color: var(--danger, #d86b6b) !important; color: var(--danger, #d86b6b) !important; }
+        .btn-excluir-vaga:hover { background: var(--danger, #d86b6b) !important; color: #fff !important; }
 
         .vaga-info-linha {
             display: flex;
@@ -273,14 +270,14 @@
             align-items: center;
             gap: 5px;
             font-size: 12px;
-            color: #777;
+            color: var(--text-light, #777);
         }
 
-        .vaga-info-item i { color: #47a4c4; font-size: 11px; }
+        .vaga-info-item i { color: var(--primary-dark, #47a4c4); font-size: 11px; }
 
         .vaga-descricao {
             font-size: 13px;
-            color: #555;
+            color: var(--text, #555);
             line-height: 1.6;
             margin-bottom: 14px;
         }
@@ -300,8 +297,9 @@
             font-weight: 700;
             padding: 3px 9px;
             border-radius: 20px;
-            background: #eef7fb;
-            color: #47a4c4;
+            background: var(--bg, #eef7fb);
+            color: var(--primary-dark, #47a4c4);
+            border: 1px solid var(--border);
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
@@ -320,15 +318,15 @@
         }
 
         .btn-candidatar.ativo {
-            background: linear-gradient(135deg, #47a4c4, #2d8aae);
+            background: var(--gradient, linear-gradient(135deg, #47a4c4, #2d8aae));
             color: #fff;
         }
 
         .btn-candidatar.ativo:hover { opacity: 0.88; transform: translateY(-1px); }
 
         .btn-candidatar.bloqueado {
-            background: #f0f2f4;
-            color: #bbb;
+            background: var(--border, #f0f2f4);
+            color: var(--text-light, #bbb);
             cursor: default;
             font-size: 11px;
         }
@@ -340,8 +338,9 @@
     `;
     document.head.appendChild(style);
 
-    // ── HTML do modal ─────────────────────────────────────────────────────────
-
+    // ── HTML e Lógica seguem idênticos abaixo ──────────────────────────────────
+    // (O restante do código permanece igual para não quebrar sua API e lógica)
+    
     document.body.insertAdjacentHTML("beforeend", `
     <div class="modal fade" id="modalVaga" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -448,8 +447,6 @@
             </div>
         </div>
     </div>`);
-
-    // ── Lógica ────────────────────────────────────────────────────────────────
 
     const modal     = new bootstrap.Modal(document.getElementById("modalVaga"));
     const titulo    = document.getElementById("modalVagaTitulo");
