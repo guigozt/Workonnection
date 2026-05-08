@@ -1,149 +1,253 @@
-body {
-    background: #f9f9f9;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+/* ================================================= */
+/* LAYOUT DA PÁGINA (ESTILO NOTIFICAÇÕES)            */
+/* ================================================= */
+
+.colab-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  /* Aumentei de 0 para 100px para compensar a topbar fixa e a falta do título */
+  padding: 100px 16px 80px;
 }
 
-/* Topbar */
-.topbar {
-    background: #d86b6b;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: white;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+.colab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0;
 }
 
-.topbar .logo img {
-    height: 45px;
+.colab-header h5 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text);
+  letter-spacing: -0.5px;
 }
 
-.search-bar {
-    flex-grow: 1;
-    margin: 0 20px;
-}
+/* ================================================= */
+/* ESTILO DO CARD (ESTILO VAGAS - criarVaga.js)      */
+/* ================================================= */
 
-.search-bar input {
-    width: 100%;
-    border-radius: 25px;
-    border: none;
-    padding: 8px 16px;
-    font-size: 14px;
-}
-
-.top-icons i {
-    font-size: 20px;
-    margin: 0 8px;
-    cursor: pointer;
-    color: white;
-    transition: color 0.3s, transform 0.2s;
-}
-
-.top-icons i:hover {
-    color: #ffe5e5;
-    transform: scale(1.2);
-}
-
-/* Filtros de vagas */
-.filtros-vagas {
-    display: flex;
-    justify-content: flex-start;
-    gap: 15px;
-    margin: 20px 50px 10px;
-}
-
-.filtro-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    color: #555;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 20px;
-    transition: 0.3s;
-}
-
-.filtro-item i {
-    font-size: 16px;
-}
-
-.filtro-item:hover,
-.filtro-item.ativo {
-    color: #d86b6b;
-    background-color: #ffeaea;
-}
-
-/* Card de colaborador */
 .vaga-card {
-    background: #fff;
-    border-radius: 15px;
-    padding: 15px 20px;
-    margin: 15px 0;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.3s;
+  background: var(--card-bg);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+  overflow: hidden;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .vaga-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
-.vaga-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+/* Header do Card */
+.vc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 12px;
 }
 
-.vaga-header img {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #5ec3e6;
+.vc-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
 }
 
-.vaga-header h6 {
-    margin: 0;
-    font-weight: bold;
-    font-size: 1.05rem;
-    color: #333;
+.vc-autor {
+  flex: 1;
+  min-width: 0;
 }
 
-.vaga-header p {
-    margin: 3px 0;
-    color: #555;
-    font-size: 0.95rem;
+.vc-autor-nome {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.vaga-header i {
-    color: #d86b6b;
-    margin-right: 5px;
+.vc-autor-meta {
+  font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
-/* Botão "Exibir tudo" */
-.btn-link {
-    color: #5ec3e6;
-    font-weight: bold;
-    transition: 0.3s;
+/* Corpo do Card */
+.vc-body {
+  padding: 0 16px 16px;
 }
 
-.btn-link:hover {
-    text-decoration: none;
-    color: #47a4c4;
+.vc-cargo {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
 }
 
-/* Container */
-.container {
-    margin-top: 30px;
+.vc-empresa-nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-/* Títulos de seção */
-h5 {
-    margin-bottom: 15px;
-    color: #333;
-    font-weight: bold;
+.vc-empresa-nome i {
+  color: var(--primary-dark);
+}
+
+.vc-descricao {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limita a 3 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Detalhes em Blocos (Grid) */
+.vc-detalhes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.vc-detalhe-bloco {
+  background: var(--bg); /* Fundo cinza suave do global */
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+}
+
+.vc-detalhe-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.vc-detalhe-valor {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tags/Habilidades */
+.vc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-light);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-weight: 600;
+}
+
+.vc-tag i {
+  color: var(--primary-dark);
+  font-size: 10px;
+}
+
+/* Rodapé de Ações */
+.vc-acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.vc-acao-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+.vc-acao-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.vc-spacer {
+  flex: 1;
+}
+
+.btn-candidatar-card {
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn-candidatar-card.ativo {
+  background: var(--gradient);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(71, 164, 196, 0.2);
+}
+
+.btn-candidatar-card:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
+
+/* Estado Vazio */
+.colab-vazio {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-light);
+}
+
+.colab-vazio i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .vc-detalhes {
+    grid-template-columns: 1fr;
+  }
 }

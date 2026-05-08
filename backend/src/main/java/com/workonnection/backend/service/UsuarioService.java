@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -67,6 +69,21 @@ public class UsuarioService {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
         return toResponse(usuario);
+    }
+
+    // ── Listar Colaboradores ──────────────────────────────────────────────────────────
+
+    public List<UsuarioResponseDTO> listarColaboradores() {
+        try {
+            return repository.findAll().stream()
+                    .filter(u -> u != null) // Garante que o objeto não é nulo
+                    .map(this::toResponse)
+                    .toList();
+        } catch (Exception e) {
+            // Isso ajudará você a ver o erro real no console do Eclipse/IntelliJ
+            e.printStackTrace(); 
+            throw new ApiException("Erro interno ao listar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // ── Atualizar perfil ──────────────────────────────────────────────────────
