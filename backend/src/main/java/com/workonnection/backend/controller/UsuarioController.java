@@ -9,6 +9,7 @@ import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.List;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(service.listarColaboradores());
+    }
 
     // ── POST /usuarios  →  Cadastro ──────────────────────────────────────────
     @PostMapping
