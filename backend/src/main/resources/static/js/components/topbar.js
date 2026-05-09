@@ -105,7 +105,6 @@
             <a href="/modules/vagas/Vagas.html"><i class="fas fa-briefcase"></i><span class="icon-text">Vagas</span></a>
             <a href="/modules/colaboradores/Colaboradores.html"><i class="fas fa-users"></i><span class="icon-text">Rede</span></a>
             <a href="/modules/perfil/Perfil.html"><i class="fas fa-user"></i><span class="icon-text">Perfil</span></a>
-            <a href="/modules/chat/Chat.html"><i class="fas fa-comment"></i><span class="icon-text">Chat</span></a>
             <a href="/modules/sobre/Sobre.html"><i class="fas fa-info-circle"></i><span class="icon-text">Sobre</span></a>
             <a href="/modules/configuracoes/Configuracoes.html"><i class="fas fa-cog"></i><span class="icon-text">Opções</span></a>
             <a href="#" id="btnSair"><i class="fas fa-sign-out-alt"></i><span class="icon-text">Sair</span></a>
