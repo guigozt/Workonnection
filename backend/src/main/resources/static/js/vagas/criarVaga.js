@@ -493,6 +493,8 @@ document.addEventListener("usuarioCarregado", (event) => {
     const vagasContainer = document.getElementById("vagas-container");
     const botaoPublicar  = document.querySelector(".botao-publicar");
 
+    const carregarApenasMinhas = vagasContainer.id === "minhas-vagas-container";
+
     if (!vagasContainer.classList.contains("feed")) {
         vagasContainer.classList.add("feed");
     }
@@ -513,6 +515,32 @@ document.addEventListener("usuarioCarregado", (event) => {
     function labelTipos(tipos) {
         if (!tipos?.length || tipos.includes("todos")) return ["Todos"];
         return tipos.map(t => t === "prestador" ? "Prestadores" : "Estudantes");
+    }
+
+    // ── Fetch de Dados (AQUI ESTÁ A MUDANÇA) ──────────────────────────────
+
+    async function carregarVagas() {
+        if (carregarApenasMinhas && !usuarioLogado) {
+            vagasContainer.innerHTML = `<p style="text-align:center;color:#aaa;margin-top:60px;">Faça login para ver suas vagas.</p>`;
+            return;
+        }
+
+        try {
+            // Se estiver na página de 'Minhas Vagas', usa o endpoint do usuário
+            const url = carregarApenasMinhas 
+                ? "http://localhost:8080/vagas/minhas" 
+                : "http://localhost:8080/vagas";
+
+            const res = await fetch(url, { credentials: "include" });
+            
+            if (!res.ok) throw new Error("Erro na requisição");
+            
+            const vagas = await res.json();
+            renderizarVagas(vagas);
+        } catch (e) { 
+            console.error("Erro ao carregar vagas:", e);
+            vagasContainer.innerHTML = `<p style="text-align:center;color:var(--danger);margin-top:60px;">Erro ao carregar dados do servidor.</p>`;
+        }
     }
 
     async function carregarVagas() {
