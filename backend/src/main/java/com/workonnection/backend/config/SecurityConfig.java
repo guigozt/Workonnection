@@ -11,10 +11,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-
             .authorizeHttpRequests(auth -> auth
-                // Arquivos estáticos e páginas
                 .requestMatchers(
                     "/",
                     "/modules/**",
@@ -24,8 +23,7 @@ public class SecurityConfig {
                     "/imagens/**",
                     "/favicon.ico"
                 ).permitAll()
-
-                // Rotas públicas
+                
                 .requestMatchers(
                     "/usuarios",
                     "/usuarios/login"
@@ -35,9 +33,8 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
 
-            // 🔥 LOGOUT FUNCIONANDO
             .logout(logout -> logout
-                .logoutUrl("/logout")
+                .logoutUrl("/usuarios/logout")
                 .logoutSuccessHandler((req, res, auth) -> {
                     res.setStatus(200);
                 })
@@ -46,5 +43,18 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfigurationSource configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELTE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList(*));
+        configuration.setAllowedCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
