@@ -1,31 +1,24 @@
 package com.workonnection.backend.service;
 
-import com.workonnection.backend.dto.CadastroDTO;
-import com.workonnection.backend.dto.ConfiguracoesDTO;
-import com.workonnection.backend.dto.LoginDTO;
-import com.workonnection.backend.dto.PerfilDTO;
-import com.workonnection.backend.dto.UsuarioResponseDTO;
+import com.workonnection.backend.dto.*;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.Usuario;
 import com.workonnection.backend.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
+    private final UsuarioRepository repository;
+    private final BCryptPasswordEncoder encoder;
 
-    @Autowired
-    private UsuarioRepository repository;
-
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-    // ── Cadastro ──────────────────────────────────────────────────────────────
+    public UsuarioService(UsuarioRepository repository) {
+        this.repository = repository;
+        this.encoder = new BCryptPasswordEncoder();
+    }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
         if (repository.findByEmail(dto.getEmail()).isPresent()) {
@@ -33,37 +26,27 @@ public class UsuarioService {
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNome(dto.getNome());
-        usuario.setCpf(dto.getCpf());
-        usuario.setDataNascimento(dto.getDataNascimento());
-        usuario.setTelefone(dto.getTelefone());
-        usuario.setEmail(dto.getEmail());
-        usuario.setSenha(encoder.encode(dto.getSenha()));
-        usuario.setTipoUsuario(dto.getTipoUsuario());
+        usuario.setNome(dto.nome());
+        usuario.setCpf(dto.cpf());
+        usuario.setDataNascimento(dto.dataNascimento());
+        usuario.setTelefone(dto.telefone());
+        usuario.setEmail(dto.email());
+        usuario.setSenha(encoder.encode(dto.senha()));
+        usuario.setTipoUsuario(dto.tipoUsuario());
 
-        Usuario salvo = repository.save(usuario);
-        return toResponse(salvo);
+        return toResponse(repository.save(usuario));
     }
 
-    // ── Login ─────────────────────────────────────────────────────────────────
-
     public UsuarioResponseDTO login(LoginDTO dto) {
-        Optional<Usuario> encontrado = repository.findByEmail(dto.getEmail());
+        Usuario usuario = repository.findByEmail(dto.email())
+                .orElseThrow(() -> new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED));
 
-        if (encontrado.isEmpty()) {
-            throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED);
-        }
-
-        Usuario usuario = encontrado.get();
-
-        if (!encoder.matches(dto.getSenha(), usuario.getSenha())) {
+        if (!encoder.matches(dto.senha(), usuario.getSenha())) {
             throw new ApiException("Email ou senha inválidos", HttpStatus.UNAUTHORIZED);
         }
 
         return toResponse(usuario);
     }
-
-    // ── Busca por ID ──────────────────────────────────────────────────────────
 
     public UsuarioResponseDTO buscarPorId(String id) {
         Usuario usuario = repository.findById(id)
@@ -71,122 +54,59 @@ public class UsuarioService {
         return toResponse(usuario);
     }
 
-    // ── Listar Colaboradores ──────────────────────────────────────────────────────────
-
     public List<UsuarioResponseDTO> listarColaboradores() {
-        try {
-            return repository.findAll().stream()
-                    .filter(u -> u != null) // Garante que o objeto não é nulo
-                    .map(this::toResponse)
-                    .toList();
-        } catch (Exception e) {
-            // Isso ajudará você a ver o erro real no console do Eclipse/IntelliJ
-            e.printStackTrace(); 
-            throw new ApiException("Erro interno ao listar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return repository.findAll().stream()
+                .filter(u -> u != null)
+                .map(this::toResponse)
+                .toList();
     }
 
-    // ── Atualizar perfil ──────────────────────────────────────────────────────
-
+    @SuppresWarning("unchecked")
     public UsuarioResponseDTO atualizarPerfil(String id, PerfilDTO dto) {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
-        // Atualiza o nome no documento principal se vier no DTO via perfil
         Usuario.Perfil perfil = new Usuario.Perfil();
-        perfil.setSobre(dto.getSobre());
-        perfil.setLocal(dto.getLocal());
-        perfil.setTelefone(dto.getTelefone());
-        perfil.setInstagram(dto.getInstagram());
-        perfil.setLinkedin(dto.getLinkedin());
-        perfil.setSite(dto.getSite());
-        perfil.setHabilidades(dto.getHabilidades());
-        perfil.setFormacoes(dto.getFormacoes() != null
-                ? dto.getFormacoes().stream()
-                    .map(o -> (java.util.Map<String, Object>) o)
-                    .toList()
-                : null);
-        perfil.setExperiencias(dto.getExperiencias() != null
-                ? dto.getExperiencias().stream()
-                    .map(o -> (java.util.Map<String, Object>) o)
-                    .toList()
-                : null);
-        perfil.setCursos(dto.getCursos() != null
-                ? dto.getCursos().stream()
-                    .map(o -> (java.util.Map<String, Object>) o)
-                    .toList()
-                : null);
+        perfil.setSobre(dto.sobre());
+        perfil.setLocal(dto.local());
+        perfil.setTelefone(dto.telefone());
+        perfil.setInstagram(dto.instagram());
+        perfil.setLinkedin(dto.linkedin());
+        perfil.setSite(dto.site());
+        perfil.setHabilidades(dto.habilidades());
+        perfil.setFormacoes(dto.formacoes() != null ? dto.formacoes().stream().map(o -> (java.util.Map<String, Object>) o).toList() : null);
+        perfil.setExperiencias(dto.experiencias() != null ? dto.experiencias().stream().map(o -> (java.util.Map<String, Object>) o).toList() : null);
+        perfil.setCursos(dto.cursos() != null ? dto.cursos().stream().map(o -> (java.util.Map<String, Object>) o).toList() : null);
 
         usuario.setPerfil(perfil);
-        repository.save(usuario);
-        return toResponse(usuario);
+        return toResponse(repository.save(usuario));
     }
-
-    // ── Configurações ──────────────────────────────────────────────────────
 
     public UsuarioResponseDTO atualizarConfiguracoes(String id, ConfiguracoesDTO dto) {
-
         Usuario usuario = repository.findById(id)
-            .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
-        // Garante que o objeto de configurações não seja nulo
-        Usuario.Configuracoes config = usuario.getConfiguracoes();
-        if (config == null) {
-            config = new Usuario.Configuracoes();
-        }
+        Usuario.Configuracoes config = usuario.getConfiguracoes() != null ? usuario.getConfiguracoes() : new Usuario.Configuracoes();
 
-        if (dto.getTema() != null) {
-            config.setTema(dto.getTema());
-        }
-
-        if (dto.getIdioma() != null) {
-            config.setIdioma(dto.getIdioma());
-        }
+        if (dto.getTema() != null) config.setTema(dto.getTema());
+        if (dto.getIdioma() != null) config.setIdioma(dto.getIdioma());
 
         usuario.setConfiguracoes(config);
-        repository.save(usuario);
-
-        return toResponse(usuario);
+        return toResponse(repository.save(usuario));
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-    
     private UsuarioResponseDTO toResponse(Usuario u) {
-
-        // Conta notificações não lidas
-        long naoLidas = (u.getNotificacoes() == null) ? 0 :
-                u.getNotificacoes().stream()
-                        .filter(n -> !n.isLida())
-                        .count();
-
-        // Garante que o perfil nunca seja null
-        Usuario.Perfil perfil = u.getPerfil();
-
-        if (perfil == null) {
-            perfil = new Usuario.Perfil();
-        }
-
-        // fallback - usa dados do cadastro se perfil estiver vazio
+        long naoLidas = (u.getNotificacoes() == null) ? 0 : u.getNotificacoes().stream().filter(n -> !n.isLida()).count();
+        Usuario.Perfil perfil = u.getPerfil() != null ? u.getPerfil() : new Usuario.Perfil();
+        
         if (perfil.getTelefone() == null || perfil.getTelefone().isEmpty()) {
             perfil.setTelefone(u.getTelefone());
         }
 
-        Usuario.Configuracoes config = u.getConfiguracoes();
-        if (config == null) {
-            config = new Usuario.Configuracoes();
-            // Você pode até setar valores default aqui se quiser
-            config.setTema("light"); 
-            config.setIdioma("pt-BR");
-        }
+        Usuario.Configuracoes config = u.getConfiguracoes() != null ? u.getConfiguracoes() : new Usuario.Configuracoes();
 
         return new UsuarioResponseDTO(
-                u.getId(),
-                u.getNome(),
-                u.getEmail(),
-                u.getTipoUsuario(),
-                perfil,
-                naoLidas,
-                config
+                u.getId(), u.getNome(), u.getEmail(), u.getTipoUsuario(), perfil, naoLidas, config
         );
     }
 }
