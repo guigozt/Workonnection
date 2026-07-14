@@ -2,9 +2,8 @@ package com.workonnection.backend.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Document(collection = "usuarios")
@@ -12,7 +11,6 @@ public class Usuario {
 
     @Id
     private String id;
-
     private String nome;
     private String cpf;
     private String dataNascimento;
@@ -21,12 +19,8 @@ public class Usuario {
     private String senha;
     private String tipoUsuario;
 
-    // Campo embutido — salvo dentro do mesmo documento no MongoDB
     private Perfil perfil = new Perfil();
-
-    // Notificações embutidas no documento do usuário (máx. 50 — as mais recentes)
     private List<Notificacao> notificacoes = new ArrayList<>();
-
     private Configuracoes configuracoes = new Configuracoes();
 
     public String getId() { return id; }
@@ -61,8 +55,6 @@ public class Usuario {
 
     public Configuracoes getConfiguracoes() { return configuracoes; }
     public void setConfiguracoes(Configuracoes configuracoes) { this.configuracoes = configuracoes; }
-
-    // ── Classe interna Perfil ──────────────────────────────────────────────
 
     public static class Perfil {
         private String sobre;
@@ -107,10 +99,9 @@ public class Usuario {
         public void setCursos(List<Map<String, Object>> cursos) { this.cursos = cursos; }
     }
 
-    // ── Classe interna Configuracoes ─────────────────────────────
     public static class Configuracoes {
-        private String tema = "claro"; // padrão
-        private String idioma = "pt-BR"; // padrão
+        private String tema = "claro";
+        private String idioma = "pt-BR";
 
         public String getTema() { return tema; }
         public void setTema(String tema) { this.tema = tema; }

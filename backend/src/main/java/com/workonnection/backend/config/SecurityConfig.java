@@ -3,7 +3,13 @@ package com.workonnection.backend.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -14,30 +20,13 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/",
-                    "/modules/**",
-                    "/css/**",
-                    "/js/**",
-                    "/global/**",
-                    "/imagens/**",
-                    "/favicon.ico"
-                ).permitAll()
-                
-                .requestMatchers(
-                    "/usuarios",
-                    "/usuarios/login"
-                ).permitAll()
-
-                // TODO: futuramente trocar pra authenticated()
+                .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
+                .requestMatchers("/usuarios", "/usuarios/login").permitAll()
                 .anyRequest().permitAll()
             )
-
             .logout(logout -> logout
                 .logoutUrl("/usuarios/logout")
-                .logoutSuccessHandler((req, res, auth) -> {
-                    res.setStatus(200);
-                })
+                .logoutSuccessHandler((req, res, auth) -> res.setStatus(200))
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
             );
@@ -50,7 +39,7 @@ public class SecurityConfig {
         CorsConfigurationSource configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELTE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList(*));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
