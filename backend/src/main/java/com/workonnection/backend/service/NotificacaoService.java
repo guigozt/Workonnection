@@ -17,27 +17,23 @@ import java.util.UUID;
 public class NotificacaoService {
     
     private static final int MAX_NOTIFICACOES = 50;
-
     private final UsuarioRepository usuarioRepository;
 
     public NotificacaoService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // ── Criar notificação para outro usuário ──────────────────────────────────
-
     public void criar(String destinatarioId, String remetenteId, String remetenteNome,
-                      String tipo, String mensagem, String vagaId) {
+                        String tipo, String mensagem, String vagaId) {
         
-        //Não notifica a si mesmo
         if (destinatarioId.equals(remetenteId)) return;
 
         Usuario destinatario = usuarioRepository.findById(destinatarioId).orElse(null);
         if (destinatario == null) return;
         
-        List<Notificacao> lista = new ArrayList<>(
-            destinatario.getNotificacoes() != null ? destinatario.getNotificacoes() : List.of()
-        );
+        List<Notificacao> lista = destinatario.getNotificacoes() != null 
+                ? new ArrayList<>(destinatario.getNotificacoes()) 
+                : new ArrayList<>()
 
         Notificacao nova = new Notificacao(
             UUID.randomUUID().toString(),
@@ -47,27 +43,21 @@ public class NotificacaoService {
         lista.add(0, nova); //mais recente primeiro
 
         if (lista.size() > MAX_NOTIFICACOES) {
-            lista = lista.subList(0, MAX_NOTIFICACOES);
+            lista = new ArrayList<>(lista.subList(0, MAX_NOTIFICACOES));
         }
 
         destinatario.setNotificacoes(lista);
         usuarioRepository.save(destinatario);
     }
 
-    // ── Listar ────────────────────────────────────────────────────────────────
-
     public List<Notificacao> listar(String usuarioId) {
         Usuario u = buscarOuErro(usuarioId);
-        List<Notificacao> lista = u.getNotificacoes();
-
-        if (lista == null) return List.of();
+        if (u.getNotificacoes() == null) return List.of();
         
-        //Ordem decrescente por data
-        lista.sort(Comparator.comparing(Notificacao::getCriadaEm).reversed());
-        return lista;
+        return u.getNotificacoes().stream()
+                .sorted(Comparator.comparing(Notificacao::getCriadaEm).reversed())
+                .toList();
     }
-
-    // ── Marcar como lida ──────────────────────────────────────────────────────
 
     public void marcarLida(String usuarioId, String notificacaoId) {
         Usuario u = buscarOuErro(usuarioId);
@@ -77,6 +67,7 @@ public class NotificacaoService {
                 .filter(n -> n.getId().equals(notificacaoId))
                 .findFirst()
                 .ifPresent(n -> n.setLida(true));
+                
         usuarioRepository.save(u);
     }
 
@@ -87,8 +78,6 @@ public class NotificacaoService {
         u.getNotificacoes().forEach(n -> n.setLida(true));
         usuarioRepository.save(u);
     }
-
-    // ── Excluir ───────────────────────────────────────────────────────────────
 
     public void excluir(String usuarioId, String notificacaoId) {
         Usuario u = buscarOuErro(usuarioId);
@@ -103,8 +92,6 @@ public class NotificacaoService {
         u.setNotificacoes(new ArrayList<>());
         usuarioRepository.save(u);
     }
-
-    // ── Helper ────────────────────────────────────────────────────────────────
 
     private Usuario buscarOuErro(String id) {
         return usuarioRepository.findById(id)
