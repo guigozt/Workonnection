@@ -1,83 +1,44 @@
-.loginContainer {
-  display: flex;
-  min-height: 100vh;
-  width: 100vw;
-}
-.left, .right {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.left {
-  background: #e4e4e4;
-}
-.left img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.loginFormBox {
-  max-width: 420px;
-  width: 100%;
-  padding: 36px;
-  background: var(--card-bg, #ffffff);
-  border-radius: var(--radius-lg, 8px);
-  box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
-  text-align: center;
-}
-.logoLogin {
-  width: 220px;
-  margin-bottom: 28px;
-  transition: transform 0.25s ease;
-}
-.logoLogin:hover {
-  transform: scale(1.06);
-}
-form {
+.form {
   display: flex;
   flex-direction: column;
   gap: 14px;
   text-align: left;
 }
+
 .cadastro {
   margin-top: 20px;
-  font-size: var(--font-input, 14px);
+  font-size: 14px;
   text-align: center;
-  color: var(--text-light, #666);
+  color: #666;
 }
+
 .cadastro a {
   color: var(--primary-dark, #47a4c4);
   text-decoration: none;
   font-weight: 600;
   transition: 0.2s;
 }
+
 .cadastro a:hover {
   opacity: 0.8;
 }
+
 .feedback {
   padding: 10px;
   margin-bottom: 15px;
   border-radius: var(--radius, 4px);
-  font-size: var(--font-small, 12px);
+  font-size: 12px;
   font-weight: 500;
 }
+
 .erro {
   background-color: #fff5f5;
   color: var(--danger, #dc3545);
   border: 1px solid #feb2b2;
 }
+
 .sucesso {
   background-color: #f0fff4;
   color: var(--success, #28a745);
   border: 1px solid #9ae6b4;
-}
-@media (max-width: 900px) {
-  .left { display: none; }
-  .loginContainer {
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .loginFormBox { padding: 28px; }
 }
