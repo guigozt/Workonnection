@@ -7,19 +7,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
 }
 
-export const Button = ({ children, icon, isLoading, ...props }: ButtonProps ) => {
+export const Button = ({ children, icon, isLoading, disabled, ...props }: ButtonProps ) => {
     return (
         <button
             className={`${styles.btnPrimary} ${isLoading ? styles.loading : ''}`}
-            disabled={isLoading || props.disabled}
+            disabled={isLoading || disabled}
             {...props}
         >
             {isLoading ? (
-                <i className="fa-solid fa-spinner fa-spin"></i>
+                <i className="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
             ) : (
-                icon && <i className={`${icon}`}></i>
+                icon && <i className={icon} aria-hidden="true" />
             )}
             {children}
         </button>
-    )
-}
+    );
+};
