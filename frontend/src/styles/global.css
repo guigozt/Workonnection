@@ -1,0 +1,118 @@
+/* ======================= */
+/* ===== RESET BASE ====== */
+/* ======================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ======================= */
+/* ===== VARIÁVEIS ======= */
+/* ======================= */
+:root {
+  /* Cores Principais */
+  --primary: #007B8A;
+  --primary-light: #5ec3e6;
+  --primary-dark: #47a4c4;
+  --header-bg: #d86b6b; /* Vermelho padrão dos cabeçalhos */
+
+  --gradient: linear-gradient(135deg, #47a4c4, #d86b6b);
+
+  /* Status */
+  --danger: #dc3545;
+  --success: #28a745;
+
+  /* Neutros e Tema Claro */
+  --bg: #f4f8fb;
+  --card-bg: #ffffff;
+  --text: #333333;
+  --text-light: #777777;
+  --border: #eef0f2;
+
+  /* Tipografia */
+  --font-base: 16px;
+  --font-input: 15px;
+  --font-small: 13px;
+
+  /* Espaçamentos e Raios */
+  --radius: 8px;
+  --radius-lg: 16px;
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12);
+
+  --topbar-height: 70px;
+}
+
+/* ======================= */
+/* ===== TEMA ESCURO ===== */
+/* ======================= */
+html[data-tema="escuro"],
+body.dark-mode {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --text: #e2e8f0;
+  --text-light: #94a3b8;
+  --border: #2e3340;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
+/* ======================= */
+/* ===== ESTILOS BASE ==== */
+/* ======================= */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--font-base);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Padrão para Botões Nativos */
+button {
+  font-family: inherit;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Padrão para Inputs Nativos */
+input,
+textarea {
+  font-family: inherit;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: var(--font-input);
+  width: 100%;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary-dark);
+}
+
+/* Links */
+a {
+  color: var(--primary-dark);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+a:hover {
+  opacity: 0.8;
+}

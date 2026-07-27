@@ -1,0 +1,181 @@
+.pageContainer {
+  min-height: 100vh;
+}
+
+/* Header em Vermelho usando variável ou cor pura */
+.header {
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--header-bg);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  position: absolute;
+  left: 20px;
+  height: 42px;
+}
+
+.header h1 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Layout do Formulário */
+.cadastroContainer {
+  display: flex;
+  justify-content: center;
+  padding: 40px 15px;
+}
+
+.formBox {
+  background: var(--card-bg);
+  padding: 32px 40px;
+  border-radius: var(--radius-lg);
+  max-width: 900px;
+  width: 100%;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.formBox h2 {
+  margin-bottom: 24px;
+  color: var(--primary-dark);
+  font-size: 22px;
+}
+
+.formRow {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+/* Seletor do Tipo de Usuário */
+.userLabel {
+  margin-top: 24px;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+.userTypeBox {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0 8px;
+}
+
+.userBtn {
+  padding: 10px 18px;
+  border-radius: 50px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userBtn:hover {
+  border-color: var(--primary-dark);
+  color: var(--primary-dark);
+}
+
+.userBtn.ativo {
+  background: var(--primary-dark);
+  color: #ffffff;
+  border-color: var(--primary-dark);
+}
+
+.typeError {
+  color: var(--danger);
+  font-size: 12px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* Botões de Ação (Afastados e Limitados) */
+.buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.buttons button,
+.btnBack {
+  height: 42px;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 600;
+  max-width: 180px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btnBack {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btnBack:hover {
+  background: var(--border);
+}
+
+/* Feedback/Alertas */
+.feedback {
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.erro {
+  background-color: #fff5f5;
+  color: var(--danger);
+  border: 1px solid #feb2b2;
+}
+
+.sucesso {
+  background-color: #f0fff4;
+  color: var(--success);
+  border: 1px solid #9ae6b4;
+}
+
+/* Adaptabilidade Mobile */
+@media (max-width: 768px) {
+  .formRow {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .buttons {
+    flex-direction: column-reverse;
+  }
+
+  .buttons button,
+  .btnBack {
+    max-width: 100%;
+  }
+
+  .formBox {
+    padding: 24px 18px;
+  }
+}
