@@ -1,0 +1,39 @@
+/* Layout básico do formulário */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+}
+
+/* Bloco do link de Cadastro */
+.cadastro {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-light);
+}
+
+/* Nota: O <a> dentro de .cadastro já herda a cor, 
+   peso e efeito hover direto do global.css! */
+
+/* Alertas e Mensagens de Feedback */
+.feedback {
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.erro {
+  background-color: #fff5f5;
+  color: var(--danger);
+  border: 1px solid #feb2b2;
+}
+
+.sucesso {
+  background-color: #f0fff4;
+  color: var(--success);
+  border: 1px solid #9ae6b4;
+}
