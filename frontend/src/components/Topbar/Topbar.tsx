@@ -28,7 +28,7 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
     return (
         <header className={styles.topbar}>
             <div className={styles.logo}>
-                <Link to="/vagas">
+                <Link to="/home">
                     <img src="/imagens/logo_workonnection.png" alt="WorkConnection" />
                 </Link>
             </div>
@@ -38,7 +38,7 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
             </div>
 
             <nav className={styles.topIcons}>
-                <Link to='/vagas' className={`${styles.navLink} ${isActive('/vagas') ? styles.ativo : ''}`}>
+                <Link to='/vagas' className={`${styles.navLink} ${isActive('/home') ? styles.ativo : ''}`}>
                     <i className='fas fa-home'></i>
                     <span className={styles.iconText}>Home</span>
                 </Link>
