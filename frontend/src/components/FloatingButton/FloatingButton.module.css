@@ -1,0 +1,39 @@
+.btnPublicar {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  color: var(--primary-dark);
+  border: 2px solid var(--border);
+  font-size: 22px;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  z-index: 900;
+}
+
+.btnPublicar:hover {
+  transform: translateY(-3px);
+  background: var(--gradient);
+  color: #ffffff;
+}
+
+.btnPublicar:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 600px) {
+  .btnPublicar {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+    bottom: 20px;
+    right: 20px;
+  }
+}

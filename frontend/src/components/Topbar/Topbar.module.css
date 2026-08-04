@@ -1,0 +1,99 @@
+.topbar {
+  background: var(--gradient);
+  padding: 0 16px;
+  height: var(--topbar-height, 70px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo img {
+  height: 35px;
+  display: block;
+}
+
+.searchBar {
+  flex: 1;
+  margin: 0 16px;
+  max-width: 280px;
+}
+
+.searchBar input {
+  width: 100%;
+  border-radius: 20px;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  outline: none;
+}
+
+.searchBar input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.topIcons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.navLink {
+  position: relative;
+  width: 58px;
+  height: 60px;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.navLink i {
+  font-size: 16px;
+}
+
+.iconText {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.navLink:hover,
+.navLink.ativo {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.notifBadge {
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: #ff4d4d;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff;
+}

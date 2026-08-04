@@ -1,0 +1,7 @@
+.homeWrapper {
+    padding-top: calc(var(--topbar-height, 70px) + 20px);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 16px;
+    padding-right: 16px;
+}
