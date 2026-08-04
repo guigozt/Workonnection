@@ -1,21 +1,17 @@
-import { useState } from 'react';
 import { Topbar } from '../../components/Topbar/Topbar';
-import { ModalVaga, type VagaData } from '../../components/ModalVaga/ModalVaga';
+import { ModalVaga } from '../../components/ModalVaga/ModalVaga';
 import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
+import { useHome } from './useHome';
 import styles from './Home.module.css';
 
 export const Home = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [vagaEmEdicao, setVagaEmEdicao] = useState<VagaData | null>(null);
-
-    const handleAbrirCriacao = () => {
-        setVagaEmEdicao(null);
-        setIsModalOpen(true);
-    };
-
-    const handleSalvarVagaSucesso = (vaga: VagaData) => {
-        console.log('Vaga salva com sucesso', vaga);
-    };
+    const {
+        isModalOpen,
+        vagaEmEdicao,
+        handleAbrirCriacao,
+        handleFecharModal,
+        handleSalvarVagaSucesso,
+    } = useHome();
 
     return (
         <div>
@@ -31,7 +27,7 @@ export const Home = () => {
 
             <ModalVaga
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={handleFecharModal}
                 onSuccess={handleSalvarVagaSucesso}
                 vagaParaEditar={vagaEmEdicao}
             />

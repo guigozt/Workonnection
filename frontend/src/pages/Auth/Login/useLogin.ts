@@ -48,7 +48,7 @@ export const useLogin = () => {
         try {
             await login(formData);
             setFeedback({ message: "Login realizado com sucesso!", type: "sucesso"});
-            setTimeout(() => navigate('/vagas'), 1200);
+            setTimeout(() => navigate('/home'), 1200);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             const apiErrorMessage = error.response?.data?.erro || "Email ou senha inválidos.";
