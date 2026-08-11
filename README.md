@@ -17,44 +17,40 @@ Ele promove oportunidades para profissionais autônomos e simplifica processos p
 ## Tecnologias Utilizadas ⚙
 
 <div align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="50" alt="javascript logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" height="50" alt="react logo" />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" height="50" alt="java logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" height="50" alt="typescript logo" />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" height="50" alt="spring logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" height="50" alt="java logo" />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="50" alt="mongodb logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" height="50" alt="spring logo" />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="50" alt="html5 logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="50" alt="mongodb logo" />
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="50" alt="css logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" height="50" alt="bootstrap logo"  />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="50" alt="css logo" />
 </div>
 
 ## Arquitetura 🧱
 
-O projeto segue o padrão MVC (Model-View-Controller):
+O projeto adota uma arquitetura **desacoplada (Frontend SPA + Backend REST API)**:
 
-- Model → entidades (Usuario, Vaga)
-- View → HTML + CSS + JS (frontend)
-- Controller → endpoints REST (UsuarioController, VagaController)
-- Service → regras de negócio
-- Repository → acesso ao banco MongoDB
+- **Frontend (React + TypeScript + Vite):** Interface SPA interativa, estilizada com CSS Modules e rotas gerenciadas por React Router.
+- **Backend (Spring Boot):** API RESTful que gerencia regras de negócio, autenticação via sessão HTTP/SecurityContext e endpoints.
+- **Database (MongoDB Atlas):** Banco NoSQL para armazenamento de usuários, vagas, comentários e notificações.
 
 ## Pré-requisitos 🖥️
 
 Antes de rodar o projeto, você precisa ter instalado:
 
+- Node.js (v18+) e NPM
 - Java 17+
-- Maven (ou usar o wrapper mvnw)
+- Maven (ou utilizar o wrapper `./mvnw`)
 - Git
 - Conta no MongoDB Atlas
 
 ## Observações 📌
-- O frontend é servido diretamente pelo Spring Boot.
-- As requisições são feitas via fetch API
-- O sistema utiliza autenticação baseada em sessão
+- O frontend roda de forma independente via Vite (`http://localhost:5173`) e consome a API executada no Spring Boot (`http://localhost:8080`).
+- A autenticação é gerenciada via Cookies/Sessão (`JSESSIONID`) com envio de credenciais habilitado no CORS (`credentials: 'include'`).
 
 ## Professor 👤
 
@@ -69,15 +65,15 @@ Antes de rodar o projeto, você precisa ter instalado:
 - 👤 Gabriel Gutierres  
 - 👤 Guilherme Gomes
 
-## Como Clonar e Testar o Projeto 🚀
+---
 
-Siga os passos abaixo para configurar o projeto localmente e rodar o backend com o MongoDB Atlas.
+## Como Clonar e Testar o Projeto 🚀
 
 ### 1️⃣ Clonar o repositório
 
 ```bash
-git clone https://github.com/guigozt/Workonnection.git
-cd Workonnection/backend
+git clone [https://github.com/guigozt/Workonnection.git](https://github.com/guigozt/Workonnection.git)
+cd Workonnection
 ````
 
 ### 2️⃣ Criar arquivo local
@@ -101,13 +97,16 @@ Troque USUARIO, SENHA, CLUSTER e SEU_BANCO pelos dados do seu cluster Atlas.
 No terminal, estando na pasta do backend, execute:
 
 ```bash
+cd backend
 .\mvnw clean install
 .\mvnw spring-boot:run
 ````
 
 ### 5️⃣ Testar a aplicação
 
-Abra o navegador em: 
+Em um novo terminal, acesse a pasta do frontend a partir da raiz do projeto:: 
 ```bash
-http://localhost:8080/modules/auth/Login.html
+cd frontend
+npm install
+npm run dev
 ```
