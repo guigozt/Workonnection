@@ -128,7 +128,7 @@ public class UsuarioController {
             HttpSession session
     ) {
 
-        String id = getLoggedUserId(session);
+        String id = getLoggerUserId(session);
 
         return ResponseEntity.ok(
             service.buscarPorId(id)
@@ -144,7 +144,7 @@ public class UsuarioController {
             HttpSession session
     ) {
 
-        String id = getLoggedUserId(session);
+        String id = getLoggerUserId(session);
 
         return ResponseEntity.ok(
             service.atualizarPerfil(id, dto)
@@ -160,7 +160,7 @@ public class UsuarioController {
             HttpSession session
     ) {
 
-        String id = getLoggedUserId(session);
+        String id = getLoggerUserId(session);
 
         return ResponseEntity.ok(
             service.atualizarConfiguracoes(id, dto)
@@ -170,7 +170,7 @@ public class UsuarioController {
     /**
      * Retorna o ID do usuário logado.
      */
-    private String getLoggedUserId(HttpSession session) {
+    private String getLoggerUserId(HttpSession session) {
 
         if (session == null) {
             throw new ApiException(
