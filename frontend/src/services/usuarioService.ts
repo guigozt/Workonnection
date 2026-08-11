@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from './api';
 
 export interface CadastroPayLoad {
     nome: string;
@@ -11,8 +11,15 @@ export interface CadastroPayLoad {
 }
 
 export const usuarioService = {
+
     cadastrar: async (payload: CadastroPayLoad) => {
-        const response = await api.post('/usuarios', payload);
+
+        const response =
+            await api.post(
+                '/usuarios',
+                payload
+            );
+
         return response.data;
     }
-}
+};
