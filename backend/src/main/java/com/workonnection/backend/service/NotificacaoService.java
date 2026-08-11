@@ -33,7 +33,7 @@ public class NotificacaoService {
         
         List<Notificacao> lista = destinatario.getNotificacoes() != null 
                 ? new ArrayList<>(destinatario.getNotificacoes()) 
-                : new ArrayList<>()
+                : new ArrayList<>();
 
         Notificacao nova = new Notificacao(
             UUID.randomUUID().toString(),

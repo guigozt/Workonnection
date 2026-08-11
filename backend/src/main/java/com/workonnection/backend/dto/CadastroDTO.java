@@ -6,6 +6,6 @@ public record CadastroDTO(
     String dataNascimento,
     String telefone,
     String email,
-    String senha
+    String senha,
     String tipoUsuario
 ) {}
