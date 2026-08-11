@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -41,41 +42,11 @@ public class SecurityConfig {
                 .securityContextRepository(securityContextRepository)
             )
             .authorizeHttpRequests(auth -> auth
-                // Rotas públicas
-                .requestMatchers(
-                    "/",
-                    "/modules/**",
-                    "/css/**",
-                    "/js/**",
-                    "/global/**",
-                    "/imagens/**",
-                    "/favicon.ico"
-                ).permitAll()
-
-                // Cadastro e login
-                .requestMatchers(
-                    "/usuarios",
-                    "/usuarios/login"
-                ).permitAll()
-
-                // Logout
-                .requestMatchers(
-                    "/usuarios/logout"
-                ).permitAll()
-
-                // Todo o resto precisa estar autenticado
+                .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll() // Apenas cadastro é público
+                .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
                 .anyRequest().authenticated()
             )
-            .logout(logout -> logout
-                .logoutUrl("/usuarios/logout")
-                .logoutSuccessHandler((request, response, authentication) -> {
-                    response.setStatus(204);
-                })
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
-            );
-
         return http.build();
     }
 
