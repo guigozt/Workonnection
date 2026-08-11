@@ -1,72 +1,79 @@
 package com.workonnection.backend.controller;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.workonnection.backend.dto.ComentarioDTO;
 import com.workonnection.backend.dto.VagaDTO;
 import com.workonnection.backend.dto.VagaResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.VagaService;
-
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/vagas")
-@CrossOrigin(
-    origins = { "http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:5500" },
-    allowCredentials = "true"
-)
 public class VagaController {
 
     private final VagaService service;
-    public VagaController(VagaService service) { this.service = service; }
+    
+    public VagaController(VagaService service) { 
+        this.service = service; 
+    }
 
     @PostMapping
     public ResponseEntity<VagaResponseDTO> criar(@RequestBody VagaDTO dto, HttpSession session) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto, uid(session)));
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto, userId));
     }
 
     @GetMapping
-    public List<VagaResponseDTO> listar() { return service.listarTodas(); }
+    public ResponseEntity<List<VagaResponseDTO>> listar() { 
+        return ResponseEntity.ok(service.listarTodas()); 
+    }
 
     @GetMapping("/minhas")
-    public List<VagaResponseDTO> minhas(HttpSession session) { return service.listarPorUsuario(uid(session)); }
+    public ResponseEntity<List<VagaResponseDTO>> minhas(HttpSession session) { 
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.ok(service.listarPorUsuario(userId)); 
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VagaResponseDTO> editar(@PathVariable String id, @RequestBody VagaDTO dto, HttpSession session) {
-        return ResponseEntity.ok(service.editar(id, dto, uid(session)));
+    public ResponseEntity<VagaResponseDTO> editar(
+            @PathVariable String id, 
+            @RequestBody VagaDTO dto, 
+            HttpSession session) {
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.ok(service.editar(id, dto, userId));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable String id, HttpSession session) {
-        service.excluir(id, uid(session));
+        String userId = getLoggerUserId(session);
+        service.excluir(id, userId);
         return ResponseEntity.noContent().build();
     }
 
-    // ── Like / Dislike ────────────────────────────────────────────────────────
-
     @PostMapping("/{id}/like")
     public ResponseEntity<VagaResponseDTO> like(@PathVariable String id, HttpSession session) {
-        return ResponseEntity.ok(service.like(id, uid(session)));
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.ok(service.like(id, userId));
     }
 
     @PostMapping("/{id}/dislike")
     public ResponseEntity<VagaResponseDTO> dislike(@PathVariable String id, HttpSession session) {
-        return ResponseEntity.ok(service.dislike(id, uid(session)));
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.ok(service.dislike(id, userId));
     }
-
-    // ── Comentários ───────────────────────────────────────────────────────────
 
     @PostMapping("/{id}/comentarios")
     public ResponseEntity<VagaResponseDTO> comentar(
             @PathVariable String id,
             @RequestBody ComentarioDTO dto,
             HttpSession session) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.comentar(id, uid(session), dto));
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.comentar(id, userId, dto));
     }
 
     @DeleteMapping("/{vagaId}/comentarios/{comentarioId}")
@@ -74,14 +81,15 @@ public class VagaController {
             @PathVariable String vagaId,
             @PathVariable String comentarioId,
             HttpSession session) {
-        return ResponseEntity.ok(service.excluirComentario(vagaId, comentarioId, uid(session)));
+        String userId = getLoggerUserId(session);
+        return ResponseEntity.ok(service.excluirComentario(vagaId, comentarioId, userId));
     }
 
-    // ── Helper ────────────────────────────────────────────────────────────────
-
-    private String uid(HttpSession s) {
+    private String getLoggerUserId(HttpSession s) {
         String id = (String) s.getAttribute("usuarioId");
-        if (id == null) throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+        if (id == null) {
+            throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+        }
         return id;
     }
 }

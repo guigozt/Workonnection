@@ -1,95 +1,194 @@
 package com.workonnection.backend.controller;
 
 import com.workonnection.backend.dto.CadastroDTO;
+import com.workonnection.backend.dto.ConfiguracoesDTO;
 import com.workonnection.backend.dto.LoginDTO;
 import com.workonnection.backend.dto.PerfilDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.UsuarioService;
+
 import jakarta.servlet.http.HttpSession;
 
-import java.util.Collections;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
+
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
-@CrossOrigin(
-    origins = {
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://localhost:8080"
-    },
-    allowCredentials = "true"
-)
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService service;
+    private final UsuarioService service;
+    private final SecurityContextRepository securityContextRepository;
 
-    // ── POST /usuarios  →  Cadastro ──────────────────────────────────────────
-    @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> cadastrar(@RequestBody CadastroDTO dto) {
-        UsuarioResponseDTO response = service.cadastrar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
+    public UsuarioController(
+            UsuarioService service,
+            SecurityContextRepository securityContextRepository
+    ) {
+        this.service = service;
+        this.securityContextRepository = securityContextRepository;
     }
 
-    // ── POST /usuarios/login  →  Login ───────────────────────────────────────
+    /**
+     * Lista todos os usuários.
+     */
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(
+            service.listarColaboradores()
+        );
+    }
+
+    /**
+     * Cadastro.
+     */
+    @PostMapping
+    public ResponseEntity<UsuarioResponseDTO> cadastrar(
+            @RequestBody CadastroDTO dto
+    ) {
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(service.cadastrar(dto));
+    }
+
+    /**
+     * Login.
+     */
     @PostMapping("/login")
     public ResponseEntity<UsuarioResponseDTO> login(
             @RequestBody LoginDTO dto,
-            HttpSession session) {
+            HttpServletRequest request,
+            HttpServletResponse response,
+            HttpSession session
+    ) {
 
-        UsuarioResponseDTO response = service.login(dto);
+        UsuarioResponseDTO usuario = service.login(dto);
 
-        // salva na sessão (como já fazia)
-        session.setAttribute("usuarioId", response.getId());
+        /*
+         * Guarda o ID do usuário na sessão.
+         */
+        session.setAttribute(
+            "usuarioId",
+            usuario.id()
+        );
 
-        // AGORA INTEGRA COM SPRING SECURITY
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(
-                        response.getEmail(),
-                        null,
-                        Collections.emptyList()
-                );
+        /*
+         * Cria a autenticação do Spring Security.
+         */
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(
+                usuario.email(),
+                null,
+                Collections.emptyList()
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        /*
+         * Cria um novo SecurityContext.
+         */
+        SecurityContext context =
+            SecurityContextHolder.createEmptyContext();
 
-        return ResponseEntity.ok(response);
+        context.setAuthentication(authentication);
+
+        /*
+         * Coloca o contexto no SecurityContextHolder.
+         */
+        SecurityContextHolder.setContext(context);
+
+        /*
+         * IMPORTANTE:
+         * Salva o SecurityContext na HttpSession.
+         */
+        securityContextRepository.saveContext(
+            context,
+            request,
+            response
+        );
+
+        return ResponseEntity.ok(usuario);
     }
-    
-    // ── GET /usuarios/me  →  Sessão atual ────────────────────────────────────
+
+    /**
+     * Retorna o usuário atualmente logado.
+     */
     @GetMapping("/me")
-    public ResponseEntity<UsuarioResponseDTO> usuarioLogado(HttpSession session) {
-        String id = (String) session.getAttribute("usuarioId");
+    public ResponseEntity<UsuarioResponseDTO> usuarioLogado(
+            HttpSession session
+    ) {
 
-        if (id == null) {
-            throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED); // 401
-        }
+        String id = getLoggerUserId(session);
 
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(
+            service.buscarPorId(id)
+        );
     }
 
-    // ── PUT /usuarios/perfil  →  Atualiza perfil do usuário logado ───────────
+    /**
+     * Atualiza perfil.
+     */
     @PutMapping("/perfil")
     public ResponseEntity<UsuarioResponseDTO> atualizarPerfil(
-        @RequestBody PerfilDTO dto,
-        HttpSession session) {
-            String id = (String) session.getAttribute("usuarioId");
-            if (id == null) throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+            @RequestBody PerfilDTO dto,
+            HttpSession session
+    ) {
 
-            return ResponseEntity.ok(service.atualizarPerfil(id, dto));
+        String id = getLoggerUserId(session);
+
+        return ResponseEntity.ok(
+            service.atualizarPerfil(id, dto)
+        );
     }
 
-    // ── POST /usuarios/logout  →  Logout ─────────────────────────────────────
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.noContent().build(); // 204
+    /**
+     * Atualiza configurações.
+     */
+    @PutMapping("/configuracoes")
+    public ResponseEntity<UsuarioResponseDTO> atualizarConfiguracoes(
+            @RequestBody ConfiguracoesDTO dto,
+            HttpSession session
+    ) {
+
+        String id = getLoggerUserId(session);
+
+        return ResponseEntity.ok(
+            service.atualizarConfiguracoes(id, dto)
+        );
+    }
+
+    /**
+     * Retorna o ID do usuário logado.
+     */
+    private String getLoggerUserId(HttpSession session) {
+
+        if (session == null) {
+            throw new ApiException(
+                "Não autenticado",
+                HttpStatus.UNAUTHORIZED
+            );
+        }
+
+        String id =
+            (String) session.getAttribute("usuarioId");
+
+        if (id == null || id.isBlank()) {
+            throw new ApiException(
+                "Não autenticado",
+                HttpStatus.UNAUTHORIZED
+            );
+        }
+
+        return id;
     }
 }
