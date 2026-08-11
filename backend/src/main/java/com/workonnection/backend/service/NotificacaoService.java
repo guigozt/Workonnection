@@ -83,7 +83,9 @@ public class NotificacaoService {
         Usuario u = buscarOuErro(usuarioId);
         if (u.getNotificacoes() == null) return;
         
-        u.getNotificacoes().removeIf(n -> n.getId().equals(notificacaoId));
+        List<Notificacao> lista = new ArrayList<>(u.getNotificacoes());
+        lista.removeIf(n -> n.getId().equals(notificacaoId));
+        u.setNotificacoes(lista);
         usuarioRepository.save(u);
     }
 

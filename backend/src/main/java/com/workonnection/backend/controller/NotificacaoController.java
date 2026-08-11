@@ -22,39 +22,39 @@ public class NotificacaoController {
 
     @GetMapping
     public ResponseEntity<List<Notificacao>> listar(HttpSession session) {
-        String userId = getLoggedUserId(session);
+        String userId = getLoggerUserId(session);
         return ResponseEntity.ok(service.listar(userId));
     }
 
     @PatchMapping("/{id}/lida")
     public ResponseEntity<Void> marcarLida(@PathVariable String id, HttpSession session) {
-        String userId = getLoggedUserId(session);
+        String userId = getLoggerUserId(session);
         service.marcarLida(userId, id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/lidas")
     public ResponseEntity<Void> marcarTodasLidas(HttpSession session) {
-        String userId = getLoggedUserId(session);
+        String userId = getLoggerUserId(session);
         service.marcarTodasLidas(userId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable String id, HttpSession session) {
-        String userId = getLoggedUserId(session);
+        String userId = getLoggerUserId(session);
         service.excluir(userId, id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> limparTodas(HttpSession session) {
-        String userId = getLoggedUserId(session);
+        String userId = getLoggerUserId(session);
         service.limparTodas(userId);
         return ResponseEntity.noContent().build();
     }
 
-    private String getLoggedUserId(HttpSession session) {
+    private String getLoggerUserId(HttpSession session) {
         String id = (String) session.getAttribute("usuarioId");
         if (id == null) {
             throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
