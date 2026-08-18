@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/usuarios").permitAll() // Apenas cadastro é público
                 .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
                 .anyRequest().authenticated()
-            )
+            );
         return http.build();
     }
 
