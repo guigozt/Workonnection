@@ -1,9 +1,13 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { useState } from "react";
+
+import { useAuth } from "../../../context/AuthContext";
+
 import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
-    const auth = useContext(AuthContext);
+
+    const auth = useAuth();
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -26,7 +30,10 @@ export const useLogin = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+
         const { name, value } = e.target;
 
         setFormData(prev => ({
@@ -35,22 +42,28 @@ export const useLogin = () => {
         }));
 
         if (errors[name as keyof typeof errors]) {
+
             setErrors(prev => ({
                 ...prev,
                 [name]: undefined
             }));
+
         }
     };
 
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
+
         e.preventDefault();
 
         console.log("=================================");
         console.log("1. LOGIN: formulário enviado");
         console.log("Email:", formData.email);
-        console.log("Senha:", formData.senha ? "***" : "(vazia)");
+        console.log(
+            "Senha:",
+            formData.senha ? "***" : "(vazia)"
+        );
         console.log("AuthContext:", auth);
         console.log("login:", auth.login);
         console.log("=================================");
@@ -66,22 +79,35 @@ export const useLogin = () => {
         } = {};
 
         if (!formData.email.trim()) {
+
             localErrors.email = "Email obrigatório";
+
         } else if (
             !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
                 formData.email.trim()
             )
         ) {
+
             localErrors.email = "Email inválido";
+
         }
 
         if (!formData.senha) {
+
             localErrors.senha = "Senha obrigatória";
+
         }
 
         if (Object.keys(localErrors).length > 0) {
-            console.log("2. LOGIN: validação local falhou");
-            console.log("Erros:", localErrors);
+
+            console.log(
+                "2. LOGIN: validação local falhou"
+            );
+
+            console.log(
+                "Erros:",
+                localErrors
+            );
 
             setErrors(localErrors);
 
@@ -93,19 +119,26 @@ export const useLogin = () => {
             return;
         }
 
-        console.log("2. LOGIN: validação local OK");
+        console.log(
+            "2. LOGIN: validação local OK"
+        );
 
         setIsSubmitting(true);
 
         try {
-            console.log("3. LOGIN: chamando AuthContext.login()");
+
+            console.log(
+                "3. LOGIN: chamando AuthContext.login()"
+            );
 
             await auth.login({
                 email: formData.email.trim(),
                 senha: formData.senha
             });
 
-            console.log("4. LOGIN: login realizado com sucesso");
+            console.log(
+                "4. LOGIN: login realizado com sucesso"
+            );
 
             setFeedback({
                 message: "Login realizado com sucesso!",
@@ -117,11 +150,23 @@ export const useLogin = () => {
             }, 1200);
 
         } catch (error) {
-            console.error("❌ LOGIN: erro capturado");
-            console.error("Erro completo:", error);
+
+            console.error(
+                "❌ LOGIN: erro capturado"
+            );
+
+            console.error(
+                "Erro completo:",
+                error
+            );
 
             if (error instanceof Error) {
-                console.error("Mensagem:", error.message);
+
+                console.error(
+                    "Mensagem:",
+                    error.message
+                );
+
             }
 
             setFeedback({
@@ -130,7 +175,11 @@ export const useLogin = () => {
             });
 
         } finally {
-            console.log("5. LOGIN: finalizando");
+
+            console.log(
+                "5. LOGIN: finalizando"
+            );
+
             setIsSubmitting(false);
         }
     };

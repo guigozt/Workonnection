@@ -1,5 +1,6 @@
 import {
     createContext,
+    useContext,
     useState,
     useEffect
 } from "react";
@@ -16,9 +17,7 @@ import type {
 interface AuthContextData {
     usuario: UsuarioResponseDTO | null;
     loading: boolean;
-
     login: (dados: LoginDTO) => Promise<void>;
-
     logout: () => Promise<void>;
 }
 
@@ -54,7 +53,6 @@ export const AuthProvider = ({
                 );
 
                 setUsuario(user);
-
             })
 
             .catch((error) => {
@@ -65,7 +63,6 @@ export const AuthProvider = ({
                 );
 
                 setUsuario(null);
-
             })
 
             .finally(() => {
@@ -112,4 +109,26 @@ export const AuthProvider = ({
             {children}
         </AuthContext.Provider>
     );
+};
+
+
+/**
+ * Hook para acessar o AuthContext.
+ *
+ * Garante que o componente está sendo
+ * utilizado dentro do AuthProvider.
+ */
+export const useAuth = (): AuthContextData => {
+
+    const context = useContext(AuthContext);
+
+    if (!context) {
+
+        throw new Error(
+            "useAuth deve ser usado dentro de um AuthProvider"
+        );
+
+    }
+
+    return context;
 };
