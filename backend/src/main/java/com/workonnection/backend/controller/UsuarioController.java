@@ -191,4 +191,16 @@ public class UsuarioController {
 
         return id;
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        
+        if (session != null) {
+            session.invalidate();
+        }
+        
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok().build();
+    }
 }
