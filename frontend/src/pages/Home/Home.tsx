@@ -1,19 +1,33 @@
+import React, { useState } from 'react';
 import { Topbar } from '../../components/Topbar/Topbar';
 import { ModalVaga } from '../../components/ModalVaga/ModalVaga';
+import { VagaCard } from '../../components/VagaCard/VagaCard';
+import { ComentariosDrawer } from '../../components/ComentariosDrawer/ComentariosDrawer';
 import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
 import { useHome } from './useHome';
+import type { VagaResponseDTO } from '../../types/vagas';
 import styles from './Home.module.css';
 
-export const Home = () => {
+export const Home: React.FC = () => {
   const {
     vagas,
     loading,
+    usuarioLogado,
     isModalOpen,
     vagaEmEdicao,
     handleAbrirCriacao,
     handleFecharModal,
     handleSalvarVagaSucesso,
+    handleExcluirVaga,
+    handleLike,
+    handleDislike,
+    handleEnviarComentario,
+    handleExcluirComentario,
   } = useHome();
+
+  const [vagaAtivaComentarios, setVagaAtivaComentarios] = useState<VagaResponseDTO | null>(null);
+
+  const vagaDrawerAtualizada = vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
 
   return (
     <div>
@@ -21,7 +35,6 @@ export const Home = () => {
 
       <main className={styles.homeWrapper}>
         <div id="vagas-container">
-          <h2>Feed de Vagas</h2>
 
           {loading ? (
             <p>Carregando vagas...</p>
@@ -29,13 +42,16 @@ export const Home = () => {
             <p>Nenhuma vaga cadastrada no momento.</p>
           ) : (
             vagas.map((vaga) => (
-              <div key={vaga.id} className={styles.vagaCard}>
-                <h3>{vaga.cargo}</h3>
-                <p><strong>Empresa:</strong> {vaga.empresa}</p>
-                <p>{vaga.descricao}</p>
-                <p><strong>Localização:</strong> {vaga.localizacao} | <strong>Salário:</strong> {vaga.salario}</p>
-                <small>Publicado por: {vaga.nomeUsuario}</small>
-              </div>
+              <VagaCard
+                key={vaga.id}
+                vaga={vaga}
+                usuarioLogado={usuarioLogado}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                onAbrirComentarios={(v) => setVagaAtivaComentarios(v)}
+                onEditar={handleAbrirCriacao}
+                onExcluir={handleExcluirVaga}
+              />
             ))
           )}
         </div>
@@ -48,6 +64,15 @@ export const Home = () => {
         onClose={handleFecharModal}
         onSuccess={handleSalvarVagaSucesso}
         vagaParaEditar={vagaEmEdicao}
+      />
+
+      <ComentariosDrawer
+        isOpen={Boolean(vagaAtivaComentarios)}
+        vaga={vagaDrawerAtualizada}
+        usuarioLogado={usuarioLogado}
+        onClose={() => setVagaAtivaComentarios(null)}
+        onEnviarComentario={handleEnviarComentario}
+        onExcluirComentario={handleExcluirComentario}
       />
     </div>
   );

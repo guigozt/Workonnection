@@ -28,3 +28,15 @@ export interface VagaResponseDTO extends VagaDTO {
     dislikes: string[];
     comentarios: Comentario[];
 }
+
+export interface VagaFormData extends Partial<VagaDTO> {
+    id?: string | number;
+    horarioInicio?: string;
+    horarioFim?: string;
+}
+
+export interface UsuarioLogado {
+    id: string;
+    nomeUsuario?: string;
+    tipoUsuario?: string;
+}

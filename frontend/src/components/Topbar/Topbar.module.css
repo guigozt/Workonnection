@@ -63,8 +63,9 @@
   cursor: pointer;
 }
 
-.navLink i {
-  font-size: 16px;
+/* Alterado de .navLink i para .navLink svg */
+.navLink svg {
+  margin-bottom: 2px;
 }
 
 .iconText {

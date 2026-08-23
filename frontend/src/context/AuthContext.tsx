@@ -1,134 +1,78 @@
-import {
-    createContext,
-    useContext,
-    useState,
-    useEffect
-} from "react";
-
-import type { ReactNode } from "react";
-
-import { authService } from "../services/authService";
-
-import type {
-    UsuarioResponseDTO,
-    LoginDTO
-} from "../types/auth";
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { authService } from '../services/authService';
+import type { UsuarioResponseDTO, LoginDTO } from '../types/auth';
 
 interface AuthContextData {
-    usuario: UsuarioResponseDTO | null;
-    loading: boolean;
-    login: (dados: LoginDTO) => Promise<void>;
-    logout: () => Promise<void>;
+  usuario: UsuarioResponseDTO | null;
+  loading: boolean; 
+  login: (dados: LoginDTO) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextData | undefined>(
-    undefined
-);
+export const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
 interface AuthProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
-export const AuthProvider = ({
-    children
-}: AuthProviderProps) => {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [usuario, setUsuario] = useState<UsuarioResponseDTO | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    const [usuario, setUsuario] =
-        useState<UsuarioResponseDTO | null>(null);
+  useEffect(() => {
+    console.log("AUTH: verificando usuário logado...");
 
-    const [loading, setLoading] =
-        useState(true);
-
-    useEffect(() => {
-
-        console.log("AUTH: verificando usuário logado...");
-
-        authService.buscarUsuarioLogado()
-
-            .then((user) => {
-
-                console.log(
-                    "AUTH: usuário encontrado:",
-                    user
-                );
-
-                setUsuario(user);
-            })
-
-            .catch((error) => {
-
-                console.log(
-                    "AUTH: nenhum usuário logado",
-                    error
-                );
-
-                setUsuario(null);
-            })
-
-            .finally(() => {
-
-                setLoading(false);
-
-            });
-
-    }, []);
-
-    const login = async (dados: LoginDTO) => {
-
-        console.log(
-            "AUTH: executando login...",
-            dados.email
-        );
-
-        const user = await authService.login(dados);
-
-        console.log(
-            "AUTH: login retornou:",
-            user
-        );
-
+    authService
+      .buscarUsuarioLogado()
+      .then((user) => {
+        console.log("AUTH: usuário encontrado:", user);
         setUsuario(user);
-    };
-
-    const logout = async () => {
-
-        await authService.logout();
-
+      })
+      .catch((error) => {
+        console.log("AUTH: nenhum usuário logado", error);
         setUsuario(null);
-    };
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-    return (
-        <AuthContext.Provider
-            value={{
-                usuario,
-                loading,
-                login,
-                logout
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+  const login = async (dados: LoginDTO) => {
+    console.log("AUTH: executando login...", dados.email);
+    const user = await authService.login(dados);
+    console.log("AUTH: login retornou:", user);
+    setUsuario(user);
+  };
+
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Erro na API ao deslogar. Limpando estado local mesmo assim.");
+    } finally {
+      // Limpa o usuário do estado do React garantido!
+      setUsuario(null);
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ usuario, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
-
 
 /**
  * Hook para acessar o AuthContext.
- *
  * Garante que o componente está sendo
  * utilizado dentro do AuthProvider.
  */
 export const useAuth = (): AuthContextData => {
+  const context = useContext(AuthContext);
 
-    const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
+  }
 
-    if (!context) {
-
-        throw new Error(
-            "useAuth deve ser usado dentro de um AuthProvider"
-        );
-
-    }
-
-    return context;
+  return context;
 };

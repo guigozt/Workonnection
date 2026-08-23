@@ -1,6 +1,15 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
+import { 
+    Home, 
+    Bell, 
+    Briefcase, 
+    Users, 
+    User, 
+    Info, 
+    Settings, 
+    LogOut 
+} from 'lucide-react';
+import { useTopbar } from './useTopbar';
 import styles from './Topbar.module.css';
 
 interface TopbarProps {
@@ -8,22 +17,8 @@ interface TopbarProps {
 }
 
 export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
-
-    const isActive = (path: string) => location.pathname === path;
-
-    const handleLogout = async () => {
-        try {
-            if (logout) {
-                await logout();
-            }
-            navigate('/login');
-        } catch (error) {
-            console.error("Erro ao realizar logout", error);
-        }
-    };
+    // Importando a lógica do nosso custom hook
+    const { isActive, handleLogout } = useTopbar();
 
     return (
         <header className={styles.topbar}>
@@ -38,13 +33,13 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
             </div>
 
             <nav className={styles.topIcons}>
-                <Link to='/vagas' className={`${styles.navLink} ${isActive('/home') ? styles.ativo : ''}`}>
-                    <i className='fas fa-home'></i>
+                <Link to='/home' className={`${styles.navLink} ${isActive('/home') ? styles.ativo : ''}`}>
+                    <Home size={18} />
                     <span className={styles.iconText}>Home</span>
                 </Link>
 
                 <Link to="/notificacoes" className={`${styles.navLink} ${isActive('/notificacoes') ? styles.ativo : ''}`}>
-                    <i className="fas fa-bell"></i>
+                    <Bell size={18} />
                     {notificacoesNaoLidas > 0 && (
                         <span className={styles.notifBadge}>
                             {notificacoesNaoLidas > 99 ? '99+' : notificacoesNaoLidas}
@@ -53,33 +48,33 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
                     <span className={styles.iconText}>Avisos</span>
                 </Link>
 
-                <Link to="/vagas-gerenciar" className={`${styles.navLink} ${isActive('/vagas-gerenciar') ? styles.ativo : ''}`}>
-                    <i className="fas fa-briefcase"></i>
+                <Link to="/vagas" className={`${styles.navLink} ${isActive('/vagas') ? styles.ativo : ''}`}>
+                    <Briefcase size={18} />
                     <span className={styles.iconText}>Vagas</span>
                 </Link>
                 
-                <Link to="/colaboradores" className={`${styles.navLink} ${isActive('/colaboradores') ? styles.ativo : ''}`}>
-                    <i className="fas fa-users"></i>
+                <Link to="/rede" className={`${styles.navLink} ${isActive('/rede') ? styles.ativo : ''}`}>
+                    <Users size={18} />
                     <span className={styles.iconText}>Rede</span>
                 </Link>
 
                 <Link to="/perfil" className={`${styles.navLink} ${isActive('/perfil') ? styles.ativo : ''}`}>
-                    <i className="fas fa-user"></i>
+                    <User size={18} />
                     <span className={styles.iconText}>Perfil</span>
                 </Link>
 
                 <Link to="/sobre" className={`${styles.navLink} ${isActive('/sobre') ? styles.ativo : ''}`}>
-                    <i className="fas fa-info-circle"></i>
+                    <Info size={18} />
                     <span className={styles.iconText}>Sobre</span>
                 </Link>
 
                 <Link to="/configuracoes" className={`${styles.navLink} ${isActive('/configuracoes') ? styles.ativo : ''}`}>
-                    <i className="fas fa-cog"></i>
+                    <Settings size={18} />
                     <span className={styles.iconText}>Opções</span>
                 </Link>
 
                 <button type="button" onClick={handleLogout} className={styles.navLink} title="Sair">
-                    <i className="fas fa-sign-out-alt"></i>
+                    <LogOut size={18} />
                     <span className={styles.iconText}>Sair</span>
                 </button>
             </nav>
