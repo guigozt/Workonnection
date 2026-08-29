@@ -58,7 +58,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "https://workonnection-frontend.vercel.app"
+            "https://workonnection-frontend.vercel.app",
+            "https://*.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
