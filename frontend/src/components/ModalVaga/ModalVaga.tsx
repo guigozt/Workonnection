@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../Button/Button';
 import type { VagaResponseDTO, VagaDTO } from '../../types/vagas';
+import { api } from '../../services/api';
 import styles from './ModalVaga.module.css';
 
 export interface VagaData extends Partial<VagaDTO> {
@@ -124,28 +125,20 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
     };
 
     try {
-      const url = vagaParaEditar?.id
-        ? `http://localhost:8080/vagas/${vagaParaEditar.id}`
-        : 'http://localhost:8080/vagas';
-      const method = vagaParaEditar?.id ? 'PUT' : 'POST';
+      let response;
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        alert(err.erro || 'Erro ao salvar a vaga.');
-        return;
+      if (vagaParaEditar?.id) {
+        response = await api.put(`/vagas/${vagaParaEditar.id}`, payload);
+      } else {
+        response = await api.post('/vagas', payload);
       }
 
-      const vagaSalva: VagaResponseDTO = await res.json();
-      onSuccess(vagaSalva);
+      onSuccess(response.data);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      const mensagemErro = error.response?.data?.erro || 'Erro ao conectar no servidor.';
+      alert(mensagemErro);
       alert('Erro ao conectar com o servidor');
     } finally {
       setIsSubmitting(false);

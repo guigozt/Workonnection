@@ -41,15 +41,19 @@ public class VagaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<VagaResponseDTO> editar(
-            @PathVariable String id, 
-            @RequestBody VagaDTO dto, 
-            HttpSession session) {
+            @PathVariable String id,
+            @RequestBody VagaDTO dto,
+            HttpSession session
+    ) {
         String userId = getLoggerUserId(session);
         return ResponseEntity.ok(service.editar(id, dto, userId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable String id, HttpSession session) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable String id,
+            HttpSession session
+    ) {
         String userId = getLoggerUserId(session);
         service.excluir(id, userId);
         return ResponseEntity.noContent().build();
@@ -71,23 +75,28 @@ public class VagaController {
     public ResponseEntity<VagaResponseDTO> comentar(
             @PathVariable String id,
             @RequestBody ComentarioDTO dto,
-            HttpSession session) {
+            HttpSession session
+    ) {
         String userId = getLoggerUserId(session);
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.comentar(id, userId, dto));
+        return ResponseEntity.ok(service.comentar(id, userId, dto));
     }
 
-    @DeleteMapping("/{vagaId}/comentarios/{comentarioId}")
+    @DeleteMapping("/{id}/comentarios/{comentarioId}")
     public ResponseEntity<VagaResponseDTO> excluirComentario(
-            @PathVariable String vagaId,
+            @PathVariable String id,
             @PathVariable String comentarioId,
-            HttpSession session) {
+            HttpSession session
+    ) {
         String userId = getLoggerUserId(session);
-        return ResponseEntity.ok(service.excluirComentario(vagaId, comentarioId, userId));
+        return ResponseEntity.ok(service.excluirComentario(id, comentarioId, userId));
     }
 
-    private String getLoggerUserId(HttpSession s) {
-        String id = (String) s.getAttribute("usuarioId");
-        if (id == null) {
+    private String getLoggerUserId(HttpSession session) {
+        if (session == null) {
+            throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
+        }
+        String id = (String) session.getAttribute("usuarioId");
+        if (id == null || id.isBlank()) {
             throw new ApiException("Não autenticado", HttpStatus.UNAUTHORIZED);
         }
         return id;
