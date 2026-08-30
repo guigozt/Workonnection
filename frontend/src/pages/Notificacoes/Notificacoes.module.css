@@ -1,0 +1,10 @@
+.lista {
+    width: 100%;
+}
+
+.erro {
+    text-align: center;
+    color: #d86b6b;
+    font-size: 14px;
+    margin-top: 40px;
+}
