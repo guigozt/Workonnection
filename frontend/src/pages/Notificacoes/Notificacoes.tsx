@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Topbar } from '../../components/Topbar/Topbar';
 
 import {
   Bell,
@@ -27,11 +28,13 @@ export const Notificacoes = () => {
     notificacoes,
     loading,
     erro,
+    quantidadeNaoLidas,
     marcarComoLida,
     marcarTodasComoLidas,
     excluirNotificacao,
     limparTodas,
   } = useNotificacoes();
+  
 
   const formatarTempo = (instante: string) => {
     if (!instante) {
@@ -113,115 +116,123 @@ export const Notificacoes = () => {
 
   if (loading) {
     return (
-      <main className={styles.wrapper}>
-        <p>Carregando notificações...</p>
-      </main>
+      <>
+        <Topbar notificacoesNaoLidas={0} />
+
+        <main className={styles.wrapper}>
+          <p>Carregando notificações...</p>
+        </main>
+      </>
     );
   }
 
-  return (
-    <main className={styles.wrapper}>
-      <header className={styles.header}>
-        <h1>Notificações</h1>
+   return (
+    <>
+      <Topbar
+        notificacoesNaoLidas={quantidadeNaoLidas}
+      />
 
-        <div className={styles.acoes}>
-          <button
-            type="button"
-            className={styles.botaoAcao}
-            onClick={marcarTodasComoLidas}
-          >
-            <CheckCheck size={15} />
+      <main className={styles.wrapper}>
+        <header className={styles.header}>
+          <h1>Notificações</h1>
 
-            Marcar todas como lidas
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.botaoAcao} ${styles.danger}`}
-            onClick={handleLimparTodas}
-          >
-            <Trash2 size={15} />
-
-            Limpar tudo
-          </button>
-        </div>
-      </header>
-
-      {erro && (
-        <p className={styles.erro}>
-          {erro}
-        </p>
-      )}
-
-      {!erro && notificacoes.length === 0 && (
-        <div className={styles.vazio}>
-          <Bell size={32} />
-
-          <p>
-            Nenhuma notificação por enquanto.
-          </p>
-        </div>
-      )}
-
-      {!erro && notificacoes.length > 0 && (
-        <div className={styles.lista}>
-          {notificacoes.map((notificacao) => (
-            <article
-              key={notificacao.id}
-              className={`${styles.card} ${
-                !notificacao.lida
-                  ? styles.naoLida
-                  : ''
-              }`}
-              onClick={() =>
-                clicarNotificacao(notificacao)
-              }
+          <div className={styles.acoes}>
+            <button
+              type="button"
+              className={styles.botaoAcao}
+              onClick={marcarTodasComoLidas}
             >
-              <div
-                className={`${styles.icone} ${
-                  styles[notificacao.tipo]
+              <CheckCheck size={15} />
+              Marcar todas como lidas
+            </button>
+
+            <button
+              type="button"
+              className={`${styles.botaoAcao} ${styles.danger}`}
+              onClick={handleLimparTodas}
+            >
+              <Trash2 size={15} />
+              Limpar tudo
+            </button>
+          </div>
+        </header>
+
+        {erro && (
+          <p className={styles.erro}>
+            {erro}
+          </p>
+        )}
+
+        {!erro && notificacoes.length === 0 && (
+          <div className={styles.vazio}>
+            <Bell size={32} />
+
+            <p>
+              Nenhuma notificação por enquanto.
+            </p>
+          </div>
+        )}
+
+        {!erro && notificacoes.length > 0 && (
+          <div className={styles.lista}>
+            {notificacoes.map((notificacao) => (
+              <article
+                key={notificacao.id}
+                className={`${styles.card} ${
+                  !notificacao.lida
+                    ? styles.naoLida
+                    : ''
                 }`}
+                onClick={() =>
+                  clicarNotificacao(notificacao)
+                }
               >
-                {obterIcone(notificacao.tipo)}
-              </div>
-
-              <div className={styles.corpo}>
-                <div className={styles.mensagem}>
-                  {notificacao.mensagem}
-                </div>
-
-                <div className={styles.tempo}>
-                  {formatarTempo(
-                    notificacao.criadaEm
-                  )}
-                </div>
-              </div>
-
-              {!notificacao.lida && (
                 <div
-                  className={styles.ponto}
-                  title="Não lida"
-                />
-              )}
+                  className={`${styles.icone} ${
+                    styles[notificacao.tipo]
+                  }`}
+                >
+                  {obterIcone(notificacao.tipo)}
+                </div>
 
-              <button
-                type="button"
-                className={styles.botaoExcluir}
-                title="Excluir"
-                onClick={(event) => {
-                  event.stopPropagation();
+                <div className={styles.corpo}>
+                  <div className={styles.mensagem}>
+                    {notificacao.mensagem}
+                  </div>
 
-                  excluirNotificacao(
-                    notificacao.id
-                  );
-                }}
-              >
-                <X size={14} />
-              </button>
-            </article>
-          ))}
-        </div>
-      )}
-    </main>
+                  <div className={styles.tempo}>
+                    {formatarTempo(
+                      notificacao.criadaEm
+                    )}
+                  </div>
+                </div>
+
+                {!notificacao.lida && (
+                  <div
+                    className={styles.ponto}
+                    title="Não lida"
+                  />
+                )}
+
+                <button
+                  type="button"
+                  className={styles.botaoExcluir}
+                  title="Excluir"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    excluirNotificacao(
+                      notificacao.id
+                    );
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+      </main>
+    </>
   );
 };
