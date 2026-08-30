@@ -23,7 +23,7 @@ export const useNotificacoes = () => {
     }
   };
 
-  const marcarComoLida = async (id: number) => {
+  const marcarComoLida = async (id: string) => {
     try {
       await notificacaoService.marcarComoLida(id);
 
@@ -57,7 +57,7 @@ export const useNotificacoes = () => {
     }
   };
 
-  const excluirNotificacao = async (id: number) => {
+  const excluirNotificacao = async (id: string) => {
     try {
       await notificacaoService.excluir(id);
 
