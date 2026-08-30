@@ -5,10 +5,12 @@ export type TipoNotificacao =
   | 'vaga_nova';
 
 export interface Notificacao {
-  id: number;
+  id: string;
   tipo: TipoNotificacao;
   mensagem: string;
+  remetenteId: string;
+  remetenteNome: string;
   lida: boolean;
   criadaEm: string;
-  vagaId?: number;
+  vagaId?: string | null;
 }

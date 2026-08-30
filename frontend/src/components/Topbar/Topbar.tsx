@@ -24,7 +24,7 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
         <header className={styles.topbar}>
             <div className={styles.logo}>
                 <Link to="/home">
-                    <img src="/imagens/logo_workonnection.png" alt="WorkConnection" />
+                    <img src="/logo_workonnection.png" alt="WorkConnection" />
                 </Link>
             </div>
 

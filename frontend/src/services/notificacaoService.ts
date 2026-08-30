@@ -8,7 +8,7 @@ export const notificacaoService = {
     return response.data;
   },
 
-  async marcarComoLida(id: number): Promise<void> {
+  async marcarComoLida(id: string): Promise<void> {
     await api.patch(`/notificacoes/${id}/lida`);
   },
 
@@ -16,7 +16,7 @@ export const notificacaoService = {
     await api.patch('/notificacoes/lidas');
   },
 
-  async excluir(id: number): Promise<void> {
+  async excluir(id: string): Promise<void> {
     await api.delete(`/notificacoes/${id}`);
   },
 
