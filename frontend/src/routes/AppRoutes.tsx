@@ -8,7 +8,7 @@ import {
 import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
-
+import Sobre from "../pages/Sobre/Sobre";
 import { PrivateRoute } from "./PrivateRoute";
 
 export const AppRoutes = () => {
@@ -54,6 +54,15 @@ export const AppRoutes = () => {
                             to="/login"
                             replace
                         />
+                    }
+                />
+
+                <Route
+                    path="/sobre"
+                    element={
+                        <PrivateRoute>
+                            <Sobre />
+                        </PrivateRoute>
                     }
                 />
 
