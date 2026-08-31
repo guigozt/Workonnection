@@ -1,64 +1,98 @@
 import {
-    BrowserRouter,
-    Routes,
-    Route,
-    Navigate
-} from "react-router-dom";
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 
-import { Login } from "../pages/Auth/Login/Login";
-import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
-import { Home } from "../pages/Home/Home";
+import {
+  Login,
+} from '../pages/Auth/Login/Login';
 
-import { PrivateRoute } from "./PrivateRoute";
+import {
+  Cadastro,
+} from '../pages/Auth/Cadastro/Cadastro';
+
+import {
+  Home,
+} from '../pages/Home/Home';
+
+import {
+  Perfil,
+} from '../pages/Perfil/Perfil';
+
+import {
+  MinhasVagas,
+} from '../pages/MinhasVagas/MinhasVagas';
+
+import {
+  PrivateRoute,
+} from './PrivateRoute';
 
 export const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
 
-    return (
-        <BrowserRouter>
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
 
-            <Routes>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-                <Route
-                    path="/"
-                    element={
-                        <Navigate
-                            to="/login"
-                            replace
-                        />
-                    }
-                />
+        <Route
+          path="/cadastro"
+          element={<Cadastro />}
+        />
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
 
-                <Route
-                    path="/cadastro"
-                    element={<Cadastro />}
-                />
+        <Route
+          path="/perfil"
+          element={
+            <PrivateRoute>
+              <Perfil />
+            </PrivateRoute>
+          }
+        />
 
-                <Route
-                    path="/home"
-                    element={
-                        <PrivateRoute>
-                            <Home />
-                        </PrivateRoute>
-                    }
-                />
+        {/* Rota Minhas Vagas */}
+        <Route
+          path="/vagas"
+          element={
+            <PrivateRoute>
+              <MinhasVagas />
+            </PrivateRoute>
+          }
+        />
 
-                <Route
-                    path="*"
-                    element={
-                        <Navigate
-                            to="/login"
-                            replace
-                        />
-                    }
-                />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
 
-            </Routes>
-
-        </BrowserRouter>
-    );
+      </Routes>
+    </BrowserRouter>
+  );
 };
