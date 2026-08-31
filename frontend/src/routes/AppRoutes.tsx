@@ -8,6 +8,7 @@ import {
 import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
+import { Perfil } from '../pages/Perfil/Perfil';
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -44,6 +45,12 @@ export const AppRoutes = () => {
                         <PrivateRoute>
                             <Home />
                         </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/perfil"
+                    element={<Perfil />
+                        
                     }
                 />
 
