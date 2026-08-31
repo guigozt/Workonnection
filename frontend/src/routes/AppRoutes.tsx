@@ -8,6 +8,7 @@ import {
 import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
+import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -45,7 +46,15 @@ export const AppRoutes = () => {
                             <Home />
                         </PrivateRoute>
                     }
-                />
+                            />
+                            <Route
+                path="/notificacoes"
+                element={
+                    <PrivateRoute>
+                        <Notificacoes />
+                    </PrivateRoute>
+                }
+            />
 
                 <Route
                     path="*"
