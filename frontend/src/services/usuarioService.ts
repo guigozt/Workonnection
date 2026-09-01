@@ -13,12 +13,8 @@ export interface CadastroPayLoad {
 export const usuarioService = {
   
   cadastrar: async (payload: CadastroPayLoad) => {
-
-  const response =
-    await api.post(
-      '/usuarios',
-      payload
-  ),
+    const response = await api.post('/usuarios', payload);
+  },
 
   listarTodos: async(): Promise<UsuarioResponseDTO[]> => {
     const { data } = await api.get('/usuarios');
