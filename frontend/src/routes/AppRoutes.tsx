@@ -48,14 +48,23 @@ export const AppRoutes = () => {
                         </PrivateRoute>
                     }
                             />
-                            <Route
-                path="/notificacoes"
-                element={
-                    <PrivateRoute>
-                        <Notificacoes />
-                    </PrivateRoute>
-                }
-            />
+                <Route
+                    path="/notificacoes"
+                    element={
+                        <PrivateRoute>
+                            <Notificacoes />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/colaboradores"
+                    element={
+                        <PrivateRoute>
+                            <Colaboradores />
+                        </PrivateRoute>
+                    }
+                />
 
                 <Route
                     path="*"
@@ -67,17 +76,7 @@ export const AppRoutes = () => {
                     }
                 />
 
-                <Route
-                path="/colaboradores"
-                element={
-                <PrivateRoute>
-                    <Colaboradores />
-                    </PrivateRoute>
-                }
-/>
-
             </Routes>
-
 
         </BrowserRouter>
     );
