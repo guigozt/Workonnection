@@ -11,6 +11,7 @@ import { Home } from "../pages/Home/Home";
 import Sobre from "../pages/Sobre/Sobre";
 import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
 import { Colaboradores } from '../pages/Colaboradores/Colaboradores';
+import { MinhasVagas } from '../pages/MinhasVagas/MinhasVagas';
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -89,6 +90,15 @@ export const AppRoutes = () => {
                             <Sobre />
                         </PrivateRoute>
                     }
+                />
+
+                <Route 
+                  path="/vagas"
+                  element={
+                    <PrivateRoute>
+                      <MinhasVagas />
+                    </PrivateRoute>
+                  }
                 />
 
                 <Route
