@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
+import { api } from '../../services/api'
 
 export const useHome = () => {
   const [vagas, setVagas] = useState<VagaResponseDTO[]>([]);
@@ -11,17 +12,8 @@ export const useHome = () => {
   const carregarVagas = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:8080/vagas', {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        const data: VagaResponseDTO[] = await res.json();
-        setVagas(data);
-      } else {
-        console.error(`Erro ${res.status}: Não foi possível carregar as vagas.`);
-      }
+      const res = await api.get<VagaResponseDTO[]>('/vagas');
+      setVagas(res.data);
     } catch (err) {
       console.error('Erro ao carregar vagas:', err);
     } finally {
@@ -58,16 +50,11 @@ export const useHome = () => {
     });
   };
 
-  const handleExcluirVaga = async (vagaId: string, cargo: string) => {
+const handleExcluirVaga = async (vagaId: string, cargo: string) => {
     if (!window.confirm(`Deseja realmente excluir a vaga de "${cargo}"?`)) return;
     try {
-      const res = await fetch(`http://localhost:8080/vagas/${vagaId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      if (res.ok) {
-        setVagas((prev) => prev.filter((v) => v.id !== vagaId));
-      }
+      await api.delete(`/vagas/${vagaId}`);
+      setVagas((prev) => prev.filter((v) => v.id !== vagaId));
     } catch (err) {
       console.error('Erro ao excluir vaga:', err);
     }
@@ -75,14 +62,8 @@ export const useHome = () => {
 
   const handleLike = async (vagaId: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/vagas/${vagaId}/like`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (res.ok) {
-        const vagaAtualizada: VagaResponseDTO = await res.json();
-        setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
-      }
+      const res = await api.post<VagaResponseDTO>(`/vagas/${vagaId}/like`);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? res.data : v)));
     } catch (err) {
       console.error('Erro ao dar like:', err);
     }
@@ -90,14 +71,8 @@ export const useHome = () => {
 
   const handleDislike = async (vagaId: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/vagas/${vagaId}/dislike`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (res.ok) {
-        const vagaAtualizada: VagaResponseDTO = await res.json();
-        setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
-      }
+      const res = await api.post<VagaResponseDTO>(`/vagas/${vagaId}/dislike`);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? res.data : v)));
     } catch (err) {
       console.error('Erro ao dar dislike:', err);
     }
@@ -105,16 +80,8 @@ export const useHome = () => {
 
   const handleEnviarComentario = async (vagaId: string, texto: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/vagas/${vagaId}/comentarios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ texto }),
-      });
-      if (res.ok) {
-        const vagaAtualizada: VagaResponseDTO = await res.json();
-        setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
-      }
+      const res = await api.post<VagaResponseDTO>(`/vagas/${vagaId}/comentarios`, { texto });
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? res.data : v)));
     } catch (err) {
       console.error('Erro ao enviar comentário:', err);
     }
@@ -122,14 +89,8 @@ export const useHome = () => {
 
   const handleExcluirComentario = async (vagaId: string, comentarioId: string) => {
     try {
-      const res = await fetch(`http://localhost:8080/vagas/${vagaId}/comentarios/${comentarioId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-      if (res.ok) {
-        const vagaAtualizada: VagaResponseDTO = await res.json();
-        setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
-      }
+      const res = await api.delete<VagaResponseDTO>(`/vagas/${vagaId}/comentarios/${comentarioId}`);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? res.data : v)));
     } catch (err) {
       console.error('Erro ao excluir comentário:', err);
     }
