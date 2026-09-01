@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Pencil,
   Trash2,
@@ -11,27 +10,19 @@ import {
   ThumbsDown,
   MessageCircle,
 } from 'lucide-react';
-
-import type {
-  VagaResponseDTO,
-  UsuarioLogado,
-} from '../../types/vagas';
-
+import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
 import styles from './VagaCard.module.css';
 
 const FOTO_DEFAULT =
-  'https://newcastle-online.org/uploads/set%5C_resources%5C_2/84c1e40ea0e759e3f1505eb1788ddf3c%5C_default%5C_photo.png';
+  'https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png';
 
 interface VagaCardProps {
   vaga: VagaResponseDTO;
   usuarioLogado?: UsuarioLogado | null;
   compacto?: boolean;
-
-  // Propriedade que ativa a prévia
   onLike: (vagaId: string) => void;
   onDislike: (vagaId: string) => void;
   onAbrirComentarios: (vaga: VagaResponseDTO) => void;
-
   onEditar?: (vaga: VagaResponseDTO) => void;
   onExcluir?: (vagaId: string, cargo: string) => void;
 }
@@ -39,8 +30,7 @@ interface VagaCardProps {
 export const VagaCard: React.FC<VagaCardProps> = ({
   vaga,
   usuarioLogado,
-  compacto = false, // Padrão é false (para a Home)
-
+  compacto = false,
   onLike,
   onDislike,
   onAbrirComentarios,
@@ -60,9 +50,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
       return true;
     }
 
-    const tipo = (
-      usuarioLogado.tipoUsuario || ''
-    ).toLowerCase();
+    const tipo = (usuarioLogado.tipoUsuario || '').toLowerCase();
 
     if (
       tipos.includes('prestador') &&
@@ -71,10 +59,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
       return true;
     }
 
-    if (
-      tipos.includes('estudante') &&
-      tipo === 'estudante'
-    ) {
+    if (tipos.includes('estudante') && tipo === 'estudante') {
       return true;
     }
 
@@ -87,9 +72,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
     }
 
     return tipos.map((t) =>
-      t === 'prestador'
-        ? 'Prestadores'
-        : 'Estudantes'
+      t === 'prestador' ? 'Prestadores' : 'Estudantes'
     );
   };
 
@@ -97,13 +80,11 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   const chips = labelTipos(vaga.tiposUsuario);
 
   const euCurtiu = Boolean(
-    usuarioLogado &&
-      vaga.likes?.includes(usuarioLogado.id)
+    usuarioLogado && vaga.likes?.includes(usuarioLogado.id)
   );
 
   const euDescurtiu = Boolean(
-    usuarioLogado &&
-      vaga.dislikes?.includes(usuarioLogado.id)
+    usuarioLogado && vaga.dislikes?.includes(usuarioLogado.id)
   );
 
   const nLikes = vaga.likes?.length || 0;
@@ -111,10 +92,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   const nComentarios = vaga.comentarios?.length || 0;
 
   return (
-    <div
-      className={styles.vagaCard}
-      data-vaga-id={vaga.id}
-    >
+    <div className={styles.vagaCard} data-vaga-id={vaga.id}>
       <div className={styles.header}>
         <img
           className={styles.avatar}
@@ -146,9 +124,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
             <button
               className={`${styles.btnIcone} ${styles.btnExcluir}`}
               title="Excluir"
-              onClick={() =>
-                onExcluir?.(vaga.id, vaga.cargo)
-              }
+              onClick={() => onExcluir?.(vaga.id, vaga.cargo)}
             >
               <Trash2 size={18} />
             </button>
@@ -157,37 +133,23 @@ export const VagaCard: React.FC<VagaCardProps> = ({
       </div>
 
       <div className={styles.body}>
-        <div className={styles.cargo}>
-          {vaga.cargo}
-        </div>
+        <div className={styles.cargo}>{vaga.cargo}</div>
+        <div className={styles.empresaNome}>{vaga.empresa}</div>
 
-        <div className={styles.empresaNome}>
-          {vaga.empresa}
-        </div>
-
-        {/* O segredo da Prévia está aqui: esconde se for compacto */}
         {!compacto && (
           <>
-            <p className={styles.descricao}>
-              {vaga.descricao}
-            </p>
+            <p className={styles.descricao}>{vaga.descricao}</p>
 
             <div className={styles.detalhes}>
               <div className={styles.detalheBloco}>
-                <div className={styles.detalheLabel}>
-                  Benefícios
-                </div>
-
+                <div className={styles.detalheLabel}>Benefícios</div>
                 <div className={styles.detalheValor}>
                   {vaga.beneficios || '—'}
                 </div>
               </div>
 
               <div className={styles.detalheBloco}>
-                <div className={styles.detalheLabel}>
-                  Requisitos
-                </div>
-
+                <div className={styles.detalheLabel}>Requisitos</div>
                 <div className={styles.detalheValor}>
                   {vaga.requisitos || '—'}
                 </div>
@@ -198,44 +160,29 @@ export const VagaCard: React.FC<VagaCardProps> = ({
 
         <div className={styles.tags}>
           <span className={styles.tag}>
-            <Laptop
-              size={14}
-              className={styles.tagIcone}
-            />
+            <Laptop size={14} className={styles.tagIcone} />
             {vaga.modalidade}
           </span>
 
           <span className={styles.tag}>
-            <MapPin
-              size={14}
-              className={styles.tagIcone}
-            />
+            <MapPin size={14} className={styles.tagIcone} />
             {vaga.localizacao}
           </span>
 
           <span className={styles.tag}>
-            <Clock
-              size={14}
-              className={styles.tagIcone}
-            />
+            <Clock size={14} className={styles.tagIcone} />
             {vaga.horario}
           </span>
 
           <span className={styles.tag}>
-            <CircleDollarSign
-              size={14}
-              className={styles.tagIcone}
-            />
+            <CircleDollarSign size={14} className={styles.tagIcone} />
             {vaga.salario}
           </span>
         </div>
 
         <div className={styles.chips}>
           {chips.map((chip, idx) => (
-            <span
-              key={idx}
-              className={styles.chip}
-            >
+            <span key={idx} className={styles.chip}>
               {chip}
             </span>
           ))}
@@ -244,51 +191,34 @@ export const VagaCard: React.FC<VagaCardProps> = ({
 
       <div className={styles.acoes}>
         <button
-          className={`${styles.acaoBtn} ${
-            euCurtiu ? styles.liked : ''
-          }`}
+          className={`${styles.acaoBtn} ${euCurtiu ? styles.liked : ''}`}
           onClick={() => onLike(vaga.id)}
         >
           <ThumbsUp
             size={18}
-            fill={
-              euCurtiu
-                ? 'currentColor'
-                : 'none'
-            }
+            fill={euCurtiu ? 'currentColor' : 'none'}
           />
-
           <span>{nLikes}</span>
         </button>
 
         <button
           className={`${styles.acaoBtn} ${
-            euDescurtiu
-              ? styles.disliked
-              : ''
+            euDescurtiu ? styles.disliked : ''
           }`}
           onClick={() => onDislike(vaga.id)}
         >
           <ThumbsDown
             size={18}
-            fill={
-              euDescurtiu
-                ? 'currentColor'
-                : 'none'
-            }
+            fill={euDescurtiu ? 'currentColor' : 'none'}
           />
-
           <span>{nDislikes}</span>
         </button>
 
         <button
           className={styles.acaoBtn}
-          onClick={() =>
-            onAbrirComentarios(vaga)
-          }
+          onClick={() => onAbrirComentarios(vaga)}
         >
           <MessageCircle size={18} />
-
           <span>{nComentarios}</span>
         </button>
 
@@ -303,13 +233,13 @@ export const VagaCard: React.FC<VagaCardProps> = ({
         ) : podeCand ? (
           <a
             href={`mailto:${vaga.email || ''}`}
-            className={styles.candidatarAtivo}
+            className={`${styles.btnCandidatar} ${styles.candidatarAtivo}`}
           >
             Candidatar-se
           </a>
         ) : (
           <span
-            className={styles.candidatarBloqueado}
+            className={`${styles.btnCandidatar} ${styles.candidatarBloqueado}`}
           >
             Fora do perfil
           </span>
