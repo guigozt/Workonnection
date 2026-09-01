@@ -53,7 +53,7 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
                     <span className={styles.iconText}>Vagas</span>
                 </Link>
                 
-                <Link to="/rede" className={`${styles.navLink} ${isActive('/rede') ? styles.ativo : ''}`}>
+                <Link to="/colaboradores" className={`${styles.navLink} ${isActive('/colaboradores') ? styles.ativo : ''}`}>
                     <Users size={18} />
                     <span className={styles.iconText}>Rede</span>
                 </Link>
