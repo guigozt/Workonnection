@@ -48,21 +48,21 @@ export const AppRoutes = () => {
                 />
 
                 <Route
+                    path="/sobre"
+                    element={
+                        <PrivateRoute>
+                            <Sobre />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
                     path="*"
                     element={
                         <Navigate
                             to="/login"
                             replace
                         />
-                    }
-                />
-
-                <Route
-                    path="/sobre"
-                    element={
-                        <PrivateRoute>
-                            <Sobre />
-                        </PrivateRoute>
                     }
                 />
 
