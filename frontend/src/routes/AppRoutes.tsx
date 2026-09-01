@@ -9,6 +9,7 @@ import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
 import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
+import { Colaboradores } from '../pages/Colaboradores/Colaboradores';
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -47,14 +48,23 @@ export const AppRoutes = () => {
                         </PrivateRoute>
                     }
                             />
-                            <Route
-                path="/notificacoes"
-                element={
-                    <PrivateRoute>
-                        <Notificacoes />
-                    </PrivateRoute>
-                }
-            />
+                <Route
+                    path="/notificacoes"
+                    element={
+                        <PrivateRoute>
+                            <Notificacoes />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/colaboradores"
+                    element={
+                        <PrivateRoute>
+                            <Colaboradores />
+                        </PrivateRoute>
+                    }
+                />
 
                 <Route
                     path="*"
