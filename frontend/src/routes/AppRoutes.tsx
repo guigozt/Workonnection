@@ -8,17 +8,17 @@ import {
 import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
-import { Perfil } from '../pages/Perfil/Perfil';
+import Sobre from "../pages/Sobre/Sobre";
+import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
+import { Colaboradores } from '../pages/Colaboradores/Colaboradores';
+import { MinhasVagas } from '../pages/MinhasVagas/MinhasVagas';
 
 import { PrivateRoute } from "./PrivateRoute";
 
 export const AppRoutes = () => {
-
     return (
         <BrowserRouter>
-
             <Routes>
-
                 <Route
                     path="/"
                     element={
@@ -46,12 +46,59 @@ export const AppRoutes = () => {
                             <Home />
                         </PrivateRoute>
                     }
-                />
+                            />
                 <Route
-                    path="/perfil"
-                    element={<Perfil />
-                        
+                    path="/notificacoes"
+                    element={
+                        <PrivateRoute>
+                            <Notificacoes />
+                        </PrivateRoute>
                     }
+                />
+
+                <Route
+                    path="/colaboradores"
+                    element={
+                        <PrivateRoute>
+                            <Colaboradores />
+                        </PrivateRoute>
+                    }
+                />
+                
+                <Route
+                    path="/notificacoes"
+                    element={
+                        <PrivateRoute>
+                            <Notificacoes />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/colaboradores"
+                    element={
+                        <PrivateRoute>
+                            <Colaboradores />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/sobre"
+                    element={
+                        <PrivateRoute>
+                            <Sobre />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route 
+                  path="/vagas"
+                  element={
+                    <PrivateRoute>
+                      <MinhasVagas />
+                    </PrivateRoute>
+                  }
                 />
 
                 <Route
@@ -63,9 +110,7 @@ export const AppRoutes = () => {
                         />
                     }
                 />
-
             </Routes>
-
         </BrowserRouter>
     );
 };
