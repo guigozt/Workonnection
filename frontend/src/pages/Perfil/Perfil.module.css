@@ -1,28 +1,62 @@
+/* ======================= */
+/* ===== LAYOUT ===== */
+/* ======================= */
+
 .perfilWrapper {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: calc(var(--topbar-height) + 24px) 16px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
+
+
+/* ======================= */
+/* ===== CARD BASE ===== */
+/* ======================= */
 
 .perfilSection {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06));
+    padding: 24px;
+    transition: box-shadow 0.2s;
 }
 
-.analiseFooter {
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
+.perfilSection:hover {
+    box-shadow: var(--shadow-md, 0 6px 18px rgba(0,0,0,0.1));
+}
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+
+/* ======================= */
+/* ===== ANÁLISE FOOTER ===== */
+/* ======================= */
+
+.analiseFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-light);
+    gap: 8px;
 }
 
 .analiseFooter p {
-  margin: 0;
+    margin: 0;
+}
+
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 600px) {
+    .perfilWrapper {
+        padding: calc(var(--topbar-height) + 12px) 10px 50px;
+    }
 }
