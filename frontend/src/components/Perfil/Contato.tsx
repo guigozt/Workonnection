@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { PerfilData } from '../../types/perfil';
 
-import styles from './Contatos.module.css';
+import styles from './Contato.module.css';
 
 interface Props {
   perfil: PerfilData;

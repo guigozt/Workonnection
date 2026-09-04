@@ -1,0 +1,65 @@
+/* ======================= */
+/* ===== CONTATOS ===== */
+/* ======================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    text-decoration: none;
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 500;
+
+    padding: 8px 10px;
+    border-radius: 10px;
+
+    transition: all 0.16s;
+
+    background: var(--bg);
+    border: 1px solid var(--border);
+
+    overflow: hidden;
+}
+
+.item i {
+    font-size: 14px;
+    flex-shrink: 0;
+    width: 18px;
+    text-align: center;
+}
+
+.item span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item:hover {
+    background: var(--bg);
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+    transform: translateX(2px);
+}
+
+
+/* ======================= */
+/* ===== RESPONSIVO ===== */
+/* ======================= */
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
