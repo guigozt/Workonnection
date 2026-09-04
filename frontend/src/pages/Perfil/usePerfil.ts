@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import {
-  atualizarPerfil,
-  buscarPerfil,
-} from '../../services/perfilService';
+import { perfilService } from '../../services/perfilService';
 
 import type {
   Curso,
@@ -43,7 +40,7 @@ export const usePerfil = () => {
     try {
       setLoading(true);
 
-      const data = await buscarPerfil();
+      const data = await perfilService.buscar();
 
       setUsuario(data);
       setPerfil(data.perfil || {});
@@ -60,7 +57,7 @@ export const usePerfil = () => {
 
   const salvarPerfil = async (novoPerfil: PerfilData) => {
     try {
-      const data = await atualizarPerfil(novoPerfil);
+      const data = await perfilService.atualizar(novoPerfil);
 
       setPerfil(data.perfil || novoPerfil);
 
