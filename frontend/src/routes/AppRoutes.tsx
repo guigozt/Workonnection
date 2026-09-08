@@ -5,7 +5,13 @@ import {
     Navigate
 } from "react-router-dom";
 
-import { Login } from "../pages/Auth/Login/Login";
+import { GoogleVerification } from "../pages/Auth/GoogleVerification/GoogleVerification";
+// ... existing imports
+// Add new route before catch‑all
+                <Route
+                    path="/auth/google/verify"
+                    element={<GoogleVerification />}
+                />
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
 import Sobre from "../pages/Sobre/Sobre";

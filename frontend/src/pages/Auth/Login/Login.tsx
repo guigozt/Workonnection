@@ -44,6 +44,14 @@ export const Login = () => {
                     errorMessage={errors.senha}
                 />
 
+                <Button
+                    as="a"
+                    href="/oauth2/authorization/google"
+                    icon="fa-brands fa-google"
+                    className={styles.googleButton}
+                >
+                    Entrar com Google
+                </Button>
                 <Button type="submit" icon="fa-solid fa-arrow-right-to-bracket" isLoading={isSubmitting}>
                     Entrar
                 </Button>

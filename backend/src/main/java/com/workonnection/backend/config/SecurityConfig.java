@@ -14,7 +14,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.workonnection.backend.service.GoogleOAuthService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
 public class SecurityConfig {
@@ -32,24 +36,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            SecurityContextRepository securityContextRepository
+            SecurityContextRepository securityContextRepository,
+            GoogleOAuthService googleOAuthService
     ) throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(AbstractHttpConfigurer::disable)
-            .securityContext(security -> security
-                .securityContextRepository(securityContextRepository)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
-                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
-                .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll() // Garante leitura de vagas sem 403
-                .anyRequest().authenticated()
-            );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .securityContext(security -> security
+                    .securityContextRepository(securityContextRepository)
+                )
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/auth/google/**").permitAll()
+                    .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                    .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                    .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                    .userInfoEndpoint(userInfo -> userInfo
+                        .userService(oAuth2UserService(googleOAuthService))
+                    )
+                );
 
         return http.build();
+    }
+
+    @Bean
+    public OAuth2UserService<org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest, org.springframework.security.oauth2.core.user.OAuth2User> oAuth2UserService(GoogleOAuthService googleOAuthService) {
+        return userRequest -> {
+            org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService delegate = new org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService();
+            org.springframework.security.oauth2.core.user.OAuth2User oAuth2User = delegate.loadUser(userRequest);
+            // Process user with our service (create provisional user and send verification email)
+            googleOAuthService.processOAuth2User(oAuth2User);
+            return oAuth2User;
+        };
     }
 
     @Bean

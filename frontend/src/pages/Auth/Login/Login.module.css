@@ -32,7 +32,13 @@
   border: 1px solid #feb2b2;
 }
 
-.sucesso {
+.googleButton {
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    margin-bottom: 16px;
+}
+
   background-color: #f0fff4;
   color: var(--success);
   border: 1px solid #9ae6b4;
