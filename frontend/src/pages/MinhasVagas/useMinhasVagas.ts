@@ -38,9 +38,32 @@ export const useMinhasVagas = () => {
     }
   };
 
-  useEffect(() => {
-    carregarMinhasVagas();
-  }, []);
+useEffect(() => {
+  let ativo = true;
+
+  vagaService
+    .listarMinhas()
+    .then((data) => {
+      if (!ativo) return;
+
+      setVagas(data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      if (!ativo) return;
+
+      console.error(
+        'Erro ao carregar minhas vagas:',
+        error
+      );
+
+      setLoading(false);
+    });
+
+  return () => {
+    ativo = false;
+  };
+}, []);
 
   const handleAbrirCriacao = (
     vaga?: VagaResponseDTO

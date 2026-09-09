@@ -7,7 +7,7 @@ export const useHome = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [vagaEmEdicao, setVagaEmEdicao] = useState<VagaResponseDTO | null>(null);
-  const [usuarioLogado] = useState<UsuarioLogado | null>(null);
+  const [usuarioLogado] = useState<UsuarioLogado | null>(null); 
 
   useEffect(() => {
     let ativo = true;
