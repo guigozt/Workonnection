@@ -9,20 +9,31 @@ export const useHome = () => {
   const [vagaEmEdicao, setVagaEmEdicao] = useState<VagaResponseDTO | null>(null);
   const [usuarioLogado] = useState<UsuarioLogado | null>(null);
 
-  const carregarVagas = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get<VagaResponseDTO[]>('/vagas');
-      setVagas(res.data);
-    } catch (err) {
-      console.error('Erro ao carregar vagas:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    carregarVagas();
+    let ativo = true;
+
+    api
+      .get<VagaResponseDTO[]>('/vagas')
+      .then((res) => {
+        if (!ativo) return;
+
+        setVagas(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (!ativo) return;
+
+        console.error(
+          'Erro ao carregar vagas:',
+          err
+        );
+
+        setLoading(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
   const handleAbrirCriacao = () => {
