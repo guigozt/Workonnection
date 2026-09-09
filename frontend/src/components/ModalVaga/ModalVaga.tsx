@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../Button/Button';
 import type { VagaResponseDTO, VagaDTO } from '../../types/vagas';
 import { api } from '../../services/api';
 import styles from './ModalVaga.module.css';
+import { isAxiosError } from 'axios';
 
 export interface VagaData extends Partial<VagaDTO> {
-  [x: string]: any;
   id?: string | number;
   horarioInicio?: string;
   horarioFim?: string;
@@ -34,32 +34,38 @@ const initialForm: VagaData = {
   tiposUsuario: [],
 };
 
+const criarFormData = (
+  vaga?: VagaResponseDTO | null
+): VagaData => {
+  if (!vaga) {
+    return initialForm;
+  }
+
+  let horarioInicio = '';
+  let horarioFim = '';
+
+  if (vaga.horario?.includes(' - ')) {
+    [horarioInicio, horarioFim] =
+      vaga.horario.split(' - ');
+  }
+
+  return {
+    ...vaga,
+    horarioInicio,
+    horarioFim,
+  };
+};
+
 export const ModalVaga: React.FC<ModalVagaProps> = ({
   isOpen,
   onClose,
   onSuccess,
   vagaParaEditar,
 }) => {
-  const [formData, setFormData] = useState<VagaData>(initialForm);
+  const [formData, setFormData] = useState<VagaData>(() => criarFormData(vagaParaEditar));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (vagaParaEditar) {
-      let ini = '', fim = '';
-      if (vagaParaEditar.horario?.includes(' - ')) {
-        [ini, fim] = vagaParaEditar.horario.split(' - ');
-      }
-      setFormData({
-        ...vagaParaEditar,
-        horarioInicio: ini,
-        horarioFim: fim,
-      });
-    } else {
-      setFormData(initialForm);
-    }
-    setErrors({});
-  }, [vagaParaEditar, isOpen]);
 
   if (!isOpen) return null;
 
@@ -135,11 +141,20 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
 
       onSuccess(response.data);
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      const mensagemErro = error.response?.data?.erro || 'Erro ao conectar no servidor.';
+
+      let mensagemErro =
+        'Erro ao conectar no servidor.';
+
+      if (isAxiosError(error)) {
+        mensagemErro =
+          error.response?.data?.erro ||
+          mensagemErro;
+      }
+
       alert(mensagemErro);
-      alert('Erro ao conectar com o servidor');
+
     } finally {
       setIsSubmitting(false);
     }
@@ -282,4 +297,4 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
       </div>
     </div>
   );
-};
+}

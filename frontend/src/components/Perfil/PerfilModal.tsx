@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import type {
   Curso,
@@ -69,73 +69,82 @@ export const PerfilModal: React.FC<Props> = ({
   onSalvarCurso,
 }) => {
 
-  const [local, setLocal] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [instagram, setInstagram] = useState('');
-  const [linkedin, setLinkedin] = useState('');
-  const [site, setSite] = useState('');
+  const [local, setLocal] = useState(
+  () => perfil.local || ''
+);
 
-  const [sobre, setSobre] = useState('');
-  const [habilidade, setHabilidade] = useState('');
+const [telefone, setTelefone] = useState(
+  () => perfil.telefone || ''
+);
 
-  const [universidade, setUniversidade] = useState('');
-  const [cursoNome, setCursoNome] = useState('');
-  const [periodo, setPeriodo] = useState('');
+const [instagram, setInstagram] = useState(
+  () => perfil.instagram || ''
+);
 
-  const [empresa, setEmpresa] = useState('');
-  const [cargo, setCargo] = useState('');
-  const [descricao, setDescricao] = useState('');
+const [linkedin, setLinkedin] = useState(
+  () => perfil.linkedin || ''
+);
 
-  const [instituicao, setInstituicao] = useState('');
+const [site, setSite] = useState(
+  () => perfil.site || ''
+);
 
-  const [erro, setErro] = useState('');
+const [sobre, setSobre] = useState(
+  () => perfil.sobre || ''
+);
 
-  useEffect(() => {
-    if (!tipo) return;
+const [habilidade, setHabilidade] = useState('');
 
-    setErro('');
+const [universidade, setUniversidade] = useState(
+  () => formacao?.universidade || ''
+);
 
-    if (tipo === 'contatos') {
-      setLocal(perfil.local || '');
-      setTelefone(perfil.telefone || '');
-      setInstagram(perfil.instagram || '');
-      setLinkedin(perfil.linkedin || '');
-      setSite(perfil.site || '');
-    }
+const [cursoNome, setCursoNome] = useState(() => {
+  if (tipo === 'formacao') {
+    return formacao?.curso || '';
+  }
 
-    if (tipo === 'sobre') {
-      setSobre(perfil.sobre || '');
-    }
+  if (tipo === 'curso') {
+    return curso?.nome || '';
+  }
 
-    if (tipo === 'habilidade') {
-      setHabilidade('');
-    }
+  return '';
+});
 
-    if (tipo === 'formacao') {
-      setUniversidade(formacao?.universidade || '');
-      setCursoNome(formacao?.curso || '');
-      setPeriodo(formacao?.periodo || '');
-    }
+const [periodo, setPeriodo] = useState(() => {
+  if (tipo === 'formacao') {
+    return formacao?.periodo || '';
+  }
 
-    if (tipo === 'experiencia') {
-      setEmpresa(experiencia?.empresa || '');
-      setCargo(experiencia?.cargo || '');
-      setPeriodo(experiencia?.periodo || '');
-      setDescricao(experiencia?.descricao || '');
-    }
+  if (tipo === 'experiencia') {
+    return experiencia?.periodo || '';
+  }
 
-    if (tipo === 'curso') {
-      setCursoNome(curso?.nome || '');
-      setInstituicao(curso?.instituicao || '');
-      setPeriodo(curso?.periodo || '');
-    }
-  }, [
-    tipo,
-    perfil,
-    formacao,
-    experiencia,
-    curso,
-  ]);
+  if (tipo === 'curso') {
+    return curso?.periodo || '';
+  }
+
+  return '';
+});
+
+const [empresa, setEmpresa] = useState(
+  () => experiencia?.empresa || ''
+);
+
+const [cargo, setCargo] = useState(
+  () => experiencia?.cargo || ''
+);
+
+const [descricao, setDescricao] = useState(
+  () => experiencia?.descricao || ''
+);
+
+const [instituicao, setInstituicao] = useState(
+  () => curso?.instituicao || ''
+);
+
+const [erro, setErro] = useState('');
+
 
   if (!tipo) {
     return null;

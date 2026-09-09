@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { vagaService } from '../../services/vagaService';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 
 import type { VagaResponseDTO } from '../../types/vagas';
 
