@@ -146,7 +146,7 @@ export const Notificacoes = () => {
               onClick={marcarTodasComoLidas}
             >
               <CheckCheck size={15} />
-              Marcar todas como lidas
+              Marcar Todas como lidas
             </button>
 
             <button
