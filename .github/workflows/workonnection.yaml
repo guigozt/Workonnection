@@ -47,7 +47,7 @@ jobs:
 
     env:
       SPRING_PROFILES_ACTIVE: test
-      SPRING_DATA_MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      SPRING_DATA_MONGODB_URI: ${{ secrets.MONGODB_URL }}
 
     steps:
       - name: Baixar repositorio
