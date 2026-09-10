@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usuarioService } from '../../services/usuarioService';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 import type { UsuarioResponseDTO } from '../../types/usuarios';
 
 export const useColaboradores = () => {

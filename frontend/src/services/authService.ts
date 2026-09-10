@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { api } from "./api";
 
 import type {
@@ -55,7 +56,7 @@ export const authService = {
 
             return response.data;
 
-        } catch (error: any) {
+        } catch (error: unknown) {
 
             console.error(
                 "❌ AUTH SERVICE: erro no login"
@@ -66,20 +67,23 @@ export const authService = {
                 error
             );
 
-            console.error(
-                "Mensagem:",
-                error?.message
-            );
+            if (isAxiosError(error)) {
 
-            console.error(
-                "Status:",
-                error?.response?.status
-            );
+                console.error(
+                    "Mensagem:",
+                    error.message
+                );
 
-            console.error(
-                "Data:",
-                error?.response?.data
-            );
+                console.error(
+                    "Status:",
+                    error.response?.status
+                );
+
+                console.error(
+                    "Data:",
+                    error.response?.data
+                );
+            }
 
             throw error;
         }
@@ -125,7 +129,7 @@ export const authService = {
 
             return response.data;
 
-        } catch (error: any) {
+        } catch (error: unknown) {
 
             console.error(
                 "❌ AUTH SERVICE: erro no cadastro"
@@ -136,15 +140,23 @@ export const authService = {
                 error
             );
 
-            console.error(
-                "Status:",
-                error?.response?.status
-            );
+            if (isAxiosError(error)) {
 
-            console.error(
-                "Resposta:",
-                error?.response?.data
-            );
+                console.error(
+                    "Mensagem:",
+                    error.message
+                );
+
+                console.error(
+                    "Status:",
+                    error.response?.status
+                );
+
+                console.error(
+                    "Resposta:",
+                    error.response?.data
+                );
+            }
 
             throw error;
         }
@@ -173,16 +185,19 @@ export const authService = {
 
             return response.data;
 
-        } catch (error: any) {
+        } catch (error: unknown) {
 
             console.log(
                 "AUTH SERVICE: nenhum usuário logado"
             );
 
-            console.log(
-                "Status:",
-                error?.response?.status
-            );
+            if (isAxiosError(error)) {
+
+                console.log(
+                    "Status:",
+                    error.response?.status
+                );
+            }
 
             throw error;
         }

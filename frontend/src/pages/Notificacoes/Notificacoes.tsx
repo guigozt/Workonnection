@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Topbar } from '../../components/Topbar/Topbar';
 
@@ -24,6 +25,8 @@ import styles from './Notificacoes.module.css';
 export const Notificacoes = () => {
   const navigate = useNavigate();
 
+  const [agora] = useState(() => Date.now());
+
   const {
     notificacoes,
     loading,
@@ -42,7 +45,7 @@ export const Notificacoes = () => {
     }
 
     const diff =
-      Date.now() - new Date(instante).getTime();
+    agora - new Date(instante).getTime();
 
     const minutos = Math.floor(diff / 60000);
     const horas = Math.floor(diff / 3600000);
@@ -143,7 +146,7 @@ export const Notificacoes = () => {
               onClick={marcarTodasComoLidas}
             >
               <CheckCheck size={15} />
-              Marcar todas como lidas
+              Marcar Todas como lidas
             </button>
 
             <button
