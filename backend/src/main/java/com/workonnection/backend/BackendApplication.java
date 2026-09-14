@@ -8,12 +8,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BackendApplication {
 
     public static void main(String[] args) {
-        // Carrega variáveis do .env (se existir)
-        Dotenv dotenv = Dotenv.configure()
-                .directory("./")
-                .ignoreIfMissing()
-                .load();
-        dotenv.entries().forEach(e -> System.setProperty(e.getKey(), e.getValue()));
+        Dotenv dotenv = Dotenv.configure().directory("./").ignoreIfMissing().load();
+        if (dotenv.entries().isEmpty()) {
+            dotenv = Dotenv.configure().directory("../").ignoreIfMissing().load();
+        }
+        dotenv.entries().forEach(e -> {
+            if (System.getProperty(e.getKey()) == null) {
+                System.setProperty(e.getKey(), e.getValue());
+            }
+        });
         SpringApplication.run(BackendApplication.class, args);
     }
 }
