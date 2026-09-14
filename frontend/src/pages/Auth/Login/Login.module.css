@@ -39,6 +39,7 @@
     margin-bottom: 16px;
 }
 
+.sucesso {
   background-color: #f0fff4;
   color: var(--success);
   border: 1px solid #9ae6b4;
