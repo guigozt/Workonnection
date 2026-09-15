@@ -5,13 +5,7 @@ import {
     Navigate
 } from "react-router-dom";
 
-import { GoogleVerification } from "../pages/Auth/GoogleVerification/GoogleVerification";
-// ... existing imports
-// Add new route before catch‑all
-                <Route
-                    path="/auth/google/verify"
-                    element={<GoogleVerification />}
-                />
+import { Login } from "../pages/Auth/Login/Login";
 import { Cadastro } from "../pages/Auth/Cadastro/Cadastro";
 import { Home } from "../pages/Home/Home";
 import Sobre from "../pages/Sobre/Sobre";
@@ -19,6 +13,7 @@ import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
 import { Colaboradores } from "../pages/Colaboradores/Colaboradores";
 import { MinhasVagas } from "../pages/MinhasVagas/MinhasVagas";
 import { Perfil } from "../pages/Perfil/Perfil";
+import { GoogleVerification } from "../pages/Auth/GoogleVerification/GoogleVerification";
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -47,6 +42,11 @@ export const AppRoutes = () => {
                 <Route
                     path="/cadastro"
                     element={<Cadastro />}
+                />
+                
+                <Route
+                    path="/auth/google/verify"
+                    element={<GoogleVerification />}
                 />
 
                 {/* Home */}
