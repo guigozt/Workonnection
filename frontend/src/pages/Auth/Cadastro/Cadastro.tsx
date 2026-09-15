@@ -1,164 +1,41 @@
-import { InputGroup } from "../../../components/Input/InputGroup";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "../../../components/Button/Button";
-import { useCadastro } from "./useCadastro";
+import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
 import styles from "./Cadastro.module.css";
 
-const tipoUsuarios = [
-    { id: "EMPRESA", label: "Empresa", icon: "fa-solid fa-building" },
-    { id: "ME", label: "ME", icon: "fa-solid fa-briedcase" },
-    { id: "MEI", label: "MEI", icon: "fa-solid fa-file-invoice" },
-    { id: "ESTUDANTE", label: "Estudante", icon: "fa-solid fa-user-graduate" },
-];
-
 export const Cadastro = () => {
-    const {
-        formData,
-        errors,
-        feedback,
-        isSubmitting,
-        handleChange,
-        handleSelectTipo,
-        handleSubmit,
-        navigate,
-    } = useCadastro();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const error = searchParams.get('error');
 
     return (
-        <div className={styles.pageContainer}>
-        <header className={styles.header}>
-            <img
-            src="/logo_workonnection.png"
-            alt="Logo Workonnection"
-            className={styles.logo}
-            />
-            <h1>Cadastro</h1>
-        </header>
-
-        <main className={styles.cadastroContainer}>
-            <section className={styles.formBox}>
-            <h2>Dados Pessoais</h2>
-
-            {feedback.message && (
-                <div className={`${styles.feedback} ${styles[feedback.type]}`}>
-                {feedback.message}
+        <AuthLayout
+            imageSrc="https://st3.depositphotos.com/3591429/18972/i/450/depositphotos_189724132-stock-photo-young-man-working-with-his.jpg"
+            imageAlt="Jovem trabalhando em casa com laptop"
+        >
+            {error && (
+                <div className={`${styles.feedback} ${styles.erro}`}>
+                    Ocorreu um erro no cadastro. Tente novamente.
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate>
-                <div className={styles.formRow}>
-                <InputGroup
-                    label="Nome"
-                    name="nome"
-                    placeholder="Seu nome completo"
-                    icon="fa-solid fa-user"
-                    value={formData.nome}
-                    onChange={handleChange}
-                    errorMessage={errors.nome}
-                />
-                <InputGroup
-                    label="CPF"
-                    name="cpf"
-                    placeholder="000.000.000-00"
-                    icon="fa-solid fa-id-card"
-                    value={formData.cpf}
-                    onChange={handleChange}
-                    errorMessage={errors.cpf}
-                />
-                </div>
-
-                <div className={styles.formRow}>
-                <InputGroup
-                    label="Data de Nascimento"
-                    name="dataNascimento"
-                    type="date"
-                    icon="fa-solid fa-calendar"
-                    value={formData.dataNascimento}
-                    onChange={handleChange}
-                    errorMessage={errors.dataNascimento}
-                />
-                <InputGroup
-                    label="Telefone"
-                    name="telefone"
-                    placeholder="(11) 99999-9999"
-                    icon="fa-solid fa-phone"
-                    value={formData.telefone}
-                    onChange={handleChange}
-                    errorMessage={errors.telefone}
-                />
-                </div>
-
-                <div className={styles.formRow}>
-                <InputGroup
-                    label="Email"
-                    name="email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    icon="fa-solid fa-envelope"
-                    value={formData.email}
-                    onChange={handleChange}
-                    errorMessage={errors.email}
-                />
-                <InputGroup
-                    label="Senha"
-                    name="senha"
-                    type="password"
-                    placeholder="Mínimo 6 caracteres"
-                    icon="fa-solid fa-lock"
-                    value={formData.senha}
-                    onChange={handleChange}
-                    errorMessage={errors.senha}
-                />
-                </div>
-
-                <div className={styles.formRow}>
-                <InputGroup
-                    label="Confirmar Senha"
-                    name="confirmarSenha"
-                    type="password"
-                    placeholder="Repita a senha"
-                    icon="fa-solid fa-lock"
-                    value={formData.confirmarSenha}
-                    onChange={handleChange}
-                    errorMessage={errors.confirmarSenha}
-                />
-                </div>
-
-                <p className={styles.userLabel}>Tipo de Usuário</p>
-                <div className={styles.userTypeBox}>
-                {tipoUsuarios.map((tipo) => (
-                    <button
-                    key={tipo.id}
-                    type="button"
-                    className={`${styles.userBtn} ${formData.tipoUsuario === tipo.id ? styles.ativo : ""}`}
-                    onClick={() => handleSelectTipo(tipo.id)}
-                    >
-                    <i className={tipo.icon} /> {tipo.label}
-                    </button>
-                ))}
-                </div>
-                {errors.tipoUsuario && (
-                <small className={styles.typeError}>{errors.tipoUsuario}</small>
-                )}
-
-                <div className={styles.buttons}>
-                <button
-                    type="button"
-                    className={styles.btnBack}
-                    onClick={() => navigate("/login")}
-                >
-                    <i className="fa-solid fa-arrow-left" /> Voltar
-                </button>
-
+            <div className={styles.form}>
+                <h2 style={{ textAlign: "center", marginBottom: "20px", color: "var(--text-color)" }}>Crie sua Conta</h2>
+                <p style={{ textAlign: "center", marginBottom: "30px", color: "var(--text-color-secondary)" }}>
+                    Inicie seu cadastro conectando com o Google. É rápido e seguro!
+                </p>
                 <Button
-                    type="submit"
-                    icon="fa-solid fa-user-plus"
-                    isLoading={isSubmitting}
+                    type="button"
+                    onClick={() => { window.location.href = "http://localhost:8080/oauth2/authorization/google"; }}
+                    icon="fa-brands fa-google"
                 >
-                    Cadastrar
+                    Cadastrar com Google
                 </Button>
-                </div>
-            </form>
-            </section>
-        </main>
-        </div>
+
+                <p className={styles.login}>
+                    Já é cadastrado? <Link to="/login">Faça Login</Link>
+                </p>
+            </div>
+        </AuthLayout>
     );
 };
