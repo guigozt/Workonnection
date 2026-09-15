@@ -5,7 +5,6 @@ import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.Usuario;
 import com.workonnection.backend.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +13,9 @@ import java.util.List;
 public class UsuarioService {
     
     private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository repository) {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
@@ -35,7 +32,6 @@ public class UsuarioService {
         usuario.setDataNascimento(dto.dataNascimento());
         usuario.setTelefone(dto.telefone());
         usuario.setEmail(dto.email());
-        usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario.setTipoUsuario(dto.tipoUsuario());
 
         return toResponse(repository.save(usuario));
@@ -44,16 +40,9 @@ public class UsuarioService {
     public UsuarioResponseDTO login(LoginDTO dto) {
         Usuario usuario = repository.findByEmail(dto.email())
                 .orElseThrow(() -> new ApiException(
-                        "Email ou senha inválidos",
+                        "Usuário não encontrado",
                         HttpStatus.UNAUTHORIZED
                 ));
-
-        if (!passwordEncoder.matches(dto.senha(), usuario.getSenha())) {
-            throw new ApiException(
-                    "Email ou senha inválidos",
-                    HttpStatus.UNAUTHORIZED
-            );
-        }
 
         return toResponse(usuario);
     }

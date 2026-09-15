@@ -20,13 +20,11 @@ public class GoogleAuthController {
     public ResponseEntity<Usuario> confirmVerification(@RequestBody GoogleVerificationDTO dto) {
         Usuario usuario = googleOAuthService.confirmVerification(
                 dto.email(),
-                dto.code(),
                 dto.nome(),
                 dto.cpf(),
                 dto.dataNascimento(),
                 dto.telefone(),
-                dto.tipoUsuario(),
-                dto.senha()
+                dto.tipoUsuario()
         );
         return ResponseEntity.ok(usuario);
     }

@@ -1,16 +1,14 @@
 package com.workonnection.backend.dto;
 
 /**
- * DTO for completing registration after Google OAuth login and email verification.
+ * DTO for completing registration after Google OAuth login.
  */
 public record GoogleVerificationDTO(
         String email,
-        String code,
         String nome,
         String cpf,
         String dataNascimento,
         String telefone,
-        String tipoUsuario,
-        String senha
+        String tipoUsuario
 ) {
 }

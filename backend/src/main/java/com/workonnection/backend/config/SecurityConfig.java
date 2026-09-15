@@ -20,7 +20,6 @@ import com.workonnection.backend.service.GoogleOAuthService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
 public class SecurityConfig {
@@ -39,7 +38,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
             HttpSecurity http,
             SecurityContextRepository securityContextRepository,
-            GoogleOAuthService googleOAuthService
+            GoogleOAuthService googleOAuthService,
+            OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler
     ) throws Exception {
 
         http
@@ -60,6 +60,7 @@ public class SecurityConfig {
                     .userInfoEndpoint(userInfo -> userInfo
                         .userService(oAuth2UserService(googleOAuthService))
                     )
+                    .successHandler(oAuth2LoginSuccessHandler)
                 );
 
         return http.build();
@@ -70,7 +71,7 @@ public class SecurityConfig {
         return userRequest -> {
             org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService delegate = new org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService();
             org.springframework.security.oauth2.core.user.OAuth2User oAuth2User = delegate.loadUser(userRequest);
-            // Process user with our service (create provisional user and send verification email)
+            // Process user with our service (create provisional user)
             googleOAuthService.processOAuth2User(oAuth2User);
             return oAuth2User;
         };
