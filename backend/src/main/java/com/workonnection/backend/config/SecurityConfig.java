@@ -83,6 +83,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:5173",
+            "http://192.168.*.*",
+            "https://*.ngrok.io",
             "https://workonnection-frontend.vercel.app",
             "https://*.vercel.app"
         ));
