@@ -76,13 +76,14 @@ git clone [https://github.com/guigozt/Workonnection.git](https://github.com/guig
 cd Workonnection
 ````
 
-### 2️⃣ Criar arquivo local
-
-Crie um arquivo nesse caminho:
-
-```bash
-backend\src\main\resources\application-local.properties
-````
+79: ### 2️⃣ Criar arquivo local
+80:
+81: Copie o arquivo de exemplo para criar sua configuração local:
+82:
+83: ```bash
+84: cp backend/src/main/resources/application-local.example.properties backend/src/main/resources/application-local.properties
+85: ```
+86:`
 
 E adicione o link de acesso ao banco do MongoDB Atlas
 
