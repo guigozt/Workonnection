@@ -8,6 +8,8 @@ export const Cadastro = () => {
     const searchParams = new URLSearchParams(location.search);
     const error = searchParams.get('error');
 
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
     return (
         <AuthLayout
             imageSrc="https://st3.depositphotos.com/3591429/18972/i/450/depositphotos_189724132-stock-photo-young-man-working-with-his.jpg"
@@ -26,7 +28,7 @@ export const Cadastro = () => {
                 </p>
                 <Button
                     type="button"
-                    onClick={() => { window.location.href = "http://localhost:8080/oauth2/authorization/google"; }}
+                    onClick={() => { window.location.href = `${backendUrl}/oauth2/authorization/google`; }}
                     icon="fa-brands fa-google"
                 >
                     Cadastrar com Google
