@@ -17,7 +17,10 @@ public class GoogleAuthController {
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<Usuario> confirmVerification(@RequestBody GoogleVerificationDTO dto) {
+    public ResponseEntity<Usuario> confirmVerification(
+            @RequestBody GoogleVerificationDTO dto,
+            jakarta.servlet.http.HttpSession session
+    ) {
         Usuario usuario = googleOAuthService.confirmVerification(
                 dto.email(),
                 dto.nome(),
@@ -26,6 +29,9 @@ public class GoogleAuthController {
                 dto.telefone(),
                 dto.tipoUsuario()
         );
+        if (usuario != null && session != null) {
+            session.setAttribute("usuarioId", usuario.getId());
+        }
         return ResponseEntity.ok(usuario);
     }
 }
