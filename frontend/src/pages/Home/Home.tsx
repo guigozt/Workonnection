@@ -59,12 +59,14 @@ export const Home: React.FC = () => {
 
       <FloatingButton onClick={handleAbrirCriacao} title="Criar Nova Vaga" />
 
-      <ModalVaga
-        isOpen={isModalOpen}
-        onClose={handleFecharModal}
-        onSuccess={handleSalvarVagaSucesso}
-        vagaParaEditar={vagaEmEdicao}
-      />
+        {isModalOpen && (
+          <ModalVaga
+            isOpen={isModalOpen}
+            onClose={handleFecharModal}
+            onSuccess={handleSalvarVagaSucesso}
+            vagaParaEditar={vagaEmEdicao}
+          />
+        )}
 
       <ComentariosDrawer
         isOpen={Boolean(vagaAtivaComentarios)}

@@ -5,7 +5,7 @@ import { Topbar } from '../../components/Topbar/Topbar';
 
 import styles from './Sobre.module.css';
 
-import hugoImg from "../../assets/photoMembers/Hugo.jpeg";
+import hugoImg from "../../assets/photoMembers/Hugo.jpeg"; 
 import pauloImg from "../../assets/photoMembers/Paulo.jpeg";
 import guilhermeImg from "../../assets/photoMembers/Guilherme.jpeg";
 import gabrielImg from "../../assets/photoMembers/gabriel.jpg";

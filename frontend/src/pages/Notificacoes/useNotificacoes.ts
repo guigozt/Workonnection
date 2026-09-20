@@ -86,8 +86,36 @@ export const useNotificacoes = () => {
   ).length;
 
   useEffect(() => {
-    carregarNotificacoes();
-  }, []);
+  let ativo = true;
+
+  notificacaoService
+    .listar()
+    .then((lista) => {
+      if (!ativo) return;
+
+      setNotificacoes(lista);
+      setErro(null);
+      setLoading(false);
+    })
+    .catch((error) => {
+      if (!ativo) return;
+
+      console.error(
+        'Erro ao carregar notificações:',
+        error
+      );
+
+      setErro(
+        'Não foi possível carregar as notificações.'
+      );
+
+      setLoading(false);
+    });
+
+  return () => {
+    ativo = false;
+  };
+}, []);
 
   return {
     notificacoes,

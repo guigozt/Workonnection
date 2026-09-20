@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { vagaService } from '../../services/vagaService';
 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 
 import type { VagaResponseDTO } from '../../types/vagas';
 
@@ -38,9 +38,32 @@ export const useMinhasVagas = () => {
     }
   };
 
-  useEffect(() => {
-    carregarMinhasVagas();
-  }, []);
+useEffect(() => {
+  let ativo = true;
+
+  vagaService
+    .listarMinhas()
+    .then((data) => {
+      if (!ativo) return;
+
+      setVagas(data);
+      setLoading(false);
+    })
+    .catch((error) => {
+      if (!ativo) return;
+
+      console.error(
+        'Erro ao carregar minhas vagas:',
+        error
+      );
+
+      setLoading(false);
+    });
+
+  return () => {
+    ativo = false;
+  };
+}, []);
 
   const handleAbrirCriacao = (
     vaga?: VagaResponseDTO

@@ -51,9 +51,33 @@ export const usePerfil = () => {
     }
   };
 
-  useEffect(() => {
-    carregarPerfil();
-  }, []);
+ useEffect(() => {
+  let ativo = true;
+
+  perfilService
+    .buscar()
+    .then((data) => {
+      if (!ativo) return;
+
+      setUsuario(data);
+      setPerfil(data.perfil || {});
+      setLoading(false);
+    })
+    .catch((error) => {
+      if (!ativo) return;
+
+      console.error(
+        'Erro ao carregar perfil:',
+        error
+      );
+
+      setLoading(false);
+    });
+
+  return () => {
+    ativo = false;
+  };
+}, []);
 
   const salvarPerfil = async (novoPerfil: PerfilData) => {
     try {

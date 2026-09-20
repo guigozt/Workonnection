@@ -158,23 +158,26 @@ export const Perfil: React.FC = () => {
 
       </main>
 
-      <PerfilModal
-        tipo={modalAberto}
-        onClose={fecharModal}
+      {modalAberto && (
+        <PerfilModal
+          key={modalAberto}
+          tipo={modalAberto}
+          onClose={fecharModal}
 
-        perfil={perfil}
+          perfil={perfil}
 
-        formacao={formacaoSelecionada}
-        experiencia={experienciaSelecionada}
-        curso={cursoSelecionado}
+          formacao={formacaoSelecionada}
+          experiencia={experienciaSelecionada}
+          curso={cursoSelecionado}
 
-        onSalvarContatos={atualizarContatos}
-        onSalvarSobre={atualizarSobre}
-        onSalvarHabilidade={adicionarHabilidade}
-        onSalvarFormacao={adicionarFormacao}
-        onSalvarExperiencia={adicionarExperiencia}
-        onSalvarCurso={adicionarCurso}
-      />
+          onSalvarContatos={atualizarContatos}
+          onSalvarSobre={atualizarSobre}
+          onSalvarHabilidade={adicionarHabilidade}
+          onSalvarFormacao={adicionarFormacao}
+          onSalvarExperiencia={adicionarExperiencia}
+          onSalvarCurso={adicionarCurso}
+        />
+      )}
     </div>
   );
 };

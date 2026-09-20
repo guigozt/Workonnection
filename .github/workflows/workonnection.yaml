@@ -1,0 +1,86 @@
+name: CI Workonnection
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  frontend:
+    name: frontend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Executar linter
+        run: npm run lint
+
+      - name: Executar build
+        run: npm run build
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATA_MONGODB_URI: ${{ secrets.MONGODB_URL }}
+
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          cache: "maven"
+
+      - name: Conceder permissao ao Maven Wrapper
+        run: chmod +x mvnw
+
+      - name: Executar testes unitarios
+        run: ./mvnw test
+
+      - name: Executar verificacao e cobertura
+        run: ./mvnw verify
+
+      
+  gitleaks:
+    name: Gitleaks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verificar secrets expostos
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
