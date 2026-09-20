@@ -4,7 +4,8 @@
   min-height: 100vh;
 }
 
-.left, .right {
+.left,
+.right {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -22,17 +23,27 @@
 }
 
 .right {
+  flex: 1;
   background-color: #f8f9fa;
   padding: 20px;
+
+  /* CORREÇÃO DO BOTÃO ESCONDIDO: */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  /* Permite rolar a tela se o form for muito alto */
 }
 
 .formBox {
-  max-width: 420px;
+  max-width: 750px;
+  /* <- AUMENTADO DE 420px PARA 750px PARA DAR ESPAÇO */
   width: 100%;
+  margin: auto;
+  /* <- ISSO CENTRALIZA SEM CORTAR O CONTEÚDO */
   padding: 36px;
   background: var(--card-bg, #ffffff);
   border-radius: var(--radius-lg, 8px);
-  box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.08));
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
   text-align: center;
 }
 
@@ -50,10 +61,12 @@
   .left {
     display: none;
   }
+
   .container {
     justify-content: center;
     align-items: center;
   }
+
   .formBox {
     padding: 24px;
   }
