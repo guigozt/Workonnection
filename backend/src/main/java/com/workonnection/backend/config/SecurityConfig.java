@@ -50,12 +50,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/google/**").permitAll()
-                    .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
+                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
                     .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
                     .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
                     .anyRequest().authenticated()
-                )
+                ) // Parêntese corrigido aqui!
                 .oauth2Login(oauth2 -> oauth2
                     .userInfoEndpoint(userInfo -> userInfo
                         .userService(oAuth2UserService(googleOAuthService))
