@@ -1,59 +1,154 @@
+/* GoogleVerification.module.css */
 .container {
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+}
+
+.logoContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.logo {
+    height: 50px;
+    /* Ajuste o tamanho da logo como preferir */
+    object-fit: contain;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--text-color, var(--primary-dark));
+    font-size: 24px;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 32px;
+    color: var(--text-color-secondary, var(--text-light));
+    font-size: 15px;
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 24px;
+}
+
+/* Coloca os campos lado a lado no desktop */
+.formRow {
+    display: flex;
+    gap: 24px;
+    text-align: left;
+}
+
+.formRow>* {
+    flex: 1;
+    min-width: 0;
 }
 
 .feedback {
-    padding: 10px 15px;
-    border-radius: 6px;
-    font-size: 0.9rem;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
     margin-bottom: 20px;
     text-align: center;
 }
 
 .erro {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border: 1px solid rgba(231, 76, 60, 0.2);
+    background-color: #fff5f5;
+    color: var(--danger);
+    border: 1px solid #feb2b2;
 }
 
 .sucesso {
-    background-color: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
-    border: 1px solid rgba(46, 204, 113, 0.2);
+    background-color: #f0fff4;
+    color: var(--success);
+    border: 1px solid #9ae6b4;
 }
 
-.tipoUsuarioSelect {
+.tipoUsuarioSection {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 12px;
+    text-align: left;
 }
 
 .tipoLabel {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-transform: uppercase;
 }
 
-.select {
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--bg-color-secondary);
-    color: var(--text-color);
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
+/* Botões 2x2 no Desktop */
+.userTypeBox {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
-.select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+.userBtn {
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border);
+    background: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.userBtn:hover {
+    border-color: var(--primary-dark);
+    color: var(--primary-dark);
+}
+
+.userBtn.ativo {
+    background: var(--primary-dark);
+    color: #ffffff;
+    border-color: var(--primary-dark);
+}
+
+.typeError {
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+/* Modo Mobile: Empilha tudo! */
+@media (max-width: 768px) {
+    .formRow {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .userTypeBox {
+        grid-template-columns: 1fr;
+        /* Empilha os botões de tipo de conta */
+    }
+
+    .buttons {
+        justify-content: stretch;
+    }
+
+    .buttons>button {
+        width: 100%;
+        /* Botão grandão no mobile */
+    }
 }
