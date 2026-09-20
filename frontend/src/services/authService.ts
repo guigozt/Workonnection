@@ -13,12 +13,7 @@ export const authService = {
     ): Promise<UsuarioResponseDTO> => {
 
         console.log(
-            "AUTH SERVICE: iniciando login"
-        );
-
-        console.log(
-            "AUTH SERVICE: URL =",
-            "http://localhost:8080/usuarios/login"
+            "AUTH SERVICE: iniciando login no endpoint /usuarios/login"
         );
 
         console.log(
