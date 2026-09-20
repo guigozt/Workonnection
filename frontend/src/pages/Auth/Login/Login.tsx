@@ -8,6 +8,8 @@ export const Login = () => {
     const searchParams = new URLSearchParams(location.search);
     const error = searchParams.get('error');
 
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
     return (
         <AuthLayout
             imageSrc="https://www.netzpiloten.de/wp-content/uploads/2021/01/work-life-balance-home-office-1000x1000-1.jpg"
@@ -23,7 +25,7 @@ export const Login = () => {
                 <h2 style={{ textAlign: "center", marginBottom: "20px", color: "var(--text-color)" }}>Bem-vindo de volta!</h2>
                 <Button
                     type="button"
-                    onClick={() => { window.location.href = "http://localhost:8080/oauth2/authorization/google"; }}
+                    onClick={() => { window.location.href = `${backendUrl}/oauth2/authorization/google`; }}
                     icon="fa-brands fa-google"
                 >
                     Continuar com Google
