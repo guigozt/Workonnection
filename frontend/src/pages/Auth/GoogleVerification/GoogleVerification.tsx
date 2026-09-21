@@ -11,6 +11,7 @@ import styles from "./GoogleVerification.module.css";
 export const GoogleVerification = () => {
     const navigate = useNavigate();
     const [userEmail, setUserEmail] = useState("");
+    const [isLoadingInitial, setIsLoadingInitial] = useState(true);
 
     const [formData, setFormData] = useState({
         nome: "",
@@ -26,24 +27,29 @@ export const GoogleVerification = () => {
 
     useEffect(() => {
         // Busca os dados do usuário autenticado pela sessão HTTP
-        api.get('/usuarios/me').then(response => {
-            if (response.data && response.data.email) {
-                setUserEmail(response.data.email);
+        api.get('/usuarios/me')
+            .then(response => {
+                if (response.data && response.data.email) {
+                    setUserEmail(response.data.email);
 
-                // Preenche o nome trazido do Google ou cadastro prévio
-                if (response.data.nome) {
-                    setFormData(prev => ({ ...prev, nome: response.data.nome }));
-                }
+                    // Preenche o nome trazido do Google ou cadastro prévio
+                    if (response.data.nome) {
+                        setFormData(prev => ({ ...prev, nome: response.data.nome }));
+                    }
 
-                // Se o usuário já concluiu o cadastro (CPF preenchido), vai direto para a Home
-                if (response.data.cpf && response.data.telefone) {
-                    navigate("/home", { replace: true });
+                    // Se o usuário já concluiu o cadastro (CPF e Telefone preenchidos), redireciona pra Home
+                    if (response.data.cpf && response.data.telefone) {
+                        navigate("/home", { replace: true });
+                    }
                 }
-            }
-        }).catch(err => {
-            console.error("Usuário não autenticado via Google", err);
-            navigate("/login", { replace: true });
-        });
+            })
+            .catch(err => {
+                console.error("Usuário não autenticado via Google", err);
+                navigate("/login", { replace: true });
+            })
+            .finally(() => {
+                setIsLoadingInitial(false);
+            });
     }, [navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,8 +105,8 @@ export const GoogleVerification = () => {
 
             setFeedback({ message: 'Cadastro finalizado com sucesso!', type: 'sucesso' });
             setTimeout(() => {
-                window.location.href = '/home';
-            }, 1500);
+                navigate('/home', { replace: true });
+            }, 1200);
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
@@ -110,6 +116,19 @@ export const GoogleVerification = () => {
             setIsSubmitting(false);
         }
     };
+
+    if (isLoadingInitial) {
+        return (
+            <AuthLayout
+                imageSrc="https://bmvadvogados.adv.br/site/wp-content/uploads/2025/09/Microempreendedor.png"
+                imageAlt="Completar Cadastro"
+            >
+                <div className={styles.container}>
+                    <p className={styles.subtitle}>Carregando dados da sua conta...</p>
+                </div>
+            </AuthLayout>
+        );
+    }
 
     return (
         <AuthLayout

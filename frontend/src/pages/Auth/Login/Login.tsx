@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Button } from "../../../components/Button/Button";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
@@ -7,12 +8,19 @@ export const Login = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const error = searchParams.get('error');
+    const [isLoading, setIsLoading] = useState(false);
 
     const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-    const handleGoogleAuth = () => {
-        // Redireciona o usuário para a tela de escolha de email do Google
-        window.location.href = `${backendUrl}/oauth2/authorization/google`;
+    const handleGoogleAuth = async () => {
+        setIsLoading(true);
+        try {
+            // Ping prévio para "acordar" o container no Render caso esteja em sleep (15 min inatividade)
+            await fetch(`${backendUrl}/vagas`, { method: 'GET' }).catch(() => { });
+        } finally {
+            // Redireciona para o fluxo OAuth2 do Google após a API estar pronta
+            window.location.href = `${backendUrl}/oauth2/authorization/google`;
+        }
     };
 
     return (
@@ -34,6 +42,7 @@ export const Login = () => {
                         type="button"
                         onClick={handleGoogleAuth}
                         icon="fa-brands fa-google"
+                        isLoading={isLoading}
                     >
                         Continuar com Google
                     </Button>
@@ -43,7 +52,8 @@ export const Login = () => {
                         <button
                             type="button"
                             className={styles.linkBtn}
-                            onClick={handleGoogleAuth} // Usa o exato mesmo fluxo
+                            onClick={handleGoogleAuth}
+                            disabled={isLoading}
                         >
                             Cadastre-se com o Google
                         </button>
