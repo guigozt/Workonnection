@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { usuarioService } from '../../services/usuarioService';
 import { useAuth } from '../../context/useAuth';
-import type { UsuarioResponseDTO } from '../../types/usuarios';
+import type { UsuarioPublicoDTO } from '../../types/usuarios';
 
 export const useColaboradores = () => {
   const { usuario: usuarioLogado } = useAuth();
 
   const [colaboradores, setColaboradores] = useState<
-    UsuarioResponseDTO[]
+    UsuarioPublicoDTO[]
   >([]);
 
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ export const useColaboradores = () => {
 
         // Remove o usuário logado da lista
         const listaFiltrada = data.filter(
-          (c) => c.id !== usuarioLogado?.id
+          (c) => String(c.id) !== String(usuarioLogado?.id)
         );
 
         setColaboradores(listaFiltrada);

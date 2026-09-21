@@ -68,11 +68,21 @@ public class UsuarioService {
         return toResponse(usuario);
     }
 
-    public List<UsuarioResponseDTO> listarColaboradores() {
+    public List<UsuarioPublicoDTO> listarColaboradores() {
         return repository.findAll().stream()
                 .filter(u -> u != null)
-                .map(this::toResponse)
+                .map(this::toPublicResponse)
                 .toList();
+    }
+
+    public UsuarioPublicoDTO buscarPerfilPublicoPorId(String id) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ApiException(
+                        "Usuário não encontrado",
+                        HttpStatus.NOT_FOUND
+                ));
+
+        return toPublicResponse(usuario);
     }
 
     public UsuarioResponseDTO atualizarPerfil(String id, PerfilDTO dto) {
@@ -179,6 +189,32 @@ public class UsuarioService {
                 perfil,
                 naoLidas,
                 config
+        );
+    }
+
+    private UsuarioPublicoDTO toPublicResponse(Usuario u) {
+        Usuario.Perfil perfil =
+                u.getPerfil() != null
+                        ? u.getPerfil()
+                        : new Usuario.Perfil();
+
+        PerfilPublicoDTO perfilPublico = new PerfilPublicoDTO(
+                perfil.getSobre(),
+                perfil.getLocal(),
+                perfil.getInstagram(),
+                perfil.getLinkedin(),
+                perfil.getSite(),
+                perfil.getHabilidades(),
+                perfil.getFormacoes(),
+                perfil.getExperiencias(),
+                perfil.getCursos()
+        );
+
+        return new UsuarioPublicoDTO(
+                u.getId(),
+                u.getNome(),
+                u.getTipoUsuario(),
+                perfilPublico
         );
     }
 }

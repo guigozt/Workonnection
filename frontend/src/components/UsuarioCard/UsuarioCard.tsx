@@ -1,13 +1,13 @@
 import React from 'react';
 import { MessageCircle, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { UsuarioResponseDTO } from '../../types/usuarios';
+import type { UsuarioPublicoDTO } from '../../types/usuarios';
 import styles from './UsuarioCard.module.css';
 
 interface UsuarioCardProps {
-  usuario: UsuarioResponseDTO;
+  usuario: UsuarioPublicoDTO;
   compacto?: boolean;
-  onVerPerfil?: (usuario: UsuarioResponseDTO) => void;
+  onVerPerfil?: (usuario: UsuarioPublicoDTO) => void;
 }
 
 export const UsuarioCard: React.FC<UsuarioCardProps> = ({

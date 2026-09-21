@@ -18,8 +18,8 @@ import styles from './PerfilPublicoModal.module.css';
 export interface PerfilPublicoModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  usuario: UsuarioPublicoDTO | UsuarioResponseDTO | any | null;
-  onSendMessage?: (usuario: any) => void;
+  usuario: UsuarioPublicoDTO | UsuarioResponseDTO | null;
+  onSendMessage?: (usuario: UsuarioPublicoDTO | UsuarioResponseDTO) => void;
 }
 
 export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
@@ -57,34 +57,35 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
 
   // Obtenção segura dos dados conforme o contrato da Tarefa 1 (LGPD)
   const perfil = usuario.perfil || {};
+  const userPub = usuario as UsuarioPublicoDTO;
 
   const fotoUrl: string =
-    usuario.foto ||
+    userPub.foto ||
     perfil.foto ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
       nome
     )}&background=47a4c4&color=fff&size=150`;
 
   const biografia: string | undefined =
-    usuario.biografia || usuario.sobre || perfil.sobre || perfil.biografia;
+    userPub.biografia || userPub.sobre || perfil.sobre || perfil.biografia;
 
   const localizacao: string | undefined =
-    usuario.cidade || usuario.local || perfil.local || perfil.cidade;
+    userPub.cidade || userPub.local || perfil.local || perfil.cidade;
 
-  const habilidades: string[] = Array.isArray(usuario.habilidades)
-    ? usuario.habilidades
+  const habilidades: string[] = Array.isArray(userPub.habilidades)
+    ? userPub.habilidades
     : Array.isArray(perfil.habilidades)
     ? perfil.habilidades
     : [];
 
   const linkedin: string | undefined =
-    usuario.linkedin || perfil.linkedin;
+    userPub.linkedin || perfil.linkedin;
 
   const github: string | undefined =
-    usuario.github || perfil.github;
+    userPub.github || perfil.github;
 
   const portfolio: string | undefined =
-    usuario.portfolio || usuario.site || perfil.site || perfil.portfolio;
+    userPub.portfolio || userPub.site || perfil.site || perfil.portfolio;
 
   // Informações complementares opcionais (exibidas somente se fornecidas)
   const formacoes: Formacao[] = Array.isArray(perfil.formacoes)

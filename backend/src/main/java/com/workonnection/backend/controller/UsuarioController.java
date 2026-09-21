@@ -4,6 +4,7 @@ import com.workonnection.backend.dto.CadastroDTO;
 import com.workonnection.backend.dto.ConfiguracoesDTO;
 import com.workonnection.backend.dto.LoginDTO;
 import com.workonnection.backend.dto.PerfilDTO;
+import com.workonnection.backend.dto.UsuarioPublicoDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.UsuarioService;
@@ -42,12 +43,22 @@ public class UsuarioController {
     }
 
     /**
-     * Lista todos os usuários.
+     * Lista todos os usuários (perfil público seguro).
      */
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDTO>> listarTodos() {
+    public ResponseEntity<List<UsuarioPublicoDTO>> listarTodos() {
         return ResponseEntity.ok(
             service.listarColaboradores()
+        );
+    }
+
+    /**
+     * Busca o perfil público de um usuário por ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioPublicoDTO> buscarPerfilPublico(@PathVariable String id) {
+        return ResponseEntity.ok(
+            service.buscarPerfilPublicoPorId(id)
         );
     }
 

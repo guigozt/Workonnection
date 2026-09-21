@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Topbar } from '../../components/Topbar/Topbar';
 import { UsuarioCard } from '../../components/UsuarioCard/UsuarioCard';
 import { PerfilPublicoModal } from '../../components/PerfilPublicoModal/PerfilPublicoModal';
-import type { UsuarioResponseDTO } from '../../types/usuarios';
+import type { UsuarioPublicoDTO } from '../../types/usuarios';
 import { useColaboradores } from './useColaboradores';
 import {
   UsersIcon,
@@ -19,7 +19,7 @@ export const Colaboradores: React.FC = () => {
     setIsCompacto,
   } = useColaboradores();
 
-  const [usuarioModal, setUsuarioModal] = useState<UsuarioResponseDTO | null>(null);
+  const [usuarioModal, setUsuarioModal] = useState<UsuarioPublicoDTO | null>(null);
 
   return (
     <div>
