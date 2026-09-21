@@ -51,12 +51,14 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/google/**").permitAll()
-                        .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
-                        .anyRequest().authenticated()
+                    .requestMatchers("/auth/google/**").permitAll()
+                    .requestMatchers("/usuarios/me").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/google/confirm").permitAll()
+                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                    .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                    .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
