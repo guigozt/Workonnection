@@ -25,18 +25,24 @@ export const GoogleVerification = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        // Busca os dados iniciais trazidos pelo Google
+        // Busca os dados do usuário autenticado pela sessão HTTP
         api.get('/usuarios/me').then(response => {
             if (response.data && response.data.email) {
                 setUserEmail(response.data.email);
-                // Opcional: Se o Google já devolveu o nome, preenche automaticamente
+
+                // Preenche o nome trazido do Google ou cadastro prévio
                 if (response.data.nome) {
                     setFormData(prev => ({ ...prev, nome: response.data.nome }));
                 }
+
+                // Se o usuário já concluiu o cadastro (CPF preenchido), vai direto para a Home
+                if (response.data.cpf && response.data.telefone) {
+                    navigate("/home", { replace: true });
+                }
             }
         }).catch(err => {
-            console.error("Usuário não autenticado no Google", err);
-            navigate("/login");
+            console.error("Usuário não autenticado via Google", err);
+            navigate("/login", { replace: true });
         });
     }, [navigate]);
 
@@ -95,6 +101,7 @@ export const GoogleVerification = () => {
             setTimeout(() => {
                 window.location.href = '/home';
             }, 1500);
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             const errorMsg = error.response?.data?.erro || 'Erro ao processar o cadastro.';
