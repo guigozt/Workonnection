@@ -33,9 +33,13 @@ export const Login = () => {
     }, [usuario, navigate]);
 
     useEffect(() => {
-        const clientId =
-            import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-            "459899662845-gu22k1f8f5f4cvjvs2o6b00um6g6o4su.apps.googleusercontent.com";
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+        if (!clientId) {
+            console.error("Variável VITE_GOOGLE_CLIENT_ID não encontrada no .env");
+            setErrorMessage("Configuração do Google Client ID não encontrada no .env");
+            return;
+        }
 
         const handleCredentialResponse = async (response: any) => {
             console.log("Token do Google recebido com sucesso no cliente.");
