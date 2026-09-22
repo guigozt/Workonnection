@@ -3,13 +3,11 @@ export interface LoginDTO {
     senha: string;
 }
 
-export interface CadastroDTO {
+export interface CompletarCadastroDTO {
     nome: string;
     cpf: string;
     dataNascimento: string;
     telefone: string;
-    email: string;
-    senha: string;
     tipoUsuario: string;
 }
 
@@ -17,5 +15,9 @@ export interface UsuarioResponseDTO {
     id: string;
     nome: string;
     email: string;
+    cpf?: string;
+    dataNascimento?: string;
+    telefone?: string;
     tipoUsuario: string;
+    cadastroCompleto?: boolean;
 }

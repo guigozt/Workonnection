@@ -1,27 +1,98 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Button } from "../../../components/Button/Button";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
+import { useAuth } from "../../../context/AuthContext";
 import styles from "./Login.module.css";
 
+declare global {
+    interface Window {
+        google?: {
+            accounts: {
+                id: {
+                    initialize: (config: any) => void;
+                    renderButton: (parent: HTMLElement, options: any) => void;
+                    prompt: (notification?: any) => void;
+                };
+            };
+        };
+    }
+}
+
 export const Login = () => {
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const error = searchParams.get('error');
+    const navigate = useNavigate();
+    const { loginComGoogleToken, usuario } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const googleBtnRef = useRef<HTMLDivElement>(null);
 
-    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
-    const handleGoogleAuth = async () => {
-        setIsLoading(true);
-        try {
-            // Ping prévio para "acordar" o container no Render caso esteja em sleep (15 min inatividade)
-            await fetch(`${backendUrl}/vagas`, { method: 'GET' }).catch(() => { });
-        } finally {
-            // Redireciona para o fluxo OAuth2 do Google após a API estar pronta
-            window.location.href = `${backendUrl}/oauth2/authorization/google`;
+    // Se o usuário já estiver autenticado com cadastro completo, vai para a Home
+    useEffect(() => {
+        if (usuario && usuario.cadastroCompleto) {
+            navigate("/home", { replace: true });
         }
-    };
+    }, [usuario, navigate]);
+
+    useEffect(() => {
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+        const handleCredentialResponse = async (response: any) => {
+            console.log("Token do Google recebido com sucesso no cliente.");
+            setIsLoading(true);
+            setErrorMessage(null);
+
+            try {
+                if (!response?.credential) {
+                    throw new Error("Credencial do Google não recebida.");
+                }
+                const user = await loginComGoogleToken(response.credential);
+                if (user?.cadastroCompleto) {
+                    navigate("/home", { replace: true });
+                } else {
+                    navigate("/cadastro", { replace: true });
+                }
+            } catch (err: any) {
+                console.error("Erro na autenticação via token do Google:", err);
+                const msg = err?.response?.data?.message || err?.message || "Ocorreu um erro ao conectar com o Google. Tente novamente.";
+                setErrorMessage(msg);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const initGoogleSignIn = () => {
+            if (window.google?.accounts?.id && googleBtnRef.current) {
+                window.google.accounts.id.initialize({
+                    client_id: clientId,
+                    callback: handleCredentialResponse,
+                });
+
+                window.google.accounts.id.renderButton(googleBtnRef.current, {
+                    theme: "outline",
+                    size: "large",
+                    type: "standard",
+                    text: "continue_with",
+                    shape: "rectangular",
+                    logo_alignment: "left",
+                    width: 320,
+                });
+
+                window.google.accounts.id.prompt();
+            }
+        };
+
+        if (window.google?.accounts?.id) {
+            initGoogleSignIn();
+        } else {
+            const interval = setInterval(() => {
+                if (window.google?.accounts?.id) {
+                    clearInterval(interval);
+                    initGoogleSignIn();
+                }
+            }, 300);
+
+            return () => clearInterval(interval);
+        }
+    }, [loginComGoogleToken, navigate]);
 
     return (
         <AuthLayout
@@ -30,33 +101,27 @@ export const Login = () => {
         >
             <div className={styles.container}>
                 <h2 className={styles.title}>Acesse sua conta</h2>
+                <p className={styles.subtitle}>
+                    Conecte-se com sua conta Google para acessar as melhores oportunidades.
+                </p>
 
-                {error && (
+                {errorMessage && (
                     <div className={`${styles.feedback} ${styles.erro}`}>
-                        Ocorreu um erro ao conectar com o Google. Tente novamente.
+                        {errorMessage}
+                    </div>
+                )}
+
+                {isLoading && (
+                    <div className={`${styles.feedback} ${styles.sucesso}`}>
+                        Autenticando sua conta, aguarde...
                     </div>
                 )}
 
                 <div className={styles.form}>
-                    <Button
-                        type="button"
-                        onClick={handleGoogleAuth}
-                        icon="fa-brands fa-google"
-                        isLoading={isLoading}
-                    >
-                        Continuar com Google
-                    </Button>
+                    <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
 
                     <p className={styles.cadastroHint}>
-                        Ainda não tem conta?{' '}
-                        <button
-                            type="button"
-                            className={styles.linkBtn}
-                            onClick={handleGoogleAuth}
-                            disabled={isLoading}
-                        >
-                            Cadastre-se com o Google
-                        </button>
+                        Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.
                     </p>
                 </div>
             </div>

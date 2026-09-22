@@ -2,11 +2,57 @@ import { api } from "./api";
 
 import type {
     LoginDTO,
-    CadastroDTO,
+    CompletarCadastroDTO,
     UsuarioResponseDTO
 } from "../types/auth";
 
 export const authService = {
+
+    loginComGoogleToken: async (
+        token: string
+    ): Promise<UsuarioResponseDTO> => {
+        console.log("AUTH SERVICE: autenticando via Google Token...");
+
+        try {
+            const response = await api.post<UsuarioResponseDTO>(
+                "/auth/google",
+                { token }
+            );
+
+            console.log("AUTH SERVICE: resposta do Google recebida:", response.data);
+
+            if (response.data && response.data.id) {
+                localStorage.setItem("usuarioId", response.data.id);
+            }
+
+            return response.data;
+        } catch (error: any) {
+            console.error("❌ AUTH SERVICE: erro ao autenticar com token Google", error);
+            throw error;
+        }
+    },
+
+    completarCadastro: async (
+        dados: CompletarCadastroDTO
+    ): Promise<UsuarioResponseDTO> => {
+        console.log("AUTH SERVICE: enviando dados de complementação de cadastro...");
+
+        try {
+            const response = await api.post<UsuarioResponseDTO>(
+                "/usuarios/completar-cadastro",
+                dados
+            );
+
+            if (response.data && response.data.id) {
+                localStorage.setItem("usuarioId", response.data.id);
+            }
+
+            return response.data;
+        } catch (error: any) {
+            console.error("❌ AUTH SERVICE: erro ao completar cadastro", error);
+            throw error;
+        }
+    },
 
     login: async (
         dadosLogin: LoginDTO
@@ -16,131 +62,24 @@ export const authService = {
             "AUTH SERVICE: iniciando login no endpoint /usuarios/login"
         );
 
-        console.log(
-            "AUTH SERVICE: email =",
-            dadosLogin.email
-        );
-
-        console.log(
-            "AUTH SERVICE: senha =",
-            dadosLogin.senha ? "***" : "(vazia)"
-        );
-
         try {
-
             const response =
                 await api.post<UsuarioResponseDTO>(
                     "/usuarios/login",
                     dadosLogin
                 );
 
-            console.log(
-                "AUTH SERVICE: resposta recebida"
-            );
-
-            console.log(
-                "AUTH SERVICE: status =",
-                response.status
-            );
-
-            console.log(
-                "AUTH SERVICE: dados =",
-                response.data
-            );
-
-            return response.data;
-
-        } catch (error: any) {
-
-            console.error(
-                "❌ AUTH SERVICE: erro no login"
-            );
-
-            console.error(
-                "Erro completo:",
-                error
-            );
-
-            console.error(
-                "Mensagem:",
-                error?.message
-            );
-
-            console.error(
-                "Status:",
-                error?.response?.status
-            );
-
-            console.error(
-                "Data:",
-                error?.response?.data
-            );
-
-            throw error;
-        }
-    },
-
-    cadastrar: async (
-        dadosCadastro: CadastroDTO
-    ): Promise<UsuarioResponseDTO> => {
-
-        console.log(
-            "AUTH SERVICE: iniciando cadastro"
-        );
-
-        console.log(
-            "AUTH SERVICE: dados enviados:",
-            {
-                ...dadosCadastro,
-                senha: "***"
+            if (response.data && response.data.id) {
+                localStorage.setItem("usuarioId", response.data.id);
             }
-        );
-
-        try {
-
-            const response =
-                await api.post<UsuarioResponseDTO>(
-                    "/usuarios",
-                    dadosCadastro
-                );
-
-            console.log(
-                "AUTH SERVICE: cadastro realizado"
-            );
-
-            console.log(
-                "Status:",
-                response.status
-            );
-
-            console.log(
-                "Usuário:",
-                response.data
-            );
 
             return response.data;
 
         } catch (error: any) {
-
             console.error(
-                "❌ AUTH SERVICE: erro no cadastro"
-            );
-
-            console.error(
-                "Erro completo:",
+                "❌ AUTH SERVICE: erro no login",
                 error
             );
-
-            console.error(
-                "Status:",
-                error?.response?.status
-            );
-
-            console.error(
-                "Resposta:",
-                error?.response?.data
-            );
-
             throw error;
         }
     },
@@ -152,46 +91,43 @@ export const authService = {
         );
 
         try {
-
             const response =
                 await api.get<UsuarioResponseDTO>(
                     "/usuarios/me"
                 );
 
-            console.log(
-                "AUTH SERVICE: usuário já estava logado"
-            );
-
-            console.log(
-                response.data
-            );
+            if (response.data && response.data.id) {
+                localStorage.setItem("usuarioId", response.data.id);
+            }
 
             return response.data;
 
         } catch (error: any) {
-
             console.log(
-                "AUTH SERVICE: nenhum usuário logado"
-            );
-
-            console.log(
-                "Status:",
+                "AUTH SERVICE: nenhum usuário logado",
                 error?.response?.status
             );
-
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("authToken");
             throw error;
         }
     },
 
     logout: async () => {
-
         console.log(
             "AUTH SERVICE: fazendo logout..."
         );
 
-        await api.post(
-            "/usuarios/logout"
-        );
+        try {
+            await api.post(
+                "/usuarios/logout"
+            );
+        } catch (error) {
+            console.warn("Falha no logout da API, limpando armazenamento local:", error);
+        } finally {
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("authToken");
+        }
 
         console.log(
             "AUTH SERVICE: logout realizado"

@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authService } from '../services/authService';
-import type { UsuarioResponseDTO, LoginDTO } from '../types/auth';
+import type { UsuarioResponseDTO, LoginDTO, CompletarCadastroDTO } from '../types/auth';
 
 interface AuthContextData {
   usuario: UsuarioResponseDTO | null;
   loading: boolean; 
   login: (dados: LoginDTO) => Promise<void>;
+  loginComGoogleToken: (token: string) => Promise<UsuarioResponseDTO>;
+  completarCadastro: (dados: CompletarCadastroDTO) => Promise<UsuarioResponseDTO>;
   logout: () => Promise<void>;
 }
 
@@ -44,29 +46,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUsuario(user);
   };
 
+  const loginComGoogleToken = async (token: string): Promise<UsuarioResponseDTO> => {
+    console.log("AUTH: executando login com token Google...");
+    const user = await authService.loginComGoogleToken(token);
+    console.log("AUTH: login com Google retornou:", user);
+    setUsuario(user);
+    return user;
+  };
+
+  const completarCadastro = async (dados: CompletarCadastroDTO): Promise<UsuarioResponseDTO> => {
+    console.log("AUTH: completando dados de cadastro...");
+    const user = await authService.completarCadastro(dados);
+    console.log("AUTH: cadastro completado com sucesso:", user);
+    setUsuario(user);
+    return user;
+  };
+
   const logout = async () => {
     try {
       await authService.logout();
     } catch (error) {
-      console.error("Erro na API ao deslogar. Limpando estado local mesmo assim.");
+      console.error("Erro na API ao deslogar. Limpando estado local mesmo assim:", error);
     } finally {
-      // Limpa o usuário do estado do React garantido!
       setUsuario(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, loading, login, logout }}>
+    <AuthContext.Provider value={{ usuario, loading, login, loginComGoogleToken, completarCadastro, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-/**
- * Hook para acessar o AuthContext.
- * Garante que o componente está sendo
- * utilizado dentro do AuthProvider.
- */
 export const useAuth = (): AuthContextData => {
   const context = useContext(AuthContext);
 
