@@ -33,7 +33,9 @@ export const Login = () => {
     }, [usuario, navigate]);
 
     useEffect(() => {
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+        const clientId =
+            import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+            "459899662845-gu22k1f8f5f4cvjvs2o6b00um6g6o4su.apps.googleusercontent.com";
 
         const handleCredentialResponse = async (response: any) => {
             console.log("Token do Google recebido com sucesso no cliente.");
