@@ -10,18 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.workonnection.backend.service.GoogleOAuthService;
 
 @Configuration
 public class SecurityConfig {
@@ -39,9 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            SecurityContextRepository securityContextRepository,
-            GoogleOAuthService googleOAuthService,
-            OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler
+            SecurityContextRepository securityContextRepository
     ) throws Exception {
 
         http
@@ -52,32 +44,13 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/google/**").permitAll()
-                    .requestMatchers("/usuarios/me").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/google/confirm").permitAll()
-                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico", "/oauth2/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                    .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
+                    .requestMatchers("/usuarios/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
                     .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(oAuth2UserService(googleOAuthService))
-                        )
-                        .successHandler(oAuth2LoginSuccessHandler)
                 );
 
         return http.build();
-    }
-
-    @Bean
-    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(GoogleOAuthService googleOAuthService) {
-        return userRequest -> {
-            DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-            OAuth2User oAuth2User = delegate.loadUser(userRequest);
-            googleOAuthService.processOAuth2User(oAuth2User);
-            return oAuth2User;
-        };
     }
 
     @Bean
@@ -93,6 +66,7 @@ public class SecurityConfig {
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

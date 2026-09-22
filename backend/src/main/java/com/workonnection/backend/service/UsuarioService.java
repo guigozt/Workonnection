@@ -138,6 +138,44 @@ public class UsuarioService {
         return toResponse(repository.save(usuario));
     }
 
+    public UsuarioResponseDTO completarCadastro(String id, CompletarCadastroDTO dto) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ApiException(
+                        "Usuário não encontrado",
+                        HttpStatus.NOT_FOUND
+                ));
+
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            usuario.setNome(dto.nome().trim());
+        }
+        if (dto.cpf() != null) {
+            usuario.setCpf(dto.cpf().trim());
+        }
+        if (dto.dataNascimento() != null) {
+            usuario.setDataNascimento(dto.dataNascimento().trim());
+        }
+        if (dto.telefone() != null) {
+            usuario.setTelefone(dto.telefone().trim());
+        }
+        if (dto.tipoUsuario() != null && !dto.tipoUsuario().isBlank()) {
+            usuario.setTipoUsuario(dto.tipoUsuario().trim());
+        }
+
+        if (usuario.getPerfil() == null) {
+            usuario.setPerfil(new Usuario.Perfil());
+        }
+        usuario.getPerfil().setTelefone(usuario.getTelefone());
+
+        if (usuario.getConfiguracoes() == null) {
+            usuario.setConfiguracoes(new Usuario.Configuracoes());
+        }
+
+        usuario.setEmailVerified(true);
+        usuario.setGoogleLinked(true);
+
+        return toResponse(repository.save(usuario));
+    }
+
     private UsuarioResponseDTO toResponse(Usuario u) {
         long naoLidas = (u.getNotificacoes() == null)
                 ? 0
@@ -160,11 +198,18 @@ public class UsuarioService {
                         ? u.getConfiguracoes()
                         : new Usuario.Configuracoes();
 
+        boolean cadastroCompleto = u.getCpf() != null && !u.getCpf().isBlank()
+                && u.getTelefone() != null && !u.getTelefone().isBlank();
+
         return new UsuarioResponseDTO(
                 u.getId(),
                 u.getNome(),
                 u.getEmail(),
+                u.getCpf(),
+                u.getDataNascimento(),
+                u.getTelefone(),
                 u.getTipoUsuario(),
+                cadastroCompleto,
                 perfil,
                 naoLidas,
                 config

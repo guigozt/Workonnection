@@ -2,9 +2,10 @@ package com.workonnection.backend.service;
 
 import com.workonnection.backend.model.Usuario;
 import com.workonnection.backend.repository.UsuarioRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,59 +13,70 @@ import java.util.UUID;
 public class GoogleOAuthService {
 
     private final UsuarioRepository usuarioRepository;
+    private final RestTemplate restTemplate;
 
     public GoogleOAuthService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.restTemplate = new RestTemplate();
     }
 
     /**
-     * Called after successful OAuth2 authentication.
-     * If a user with the Google email exists, returns it.
-     * Otherwise creates a provisional user.
+     * Valida o ID Token do Google via Google Tokeninfo API,
+     * extrai os dados do perfil e cadastra ou recupera o usuário.
      */
-    public Usuario processOAuth2User(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("email");
-        if (email == null) {
-            throw new IllegalArgumentException("Google account does not provide email");
+    public Usuario verifyAndProcessToken(String token) {
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException("Token do Google não informado");
         }
+
+        String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + token;
+        Map<String, Object> payload;
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            payload = response;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Token do Google inválido ou expirado: " + e.getMessage());
+        }
+
+        if (payload == null || !payload.containsKey("email")) {
+            throw new IllegalArgumentException("Não foi possível obter o email a partir do token do Google");
+        }
+
+        String email = (String) payload.get("email");
+        String name = (String) payload.get("name");
+
         Optional<Usuario> optional = usuarioRepository.findByEmail(email);
         if (optional.isPresent()) {
             Usuario existing = optional.get();
-            // If user is already verified but not yet linked to Google, link now
+            boolean changed = false;
             if (!existing.isGoogleLinked()) {
                 existing.setGoogleLinked(true);
-                usuarioRepository.save(existing);
+                changed = true;
+            }
+            if (!existing.isEmailVerified()) {
+                existing.setEmailVerified(true);
+                changed = true;
+            }
+            if ((existing.getNome() == null || existing.getNome().isBlank()) && name != null) {
+                existing.setNome(name);
+                changed = true;
+            }
+            if (changed) {
+                return usuarioRepository.save(existing);
             }
             return existing;
         }
-        // Create provisional user for first-time Google login
-        Usuario provisional = new Usuario();
-        provisional.setId(UUID.randomUUID().toString());
-        provisional.setEmail(email);
-        provisional.setEmailVerified(true);
-        provisional.setGoogleLinked(true);
-        // Save provisional user (without password)
-        return usuarioRepository.save(provisional);
-    }
 
-    /**
-     * Completes registration after the user provides the remaining data.
-     */
-    public Usuario confirmVerification(String email, String nome, String cpf, String dataNascimento, String telefone, String tipoUsuario) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
-        
-        // set remaining fields
-        usuario.setNome(nome);
-        usuario.setCpf(cpf);
-        usuario.setDataNascimento(dataNascimento);
-        usuario.setTelefone(telefone);
-        usuario.setTipoUsuario(tipoUsuario);
-        
-        // Mark as verified and linked
-        usuario.setEmailVerified(true);
-        usuario.setGoogleLinked(true);
-        
-        return usuarioRepository.save(usuario);
+        // Cria usuário diretamente a partir dos dados do Google
+        Usuario novo = new Usuario();
+        novo.setId(UUID.randomUUID().toString());
+        novo.setEmail(email);
+        novo.setNome(name != null && !name.isBlank() ? name : email);
+        novo.setEmailVerified(true);
+        novo.setGoogleLinked(true);
+        novo.setTipoUsuario("Estudante");
+
+        return usuarioRepository.save(novo);
     }
 }

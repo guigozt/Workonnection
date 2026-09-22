@@ -125,10 +125,11 @@ public class UsuarioController {
      */
     @GetMapping("/me")
     public ResponseEntity<UsuarioResponseDTO> usuarioLogado(
+            HttpServletRequest request,
             HttpSession session
     ) {
 
-        String id = getLoggerUserId(session);
+        String id = getLoggerUserId(request, session);
 
         return ResponseEntity.ok(
             service.buscarPorId(id)
@@ -141,10 +142,11 @@ public class UsuarioController {
     @PutMapping("/perfil")
     public ResponseEntity<UsuarioResponseDTO> atualizarPerfil(
             @RequestBody PerfilDTO dto,
+            HttpServletRequest request,
             HttpSession session
     ) {
 
-        String id = getLoggerUserId(session);
+        String id = getLoggerUserId(request, session);
 
         return ResponseEntity.ok(
             service.atualizarPerfil(id, dto)
@@ -157,10 +159,11 @@ public class UsuarioController {
     @PutMapping("/configuracoes")
     public ResponseEntity<UsuarioResponseDTO> atualizarConfiguracoes(
             @RequestBody ConfiguracoesDTO dto,
+            HttpServletRequest request,
             HttpSession session
     ) {
 
-        String id = getLoggerUserId(session);
+        String id = getLoggerUserId(request, session);
 
         return ResponseEntity.ok(
             service.atualizarConfiguracoes(id, dto)
@@ -168,28 +171,46 @@ public class UsuarioController {
     }
 
     /**
-     * Retorna o ID do usuário logado.
+     * Completa o cadastro com dados essenciais de perfil.
      */
-    private String getLoggerUserId(HttpSession session) {
+    @PostMapping("/completar-cadastro")
+    public ResponseEntity<UsuarioResponseDTO> completarCadastro(
+            @RequestBody com.workonnection.backend.dto.CompletarCadastroDTO dto,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String id = getLoggerUserId(request, session);
+        return ResponseEntity.ok(
+            service.completarCadastro(id, dto)
+        );
+    }
 
-        if (session == null) {
-            throw new ApiException(
-                "Não autenticado",
-                HttpStatus.UNAUTHORIZED
-            );
+    /**
+     * Retorna o ID do usuário logado (via Authorization header ou Sessão HTTP).
+     */
+    private String getLoggerUserId(HttpServletRequest request, HttpSession session) {
+
+        if (request != null) {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7).trim();
+                if (!token.isBlank()) {
+                    return token;
+                }
+            }
         }
 
-        String id =
-            (String) session.getAttribute("usuarioId");
-
-        if (id == null || id.isBlank()) {
-            throw new ApiException(
-                "Não autenticado",
-                HttpStatus.UNAUTHORIZED
-            );
+        if (session != null) {
+            String id = (String) session.getAttribute("usuarioId");
+            if (id != null && !id.isBlank()) {
+                return id;
+            }
         }
 
-        return id;
+        throw new ApiException(
+            "Não autenticado",
+            HttpStatus.UNAUTHORIZED
+        );
     }
 
     @PostMapping("/logout")
