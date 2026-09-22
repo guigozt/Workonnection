@@ -25,6 +25,9 @@ public class GoogleAuthController {
     private final UsuarioService usuarioService;
     private final SecurityContextRepository securityContextRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${spring.security.oauth2.client.registration.google.client-id:${GOOGLE_CLIENT_ID:}}")
+    private String googleClientId;
+
     public GoogleAuthController(
             GoogleOAuthService googleOAuthService,
             UsuarioService usuarioService,
@@ -33,6 +36,11 @@ public class GoogleAuthController {
         this.googleOAuthService = googleOAuthService;
         this.usuarioService = usuarioService;
         this.securityContextRepository = securityContextRepository;
+    }
+
+    @GetMapping("/client-id")
+    public ResponseEntity<java.util.Map<String, String>> getClientId() {
+        return ResponseEntity.ok(java.util.Map.of("clientId", googleClientId != null ? googleClientId : ""));
     }
 
     @PostMapping
