@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Topbar } from '../../components/Topbar/Topbar';
 import { UsuarioCard } from '../../components/UsuarioCard/UsuarioCard';
+import { PerfilPublicoModal } from '../../components/PerfilPublicoModal/PerfilPublicoModal';
+import type { UsuarioPublicoDTO } from '../../types/usuarios';
 import { useColaboradores } from './useColaboradores';
 import {
   UsersIcon,
@@ -16,6 +18,8 @@ export const Colaboradores: React.FC = () => {
     isCompacto,
     setIsCompacto,
   } = useColaboradores();
+
+  const [usuarioModal, setUsuarioModal] = useState<UsuarioPublicoDTO | null>(null);
 
   return (
     <div>
@@ -96,12 +100,19 @@ export const Colaboradores: React.FC = () => {
                   key={colab.id}
                   usuario={colab}
                   compacto={isCompacto}
+                  onVerPerfil={(u) => setUsuarioModal(u)}
                 />
               ))}
             </div>
           )}
         </div>
       </main>
+
+      <PerfilPublicoModal
+        isOpen={!!usuarioModal}
+        onClose={() => setUsuarioModal(null)}
+        usuario={usuarioModal}
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { api } from './api';
-import type { UsuarioResponseDTO } from '../types/usuarios';
+import type { UsuarioPublicoDTO } from '../types/usuarios';
 
 export interface CadastroPayLoad {
     nome: string;
@@ -18,8 +18,13 @@ export const usuarioService = {
     return response.data;
   },
 
-  listarTodos: async(): Promise<UsuarioResponseDTO[]> => {
+  listarTodos: async (): Promise<UsuarioPublicoDTO[]> => {
     const { data } = await api.get('/usuarios');
+    return data;
+  },
+
+  buscarPerfilPublico: async (id: string): Promise<UsuarioPublicoDTO> => {
+    const { data } = await api.get(`/usuarios/${id}`);
     return data;
   }
 };
