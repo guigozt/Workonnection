@@ -1,5 +1,9 @@
 package com.workonnection.backend.config;
 
+import java.util.List;
+
+import jakarta.servlet.DispatcherType;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,8 +17,6 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -36,18 +38,19 @@ public class SecurityConfig {
     ) throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(AbstractHttpConfigurer::disable)
-            .securityContext(security -> security
-                .securityContextRepository(securityContextRepository)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
-                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                .requestMatchers("/usuarios/login", "/usuarios/logout").permitAll()
-                .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll() // Garante leitura de vagas sem 403
-                .anyRequest().authenticated()
-            );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .securityContext(security -> security
+                        .securityContextRepository(securityContextRepository)
+                )
+                .authorizeHttpRequests(auth -> auth
+                    .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                    .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
+                    .requestMatchers("/usuarios", "/usuarios/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
+                    .anyRequest().authenticated()
+                );
 
         return http.build();
     }
@@ -57,17 +60,25 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:5173",
-            "https://workonnection-frontend.vercel.app",
-            "https://*.vercel.app"
+                "http://localhost:5173",
+                "http://192.168.*.*",
+                "https://*.ngrok.io",
+                "https://workonnection-frontend.vercel.app",
+                "https://*.vercel.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // Permite o envio de cookies de sessão
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
 
         return source;
+    }
+
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofNone();
     }
 }

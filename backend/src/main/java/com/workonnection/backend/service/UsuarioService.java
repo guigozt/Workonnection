@@ -5,7 +5,6 @@ import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.Usuario;
 import com.workonnection.backend.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +13,9 @@ import java.util.List;
 public class UsuarioService {
     
     private final UsuarioRepository repository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository repository, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository repository) {
         this.repository = repository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
@@ -35,7 +32,6 @@ public class UsuarioService {
         usuario.setDataNascimento(dto.dataNascimento());
         usuario.setTelefone(dto.telefone());
         usuario.setEmail(dto.email());
-        usuario.setSenha(passwordEncoder.encode(dto.senha()));
         usuario.setTipoUsuario(dto.tipoUsuario());
 
         return toResponse(repository.save(usuario));
@@ -44,16 +40,9 @@ public class UsuarioService {
     public UsuarioResponseDTO login(LoginDTO dto) {
         Usuario usuario = repository.findByEmail(dto.email())
                 .orElseThrow(() -> new ApiException(
-                        "Email ou senha inválidos",
+                        "Usuário não encontrado",
                         HttpStatus.UNAUTHORIZED
                 ));
-
-        if (!passwordEncoder.matches(dto.senha(), usuario.getSenha())) {
-            throw new ApiException(
-                    "Email ou senha inválidos",
-                    HttpStatus.UNAUTHORIZED
-            );
-        }
 
         return toResponse(usuario);
     }
@@ -68,21 +57,11 @@ public class UsuarioService {
         return toResponse(usuario);
     }
 
-    public List<UsuarioPublicoDTO> listarColaboradores() {
+    public List<UsuarioResponseDTO> listarColaboradores() {
         return repository.findAll().stream()
                 .filter(u -> u != null)
-                .map(this::toPublicResponse)
+                .map(this::toResponse)
                 .toList();
-    }
-
-    public UsuarioPublicoDTO buscarPerfilPublicoPorId(String id) {
-        Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new ApiException(
-                        "Usuário não encontrado",
-                        HttpStatus.NOT_FOUND
-                ));
-
-        return toPublicResponse(usuario);
     }
 
     public UsuarioResponseDTO atualizarPerfil(String id, PerfilDTO dto) {
@@ -159,6 +138,44 @@ public class UsuarioService {
         return toResponse(repository.save(usuario));
     }
 
+    public UsuarioResponseDTO completarCadastro(String id, CompletarCadastroDTO dto) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ApiException(
+                        "Usuário não encontrado",
+                        HttpStatus.NOT_FOUND
+                ));
+
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            usuario.setNome(dto.nome().trim());
+        }
+        if (dto.cpf() != null) {
+            usuario.setCpf(dto.cpf().trim());
+        }
+        if (dto.dataNascimento() != null) {
+            usuario.setDataNascimento(dto.dataNascimento().trim());
+        }
+        if (dto.telefone() != null) {
+            usuario.setTelefone(dto.telefone().trim());
+        }
+        if (dto.tipoUsuario() != null && !dto.tipoUsuario().isBlank()) {
+            usuario.setTipoUsuario(dto.tipoUsuario().trim());
+        }
+
+        if (usuario.getPerfil() == null) {
+            usuario.setPerfil(new Usuario.Perfil());
+        }
+        usuario.getPerfil().setTelefone(usuario.getTelefone());
+
+        if (usuario.getConfiguracoes() == null) {
+            usuario.setConfiguracoes(new Usuario.Configuracoes());
+        }
+
+        usuario.setEmailVerified(true);
+        usuario.setGoogleLinked(true);
+
+        return toResponse(repository.save(usuario));
+    }
+
     private UsuarioResponseDTO toResponse(Usuario u) {
         long naoLidas = (u.getNotificacoes() == null)
                 ? 0
@@ -181,40 +198,21 @@ public class UsuarioService {
                         ? u.getConfiguracoes()
                         : new Usuario.Configuracoes();
 
+        boolean cadastroCompleto = u.getCpf() != null && !u.getCpf().isBlank()
+                && u.getTelefone() != null && !u.getTelefone().isBlank();
+
         return new UsuarioResponseDTO(
                 u.getId(),
                 u.getNome(),
                 u.getEmail(),
+                u.getCpf(),
+                u.getDataNascimento(),
+                u.getTelefone(),
                 u.getTipoUsuario(),
+                cadastroCompleto,
                 perfil,
                 naoLidas,
                 config
-        );
-    }
-
-    private UsuarioPublicoDTO toPublicResponse(Usuario u) {
-        Usuario.Perfil perfil =
-                u.getPerfil() != null
-                        ? u.getPerfil()
-                        : new Usuario.Perfil();
-
-        PerfilPublicoDTO perfilPublico = new PerfilPublicoDTO(
-                perfil.getSobre(),
-                perfil.getLocal(),
-                perfil.getInstagram(),
-                perfil.getLinkedin(),
-                perfil.getSite(),
-                perfil.getHabilidades(),
-                perfil.getFormacoes(),
-                perfil.getExperiencias(),
-                perfil.getCursos()
-        );
-
-        return new UsuarioPublicoDTO(
-                u.getId(),
-                u.getNome(),
-                u.getTipoUsuario(),
-                perfilPublico
         );
     }
 }

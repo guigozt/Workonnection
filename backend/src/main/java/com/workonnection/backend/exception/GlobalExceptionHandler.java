@@ -18,11 +18,12 @@ public class GlobalExceptionHandler {
                 .body(Map.of("erro", ex.getMessage()));
     }
 
-    // Captura genérica para erros inesperados (evita stack trace no frontend)
+    // Captura genérica para erros inesperados
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneric(Exception ex) {
+        ex.printStackTrace();
         return ResponseEntity
                 .internalServerError()
-                .body(Map.of("erro", "Erro interno no servidor"));
+                .body(Map.of("erro", ex.getMessage() != null ? ex.getMessage() : "Erro interno no servidor"));
     }
 }

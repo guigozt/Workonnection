@@ -20,6 +20,44 @@ public class Usuario {
     private String email;
     private String senha;
     private String tipoUsuario;
+    // New fields for Google email verification
+    private boolean googleLinked;
+
+    public boolean isGoogleLinked() {
+        return googleLinked;
+    }
+
+    public void setGoogleLinked(boolean googleLinked) {
+        this.googleLinked = googleLinked;
+    }
+
+    private boolean emailVerified = false;
+    private String verificationCode;
+    private java.time.Instant verificationExpiry;
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public java.time.Instant getVerificationExpiry() {
+        return verificationExpiry;
+    }
+
+    public void setVerificationExpiry(java.time.Instant verificationExpiry) {
+        this.verificationExpiry = verificationExpiry;
+    }
 
     private Perfil perfil = new Perfil();
 
