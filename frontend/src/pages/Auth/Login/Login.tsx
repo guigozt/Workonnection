@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
 import { useAuth } from "../../../context/AuthContext";
+import { api } from "../../../services/api";
 import styles from "./Login.module.css";
 
 declare global {
@@ -33,13 +34,7 @@ export const Login = () => {
     }, [usuario, navigate]);
 
     useEffect(() => {
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-        if (!clientId) {
-            console.error("Variável VITE_GOOGLE_CLIENT_ID não encontrada no .env");
-            setErrorMessage("Configuração do Google Client ID não encontrada no .env");
-            return;
-        }
+        let isMounted = true;
 
         const handleCredentialResponse = async (response: any) => {
             console.log("Token do Google recebido com sucesso no cliente.");
@@ -65,39 +60,76 @@ export const Login = () => {
             }
         };
 
-        const initGoogleSignIn = () => {
-            if (window.google?.accounts?.id && googleBtnRef.current) {
-                window.google.accounts.id.initialize({
-                    client_id: clientId,
-                    callback: handleCredentialResponse,
-                });
+        const setupGoogle = (resolvedClientId: string) => {
+            if (!isMounted) return;
 
-                window.google.accounts.id.renderButton(googleBtnRef.current, {
-                    theme: "outline",
-                    size: "large",
-                    type: "standard",
-                    text: "continue_with",
-                    shape: "rectangular",
-                    logo_alignment: "left",
-                    width: 320,
-                });
+            const initGoogleSignIn = () => {
+                if (window.google?.accounts?.id && googleBtnRef.current) {
+                    window.google.accounts.id.initialize({
+                        client_id: resolvedClientId,
+                        callback: handleCredentialResponse,
+                    });
 
-                window.google.accounts.id.prompt();
+                    window.google.accounts.id.renderButton(googleBtnRef.current, {
+                        theme: "outline",
+                        size: "large",
+                        type: "standard",
+                        text: "continue_with",
+                        shape: "rectangular",
+                        logo_alignment: "left",
+                        width: 320,
+                    });
+
+                    window.google.accounts.id.prompt();
+                }
+            };
+
+            if (window.google?.accounts?.id) {
+                initGoogleSignIn();
+            } else {
+                const interval = setInterval(() => {
+                    if (window.google?.accounts?.id) {
+                        clearInterval(interval);
+                        initGoogleSignIn();
+                    }
+                }, 300);
+
+                return () => clearInterval(interval);
             }
         };
 
-        if (window.google?.accounts?.id) {
-            initGoogleSignIn();
-        } else {
-            const interval = setInterval(() => {
-                if (window.google?.accounts?.id) {
-                    clearInterval(interval);
-                    initGoogleSignIn();
-                }
-            }, 300);
+        const resolveAndInit = async () => {
+            // 1. Tenta obter do ambiente do Vite (.env local ou Vercel)
+            const envClientId =
+                import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+                import.meta.env.GOOGLE_CLIENT_ID;
 
-            return () => clearInterval(interval);
-        }
+            if (envClientId) {
+                setupGoogle(envClientId);
+                return;
+            }
+
+            // 2. Se não estiver no bundle do Vite, busca dinamicamente do backend (Render)
+            try {
+                const response = await api.get<{ clientId: string }>('/auth/google/client-id');
+                if (response.data?.clientId) {
+                    setupGoogle(response.data.clientId);
+                    return;
+                }
+            } catch (err) {
+                console.warn("Não foi possível obter clientId da API:", err);
+            }
+
+            if (isMounted) {
+                setErrorMessage("Configuração do Google Client ID não encontrada no .env ou no servidor.");
+            }
+        };
+
+        resolveAndInit();
+
+        return () => {
+            isMounted = false;
+        };
     }, [loginComGoogleToken, navigate]);
 
     return (
