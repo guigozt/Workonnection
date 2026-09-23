@@ -2,6 +2,7 @@ package com.workonnection.backend.config;
 
 import java.util.List;
 
+import jakarta.servlet.DispatcherType;
 import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,7 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository)
                 )
                 .authorizeHttpRequests(auth -> auth
+                    .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                     .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
                     .requestMatchers("/usuarios", "/usuarios/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()

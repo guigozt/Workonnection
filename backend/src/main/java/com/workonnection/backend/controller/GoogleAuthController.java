@@ -43,36 +43,45 @@ public class GoogleAuthController {
         return ResponseEntity.ok(java.util.Map.of("clientId", googleClientId != null ? googleClientId : ""));
     }
 
+    // ALTERAÇÃO AQUI: Mudou de ResponseEntity<UsuarioResponseDTO> para ResponseEntity<?>
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> autenticarComToken(
+    public ResponseEntity<?> autenticarComToken(
             @RequestBody GoogleTokenDTO dto,
             HttpServletRequest request,
             HttpServletResponse response,
             HttpSession session
     ) {
-        Usuario usuario = googleOAuthService.verifyAndProcessToken(dto.token());
+        try {
+            Usuario usuario = googleOAuthService.verifyAndProcessToken(dto.token());
 
-        if (session != null) {
-            session.setAttribute("usuarioId", usuario.getId());
+            if (session != null) {
+                session.setAttribute("usuarioId", usuario.getId());
+            }
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            usuario.getEmail(),
+                            null,
+                            Collections.emptyList()
+                    );
+
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+            if (securityContextRepository != null) {
+                securityContextRepository.saveContext(context, request, response);
+            }
+
+            UsuarioResponseDTO usuarioResponse = usuarioService.buscarPorId(usuario.getId());
+            return ResponseEntity.ok(usuarioResponse);
+            
+        } catch (Exception e) {
+            System.err.println("❌ ERRO NO LOGIN DO GOOGLE: " + e.getMessage());
+            e.printStackTrace();
+
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                .body("Falha ao autenticar com Google: " + e.getMessage());
         }
-
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        usuario.getEmail(),
-                        null,
-                        Collections.emptyList()
-                );
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-
-        if (securityContextRepository != null) {
-            securityContextRepository.saveContext(context, request, response);
-        }
-
-        UsuarioResponseDTO usuarioResponse = usuarioService.buscarPorId(usuario.getId());
-        return ResponseEntity.ok(usuarioResponse);
     }
 }
-
