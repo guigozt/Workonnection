@@ -70,80 +70,80 @@ export const PerfilModal: React.FC<Props> = ({
 }) => {
 
   const [local, setLocal] = useState(
-  () => perfil.local || ''
-);
+    () => perfil.local || ''
+  );
 
-const [telefone, setTelefone] = useState(
-  () => perfil.telefone || ''
-);
+  const [telefone, setTelefone] = useState(
+    () => perfil.telefone || ''
+  );
 
-const [instagram, setInstagram] = useState(
-  () => perfil.instagram || ''
-);
+  const [instagram, setInstagram] = useState(
+    () => perfil.instagram || ''
+  );
 
-const [linkedin, setLinkedin] = useState(
-  () => perfil.linkedin || ''
-);
+  const [linkedin, setLinkedin] = useState(
+    () => perfil.linkedin || ''
+  );
 
-const [site, setSite] = useState(
-  () => perfil.site || ''
-);
+  const [site, setSite] = useState(
+    () => perfil.site || ''
+  );
 
-const [sobre, setSobre] = useState(
-  () => perfil.sobre || ''
-);
+  const [sobre, setSobre] = useState(
+    () => perfil.sobre || ''
+  );
 
-const [habilidade, setHabilidade] = useState('');
+  const [habilidade, setHabilidade] = useState('');
 
-const [universidade, setUniversidade] = useState(
-  () => formacao?.universidade || ''
-);
+  const [universidade, setUniversidade] = useState(
+    () => formacao?.universidade || ''
+  );
 
-const [cursoNome, setCursoNome] = useState(() => {
-  if (tipo === 'formacao') {
-    return formacao?.curso || '';
-  }
+  const [cursoNome, setCursoNome] = useState(() => {
+    if (tipo === 'formacao') {
+      return formacao?.curso || '';
+    }
 
-  if (tipo === 'curso') {
-    return curso?.nome || '';
-  }
+    if (tipo === 'curso') {
+      return curso?.nome || '';
+    }
 
-  return '';
-});
+    return '';
+  });
 
-const [periodo, setPeriodo] = useState(() => {
-  if (tipo === 'formacao') {
-    return formacao?.periodo || '';
-  }
+  const [periodo, setPeriodo] = useState(() => {
+    if (tipo === 'formacao') {
+      return formacao?.periodo || '';
+    }
 
-  if (tipo === 'experiencia') {
-    return experiencia?.periodo || '';
-  }
+    if (tipo === 'experiencia') {
+      return experiencia?.periodo || '';
+    }
 
-  if (tipo === 'curso') {
-    return curso?.periodo || '';
-  }
+    if (tipo === 'curso') {
+      return curso?.periodo || '';
+    }
 
-  return '';
-});
+    return '';
+  });
 
-const [empresa, setEmpresa] = useState(
-  () => experiencia?.empresa || ''
-);
+  const [empresa, setEmpresa] = useState(
+    () => experiencia?.empresa || ''
+  );
 
-const [cargo, setCargo] = useState(
-  () => experiencia?.cargo || ''
-);
+  const [cargo, setCargo] = useState(
+    () => experiencia?.cargo || ''
+  );
 
-const [descricao, setDescricao] = useState(
-  () => experiencia?.descricao || ''
-);
+  const [descricao, setDescricao] = useState(
+    () => experiencia?.descricao || ''
+  );
 
-const [instituicao, setInstituicao] = useState(
-  () => curso?.instituicao || ''
-);
+  const [instituicao, setInstituicao] = useState(
+    () => curso?.instituicao || ''
+  );
 
-const [erro, setErro] = useState('');
+  const [erro, setErro] = useState('');
 
 
   if (!tipo) {

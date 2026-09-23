@@ -5,7 +5,7 @@ import { Topbar } from '../../components/Topbar/Topbar';
 
 import styles from './Sobre.module.css';
 
-import hugoImg from "../../assets/photoMembers/Hugo.jpeg"; 
+import hugoImg from "../../assets/photoMembers/Hugo.jpeg";
 import pauloImg from "../../assets/photoMembers/Paulo.jpeg";
 import guilhermeImg from "../../assets/photoMembers/Guilherme.jpeg";
 import gabrielImg from "../../assets/photoMembers/gabriel.jpg";
@@ -77,125 +77,125 @@ const desenvolvedores = [
 
 function Sobre() {
     return (
-    <div>
-        <Topbar notificacoesNaoLidas={3} />
+        <div>
+            <Topbar notificacoesNaoLidas={3} />
 
-        <main className={styles.sobreWrapper}>
+            <main className={styles.sobreWrapper}>
 
-            {/* Seção principal */}
-            <section className={styles.mainSection}>
+                {/* Seção principal */}
+                <section className={styles.mainSection}>
 
-                <h3 className={styles.sobreTitulo}>
-                    O que você está procurando?
-                </h3>
+                    <h3 className={styles.sobreTitulo}>
+                        O que você está procurando?
+                    </h3>
 
-                <p className={styles.sobreSubtitulo}>
-                    Somos uma plataforma inovadora que busca simplificar e
-                    tornar o processo seletivo algo mais rápido e menos
-                    burocrático. Nunca foi tão simples encontrar a vaga
-                    perfeita para você.
-                </p>
+                    <p className={styles.sobreSubtitulo}>
+                        Somos uma plataforma inovadora que busca simplificar e
+                        tornar o processo seletivo algo mais rápido e menos
+                        burocrático. Nunca foi tão simples encontrar a vaga
+                        perfeita para você.
+                    </p>
 
-                <div className={styles.cardsInfo}>
+                    <div className={styles.cardsInfo}>
 
-                    {cards.map((card) => (
-                        <div
-                            className={styles.cardInfo}
-                            key={card.titulo}
-                        >
-                            <img
-                                src={card.imagem}
-                                alt={card.titulo}
-                            />
-
-                            <h5>{card.titulo}</h5>
-
-                            <p>{card.descricao}</p>
-                        </div>
-                    ))}
-
-                </div>
-
-            </section>
-
-            {/* Seção dos desenvolvedores */}
-            <section className={styles.teamSection}>
-
-                <h4 className={styles.sobreTituloSecundario}>
-                    Desenvolvedores do Projeto
-                </h4>
-
-                <div className={styles.teamMembers}>
-
-                    {desenvolvedores.map((dev) => (
-                        <div
-                            className={styles.teamMember}
-                            key={dev.github}
-                        >
-                            <img
-                                src={dev.imagem}
-                                alt={dev.nome}
-                            />
-
-                            <h6>{dev.nome}</h6>
-
-                            <a
-                                href={dev.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                        {cards.map((card) => (
+                            <div
+                                className={styles.cardInfo}
+                                key={card.titulo}
                             >
-                                <FaGithub size={20} />
-                                GitHub
-                            </a>
-                        </div>
-                    ))}
+                                <img
+                                    src={card.imagem}
+                                    alt={card.titulo}
+                                />
 
-                </div>
+                                <h5>{card.titulo}</h5>
 
-            </section>
+                                <p>{card.descricao}</p>
+                            </div>
+                        ))}
 
-            {/* Footer */}
-            <footer className={styles.footerWc}>
+                    </div>
 
-                <p>
-                    © 2025 | WorkConnection - Todos os direitos reservados.
-                </p>
+                </section>
 
-                <p>
-                    Projeto Integrador da Fatec Diadema
-                </p>
+                {/* Seção dos desenvolvedores */}
+                <section className={styles.teamSection}>
 
-                <div className={styles.footerInfo}>
+                    <h4 className={styles.sobreTituloSecundario}>
+                        Desenvolvedores do Projeto
+                    </h4>
 
-                    <span>
-                        <MapPin size={16} />
-                        Av. Luiz Merenda 443, Diadema, SP
-                    </span>
+                    <div className={styles.teamMembers}>
 
-                    <span>
-                        <Phone size={16} />
-                        (11) 4093-9712
-                    </span>
+                        {desenvolvedores.map((dev) => (
+                            <div
+                                className={styles.teamMember}
+                                key={dev.github}
+                            >
+                                <img
+                                    src={dev.imagem}
+                                    alt={dev.nome}
+                                />
 
-                </div>
+                                <h6>{dev.nome}</h6>
 
-                <p>
-                    Site:{' '}
+                                <a
+                                    href={dev.github}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <FaGithub size={20} />
+                                    GitHub
+                                </a>
+                            </div>
+                        ))}
 
-                    <a
-                        href="https://fatecdiadema.cps.sp.gov.br/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        www.fatecdiadema.cps.sp.gov.br
-                    </a>
-                </p>
+                    </div>
 
-            </footer>
+                </section>
 
-        </main>
-    </div>
-);
+                {/* Footer */}
+                <footer className={styles.footerWc}>
+
+                    <p>
+                        © 2025 | WorkConnection - Todos os direitos reservados.
+                    </p>
+
+                    <p>
+                        Projeto Integrador da Fatec Diadema
+                    </p>
+
+                    <div className={styles.footerInfo}>
+
+                        <span>
+                            <MapPin size={16} />
+                            Av. Luiz Merenda 443, Diadema, SP
+                        </span>
+
+                        <span>
+                            <Phone size={16} />
+                            (11) 4093-9712
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Site:{' '}
+
+                        <a
+                            href="https://fatecdiadema.cps.sp.gov.br/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            www.fatecdiadema.cps.sp.gov.br
+                        </a>
+                    </p>
+
+                </footer>
+
+            </main>
+        </div>
+    );
 }
 
 export default Sobre;

@@ -136,14 +136,14 @@ export const MinhasVagas: React.FC = () => {
         }
         title="Criar Nova Vaga"
       />
-        {isModalOpen && (
-          <ModalVaga
-            isOpen={isModalOpen}
-            onClose={handleFecharModal}
-            onSuccess={handleSalvarVagaSucesso}
-            vagaParaEditar={vagaEmEdicao}
-          />
-        )}
+      {isModalOpen && (
+        <ModalVaga
+          isOpen={isModalOpen}
+          onClose={handleFecharModal}
+          onSuccess={handleSalvarVagaSucesso}
+          vagaParaEditar={vagaEmEdicao}
+        />
+      )}
 
       <ComentariosDrawer
         isOpen={Boolean(

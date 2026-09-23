@@ -1,47 +1,98 @@
 .container {
     display: flex;
+    min-height: 100vh;
     height: 100vh;
     width: 100%;
     overflow: hidden;
 }
+
 .left {
     flex: 1;
     background: #e4e4e4;
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
+
 .left img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
 }
+
 .right {
-    flex: 1;
+    flex: 1.15;
     height: 100%;
+    overflow-y: auto;
+    /* Permite rolar quando o conteúdo for maior que a tela */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     background: #f8f9fa;
-    padding: 20px;
+    padding: 32px 24px;
+    box-sizing: border-box;
 }
+
+/* Barra de rolagem discreta */
+.right::-webkit-scrollbar {
+    width: 6px;
+}
+
+.right::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.right::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.right::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
 .formBox {
-    max-width: 420px;
+    max-width: 560px;
     width: 100%;
-    padding: 36px;
+    margin: auto;
+    /* Centraliza verticalmente se couber, rola suavemente se ultrapassar */
+    padding: 20px 16px;
+    box-sizing: border-box;
     text-align: center;
 }
+
 .logo {
-    width: 220px;
-    margin-bottom: 28px;
+    width: 200px;
+    max-width: 80%;
+    margin-bottom: 20px;
     transition: transform 0.25s ease;
 }
+
 .logo:hover {
-    transform: scale(1.06);
+    transform: scale(1.04);
 }
 
 @media (max-width: 900px) {
+    .container {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
     .left {
         display: none;
+    }
+
+    .right {
+        height: auto;
+        min-height: 100vh;
+        padding: 24px 16px;
+        align-items: center;
+    }
+
+    .formBox {
+        padding: 16px 8px;
+        max-width: 500px;
     }
 }

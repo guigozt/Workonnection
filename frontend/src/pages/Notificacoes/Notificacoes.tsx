@@ -37,7 +37,7 @@ export const Notificacoes = () => {
     excluirNotificacao,
     limparTodas,
   } = useNotificacoes();
-  
+
 
   const formatarTempo = (instante: string) => {
     if (!instante) {
@@ -45,7 +45,7 @@ export const Notificacoes = () => {
     }
 
     const diff =
-    agora - new Date(instante).getTime();
+      agora - new Date(instante).getTime();
 
     const minutos = Math.floor(diff / 60000);
     const horas = Math.floor(diff / 3600000);
@@ -129,7 +129,7 @@ export const Notificacoes = () => {
     );
   }
 
-   return (
+  return (
     <>
       <Topbar
         notificacoesNaoLidas={quantidadeNaoLidas}
@@ -181,19 +181,17 @@ export const Notificacoes = () => {
             {notificacoes.map((notificacao) => (
               <article
                 key={notificacao.id}
-                className={`${styles.card} ${
-                  !notificacao.lida
+                className={`${styles.card} ${!notificacao.lida
                     ? styles.naoLida
                     : ''
-                }`}
+                  }`}
                 onClick={() =>
                   clicarNotificacao(notificacao)
                 }
               >
                 <div
-                  className={`${styles.icone} ${
-                    styles[notificacao.tipo]
-                  }`}
+                  className={`${styles.icone} ${styles[notificacao.tipo]
+                    }`}
                 >
                   {obterIcone(notificacao.tipo)}
                 </div>

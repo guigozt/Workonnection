@@ -31,9 +31,9 @@ export const useNotificacoes = () => {
         notificacoesAtuais.map((notificacao) =>
           notificacao.id === id
             ? {
-                ...notificacao,
-                lida: true,
-              }
+              ...notificacao,
+              lida: true,
+            }
             : notificacao
         )
       );
@@ -86,36 +86,36 @@ export const useNotificacoes = () => {
   ).length;
 
   useEffect(() => {
-  let ativo = true;
+    let ativo = true;
 
-  notificacaoService
-    .listar()
-    .then((lista) => {
-      if (!ativo) return;
+    notificacaoService
+      .listar()
+      .then((lista) => {
+        if (!ativo) return;
 
-      setNotificacoes(lista);
-      setErro(null);
-      setLoading(false);
-    })
-    .catch((error) => {
-      if (!ativo) return;
+        setNotificacoes(lista);
+        setErro(null);
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (!ativo) return;
 
-      console.error(
-        'Erro ao carregar notificações:',
-        error
-      );
+        console.error(
+          'Erro ao carregar notificações:',
+          error
+        );
 
-      setErro(
-        'Não foi possível carregar as notificações.'
-      );
+        setErro(
+          'Não foi possível carregar as notificações.'
+        );
 
-      setLoading(false);
-    });
+        setLoading(false);
+      });
 
-  return () => {
-    ativo = false;
-  };
-}, []);
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   return {
     notificacoes,

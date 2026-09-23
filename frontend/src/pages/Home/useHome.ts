@@ -7,7 +7,7 @@ export const useHome = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [vagaEmEdicao, setVagaEmEdicao] = useState<VagaResponseDTO | null>(null);
-  const [usuarioLogado] = useState<UsuarioLogado | null>(null); 
+  const [usuarioLogado] = useState<UsuarioLogado | null>(null);
 
   useEffect(() => {
     let ativo = true;
@@ -61,7 +61,7 @@ export const useHome = () => {
     });
   };
 
-const handleExcluirVaga = async (vagaId: string, cargo: string) => {
+  const handleExcluirVaga = async (vagaId: string, cargo: string) => {
     if (!window.confirm(`Deseja realmente excluir a vaga de "${cargo}"?`)) return;
     try {
       await api.delete(`/vagas/${vagaId}`);

@@ -38,32 +38,32 @@ export const useMinhasVagas = () => {
     }
   };
 
-useEffect(() => {
-  let ativo = true;
+  useEffect(() => {
+    let ativo = true;
 
-  vagaService
-    .listarMinhas()
-    .then((data) => {
-      if (!ativo) return;
+    vagaService
+      .listarMinhas()
+      .then((data) => {
+        if (!ativo) return;
 
-      setVagas(data);
-      setLoading(false);
-    })
-    .catch((error) => {
-      if (!ativo) return;
+        setVagas(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (!ativo) return;
 
-      console.error(
-        'Erro ao carregar minhas vagas:',
-        error
-      );
+        console.error(
+          'Erro ao carregar minhas vagas:',
+          error
+        );
 
-      setLoading(false);
-    });
+        setLoading(false);
+      });
 
-  return () => {
-    ativo = false;
-  };
-}, []);
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   const handleAbrirCriacao = (
     vaga?: VagaResponseDTO
@@ -118,15 +118,15 @@ useEffect(() => {
   // já que na tela "Minhas Vagas"
   // o foco é visualização/edição rápida.
 
-  const handleLike = () => {};
+  const handleLike = () => { };
 
-  const handleDislike = () => {};
+  const handleDislike = () => { };
 
   const handleEnviarComentario =
-    async () => {};
+    async () => { };
 
   const handleExcluirComentario =
-    async () => {};
+    async () => { };
 
   return {
     vagas,
