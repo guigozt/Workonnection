@@ -43,8 +43,8 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository)
                 )
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/google/**").permitAll()
-                    .requestMatchers("/usuarios/**").permitAll()
+                    .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
+                    .requestMatchers("/usuarios", "/usuarios/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
                     .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
                     .anyRequest().authenticated()
