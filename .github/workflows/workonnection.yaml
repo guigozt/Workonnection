@@ -47,7 +47,9 @@ jobs:
 
     env:
       SPRING_PROFILES_ACTIVE: test
+      MONGODB_URI: ${{ secrets.MONGODB_URL }}
       SPRING_DATA_MONGODB_URI: ${{ secrets.MONGODB_URL }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID || '1234567890-test-client-id.apps.googleusercontent.com' }}
 
     steps:
       - name: Baixar repositorio
@@ -69,7 +71,6 @@ jobs:
       - name: Executar verificacao e cobertura
         run: ./mvnw verify
 
-      
   gitleaks:
     name: Gitleaks
     runs-on: ubuntu-latest
