@@ -20,54 +20,36 @@ export const Cadastro = () => {
         tipoUsuario: ""
     });
 
+    const [isInitialized, setIsInitialized] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [feedback, setFeedback] = useState<{ message: string; type: 'erro' | 'sucesso' | '' }>({ message: '', type: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleVoltarLogin = async () => {
-        await logout();
-        navigate("/login", { replace: true });
-    };
+    if (!loading && usuario && !isInitialized) {
+        setIsInitialized(true);
+        setFormData({
+            nome: usuario.nome || "",
+            cpf: usuario.cpf || "",
+            dataNascimento: usuario.dataNascimento || "",
+            telefone: usuario.telefone || "",
+            tipoUsuario: usuario.tipoUsuario || ""
+        });
+    }
 
     useEffect(() => {
         if (!loading) {
             if (!usuario) {
                 navigate("/login", { replace: true });
-                return;
-            }
-
-            if (usuario.cadastroCompleto) {
+            } else if (usuario.cadastroCompleto) {
                 navigate("/home", { replace: true });
-                return;
             }
-
-            setFormData(prev => {
-                const novoNome = usuario.nome || "";
-                const novoCpf = usuario.cpf || "";
-                const novaData = usuario.dataNascimento || "";
-                const novoTelefone = usuario.telefone || "";
-                const novoTipo = usuario.tipoUsuario || "";
-
-                if (
-                    prev.nome === novoNome &&
-                    prev.cpf === novoCpf &&
-                    prev.dataNascimento === novaData &&
-                    prev.telefone === novoTelefone &&
-                    prev.tipoUsuario === novoTipo
-                ) {
-                    return prev;
-                }
-
-                return {
-                    nome: novoNome,
-                    cpf: novoCpf,
-                    dataNascimento: novaData,
-                    telefone: novoTelefone,
-                    tipoUsuario: novoTipo
-                };
-            });
         }
     }, [usuario, loading, navigate]);
+
+    const handleVoltarLogin = async () => {
+        await logout();
+        navigate("/login", { replace: true });
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
