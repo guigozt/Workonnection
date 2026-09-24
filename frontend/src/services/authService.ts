@@ -26,7 +26,7 @@ export const authService = {
             }
 
             return response.data;
-        } catch (error: any) {
+        } catch (error) {
             console.error("❌ AUTH SERVICE: erro ao autenticar com token Google", error);
             throw error;
         }
@@ -48,7 +48,7 @@ export const authService = {
             }
 
             return response.data;
-        } catch (error: any) {
+        } catch (error) {
             console.error("❌ AUTH SERVICE: erro ao completar cadastro", error);
             throw error;
         }
@@ -75,7 +75,7 @@ export const authService = {
 
             return response.data;
 
-        } catch (error: any) {
+        } catch (error) {
             console.error(
                 "❌ AUTH SERVICE: erro no login",
                 error
@@ -102,10 +102,11 @@ export const authService = {
 
             return response.data;
 
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { status?: number } };
             console.log(
                 "AUTH SERVICE: nenhum usuário logado",
-                error?.response?.status
+                err?.response?.status
             );
             localStorage.removeItem("usuarioId");
             localStorage.removeItem("authToken");

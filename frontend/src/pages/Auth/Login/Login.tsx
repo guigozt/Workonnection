@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 import { api } from "../../../services/api";
 import styles from "./Login.module.css";
+
+interface GoogleCredentialResponse {
+    credential?: string;
+}
 
 declare global {
     interface Window {
         google?: {
             accounts: {
                 id: {
-                    initialize: (config: any) => void;
-                    renderButton: (parent: HTMLElement, options: any) => void;
-                    prompt: (notification?: any) => void;
+                    initialize: (config: { client_id: string; callback: (response: GoogleCredentialResponse) => void }) => void;
+                    renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void;
+                    prompt: (notification?: unknown) => void;
                 };
             };
         };
@@ -26,7 +30,6 @@ export const Login = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const googleBtnRef = useRef<HTMLDivElement>(null);
 
-    // Se o usuário já estiver autenticado com cadastro completo, vai para a Home
     useEffect(() => {
         if (usuario && usuario.cadastroCompleto) {
             navigate("/home", { replace: true });
@@ -36,7 +39,7 @@ export const Login = () => {
     useEffect(() => {
         let isMounted = true;
 
-        const handleCredentialResponse = async (response: any) => {
+        const handleCredentialResponse = async (response: GoogleCredentialResponse) => {
             console.log("Token do Google recebido com sucesso no cliente.");
             setIsLoading(true);
             setErrorMessage(null);
@@ -51,9 +54,10 @@ export const Login = () => {
                 } else {
                     navigate("/cadastro", { replace: true });
                 }
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Erro na autenticação via token do Google:", err);
-                const msg = err?.response?.data?.message || err?.message || "Ocorreu um erro ao conectar com o Google. Tente novamente.";
+                const errorObj = err as { response?: { data?: { message?: string } }; message?: string };
+                const msg = errorObj?.response?.data?.message || errorObj?.message || "Ocorreu um erro ao conectar com o Google. Tente novamente.";
                 setErrorMessage(msg);
             } finally {
                 setIsLoading(false);
@@ -99,7 +103,6 @@ export const Login = () => {
         };
 
         const resolveAndInit = async () => {
-            // 1. Tenta obter do ambiente do Vite (.env local ou Vercel)
             const envClientId =
                 import.meta.env.VITE_GOOGLE_CLIENT_ID ||
                 import.meta.env.GOOGLE_CLIENT_ID;
@@ -109,7 +112,6 @@ export const Login = () => {
                 return;
             }
 
-            // 2. Se não estiver no bundle do Vite, busca dinamicamente do backend (Render)
             try {
                 const response = await api.get<{ clientId: string }>('/auth/google/client-id');
                 if (response.data?.clientId) {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
 import { InputGroup } from "../../../components/Input/InputGroup";
 import { Button } from "../../../components/Button/Button";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../context/useAuth";
 import { maskCPF, maskPhone } from "../../../utils/masks";
 import { validateCPF, calculateAge } from "../../../utils/validators";
 import styles from "./Cadastro.module.css";
@@ -41,14 +41,31 @@ export const Cadastro = () => {
                 return;
             }
 
-            setFormData(prev => ({
-                ...prev,
-                nome: usuario.nome || "",
-                cpf: usuario.cpf || "",
-                dataNascimento: usuario.dataNascimento || "",
-                telefone: usuario.telefone || "",
-                tipoUsuario: usuario.tipoUsuario || ""
-            }));
+            setFormData(prev => {
+                const novoNome = usuario.nome || "";
+                const novoCpf = usuario.cpf || "";
+                const novaData = usuario.dataNascimento || "";
+                const novoTelefone = usuario.telefone || "";
+                const novoTipo = usuario.tipoUsuario || "";
+
+                if (
+                    prev.nome === novoNome &&
+                    prev.cpf === novoCpf &&
+                    prev.dataNascimento === novaData &&
+                    prev.telefone === novoTelefone &&
+                    prev.tipoUsuario === novoTipo
+                ) {
+                    return prev;
+                }
+
+                return {
+                    nome: novoNome,
+                    cpf: novoCpf,
+                    dataNascimento: novaData,
+                    telefone: novoTelefone,
+                    tipoUsuario: novoTipo
+                };
+            });
         }
     }, [usuario, loading, navigate]);
 
@@ -104,9 +121,9 @@ export const Cadastro = () => {
             setTimeout(() => {
                 navigate('/home', { replace: true });
             }, 1000);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            const errorMsg = error.response?.data?.message || error.response?.data?.erro || 'Erro ao processar o cadastro.';
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string; erro?: string } } };
+            const errorMsg = err.response?.data?.message || err.response?.data?.erro || 'Erro ao processar o cadastro.';
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {
             setIsSubmitting(false);
@@ -132,7 +149,6 @@ export const Cadastro = () => {
             imageAlt="Completar Cadastro"
         >
             <div className={styles.container}>
-
                 <h2 className={styles.title}>Complete seu Cadastro</h2>
                 <p className={styles.subtitle}>
                     Falta pouco! Preencha os dados abaixo para finalizar sua conta.
