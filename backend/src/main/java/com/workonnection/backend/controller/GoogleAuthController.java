@@ -81,7 +81,7 @@ public class GoogleAuthController {
             e.printStackTrace();
 
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                .body("Falha ao autenticar com Google: " + e.getMessage());
+                .body(java.util.Map.of("message", "Falha ao autenticar com Google: " + (e.getMessage() != null ? e.getMessage() : "Erro desconhecido")));
         }
     }
 }
