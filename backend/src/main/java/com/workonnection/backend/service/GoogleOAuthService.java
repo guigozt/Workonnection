@@ -46,7 +46,7 @@ public class GoogleOAuthService {
         String email = (String) payload.get("email");
         String name = (String) payload.get("name");
 
-        Optional<Usuario> optional = usuarioRepository.findFirstByEmail(email);
+        Optional<Usuario> optional = usuarioRepository.findByEmail(email);
         if (optional.isPresent()) {
             Usuario existing = optional.get();
             boolean changed = false;

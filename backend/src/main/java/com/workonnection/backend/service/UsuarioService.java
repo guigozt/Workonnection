@@ -19,7 +19,7 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
-        if (repository.findFirstByEmail(dto.email()).isPresent()) {
+        if (repository.findByEmail(dto.email()).isPresent()) {
             throw new ApiException(
                     "Email já cadastrado",
                     HttpStatus.CONFLICT
@@ -38,7 +38,7 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO login(LoginDTO dto) {
-        Usuario usuario = repository.findFirstByEmail(dto.email())
+        Usuario usuario = repository.findByEmail(dto.email())
                 .orElseThrow(() -> new ApiException(
                         "Usuário não encontrado",
                         HttpStatus.UNAUTHORIZED
