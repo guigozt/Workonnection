@@ -56,8 +56,11 @@ export const Login = () => {
                 }
             } catch (err: unknown) {
                 console.error("Erro na autenticação via token do Google:", err);
-                const errorObj = err as { response?: { data?: { message?: string } }; message?: string };
-                const msg = errorObj?.response?.data?.message || errorObj?.message || "Ocorreu um erro ao conectar com o Google. Tente novamente.";
+                const errorObj = err as { response?: { data?: { message?: string } | string }; message?: string };
+                const serverMsg = typeof errorObj?.response?.data === 'string'
+                    ? errorObj.response.data
+                    : errorObj?.response?.data?.message;
+                const msg = serverMsg || errorObj?.message || "Ocorreu um erro ao conectar com o Google. Tente novamente.";
                 setErrorMessage(msg);
             } finally {
                 setIsLoading(false);
