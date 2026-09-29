@@ -29,8 +29,12 @@ public class VagaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VagaResponseDTO>> listar() { 
-        return ResponseEntity.ok(service.listarTodas()); 
+    public ResponseEntity<List<VagaResponseDTO>> listar(
+            @RequestParam(required = false) String busca,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String modalidade
+    ) { 
+        return ResponseEntity.ok(service.listar(busca, tipo, modalidade)); 
     }
 
     @GetMapping("/minhas")
