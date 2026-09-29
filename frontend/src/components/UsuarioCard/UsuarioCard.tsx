@@ -1,6 +1,6 @@
 import React from 'react';
 import { MessageCircle, Check } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { UsuarioPublicoDTO } from '../../types/usuarios';
 import styles from './UsuarioCard.module.css';
 
@@ -8,13 +8,16 @@ interface UsuarioCardProps {
   usuario: UsuarioPublicoDTO;
   compacto?: boolean;
   onVerPerfil?: (usuario: UsuarioPublicoDTO) => void;
+  onMensagem?: (usuario: UsuarioPublicoDTO) => void;
 }
 
 export const UsuarioCard: React.FC<UsuarioCardProps> = ({
   usuario,
   compacto = false,
   onVerPerfil,
+  onMensagem,
 }) => {
+  const navigate = useNavigate();
   const nome = usuario.nome || 'Usuário';
   const tipo = usuario.tipoUsuario || 'Membro';
 
@@ -102,7 +105,17 @@ export const UsuarioCard: React.FC<UsuarioCardProps> = ({
       </div>
 
       <div className={styles.acoes}>
-        <button className={styles.acaoBtn}>
+        <button
+          type="button"
+          className={styles.acaoBtn}
+          onClick={() => {
+            if (onMensagem) {
+              onMensagem(usuario);
+            } else {
+              navigate(`/mensagens?contatoId=${usuario.id}`);
+            }
+          }}
+        >
           <MessageCircle size={18} />
           Mensagem
         </button>

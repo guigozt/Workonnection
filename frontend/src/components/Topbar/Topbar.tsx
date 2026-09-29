@@ -4,6 +4,7 @@ import {
     Bell, 
     Briefcase, 
     Users, 
+    MessageSquare,
     User, 
     Info, 
     Settings, 
@@ -14,11 +15,14 @@ import styles from './Topbar.module.css';
 
 interface TopbarProps {
     notificacoesNaoLidas?: number;
+    mensagensNaoLidas?: number;
 }
 
-export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
+export const Topbar = ({ notificacoesNaoLidas = 0, mensagensNaoLidas }: TopbarProps) => {
     // Importando a lógica do nosso custom hook
-    const { isActive, handleLogout } = useTopbar();
+    const { isActive, handleLogout, totalMensagensNaoLidas } = useTopbar();
+
+    const badgeMensagens = mensagensNaoLidas !== undefined ? mensagensNaoLidas : totalMensagensNaoLidas;
 
     return (
         <header className={styles.topbar}>
@@ -46,6 +50,16 @@ export const Topbar = ({ notificacoesNaoLidas = 0 }: TopbarProps) => {
                         </span>
                     )}
                     <span className={styles.iconText}>Avisos</span>
+                </Link>
+
+                <Link to="/mensagens" className={`${styles.navLink} ${isActive('/mensagens') ? styles.ativo : ''}`}>
+                    <MessageSquare size={18} />
+                    {badgeMensagens > 0 && (
+                        <span className={styles.notifBadge}>
+                            {badgeMensagens > 99 ? '99+' : badgeMensagens}
+                        </span>
+                    )}
+                    <span className={styles.iconText}>Chat</span>
                 </Link>
 
                 <Link to="/vagas" className={`${styles.navLink} ${isActive('/vagas') ? styles.ativo : ''}`}>
