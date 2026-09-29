@@ -52,6 +52,16 @@ public class UsuarioController {
     }
 
     /**
+     * Busca usuário por ID.
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable String id) {
+        return ResponseEntity.ok(
+            service.buscarPorId(id)
+        );
+    }
+
+    /**
      * Cadastro.
      */
     @PostMapping
