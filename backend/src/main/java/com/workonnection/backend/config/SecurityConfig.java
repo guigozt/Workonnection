@@ -78,7 +78,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier(
+            @org.springframework.beans.factory.annotation.Value("${server.servlet.session.cookie.same-site:none}") String sameSite
+    ) {
+        if ("lax".equalsIgnoreCase(sameSite)) {
+            return CookieSameSiteSupplier.ofLax();
+        } else if ("strict".equalsIgnoreCase(sameSite)) {
+            return CookieSameSiteSupplier.ofStrict();
+        }
         return CookieSameSiteSupplier.ofNone();
     }
 }
