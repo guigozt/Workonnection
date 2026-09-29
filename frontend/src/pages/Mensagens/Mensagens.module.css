@@ -1,0 +1,441 @@
+.chatPageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg, #f4f6f8);
+  overflow: hidden;
+}
+
+.chatMainWrapper {
+  flex: 1;
+  display: flex;
+  margin-top: 70px;
+  height: calc(100vh - 70px);
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px;
+  box-sizing: border-box;
+  gap: 16px;
+}
+
+.chatCard {
+  display: flex;
+  flex: 1;
+  background: #ffffff;
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border, #e2e8f0);
+  overflow: hidden;
+  height: 100%;
+}
+
+/* =========================================
+   Sidebar: Lista de Conversas
+   ========================================= */
+.sidebar {
+  width: 340px;
+  border-right: 1px solid var(--border, #e2e8f0);
+  display: flex;
+  flex-direction: column;
+  background: #fafbfc;
+}
+
+.sidebarHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+  background: #ffffff;
+}
+
+.sidebarTitulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary-dark, #1e293b);
+  margin-bottom: 12px;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 20px;
+  border: 1px solid var(--border, #cbd5e1);
+  background: #f1f5f9;
+  font-size: 13.5px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: #47a4c4;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(71, 164, 196, 0.15);
+}
+
+.conversasLista {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.conversaItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.conversaItem:hover {
+  background: #f1f5f9;
+}
+
+.conversaItem.ativo {
+  background: #e6f4f8;
+  border-left: 4px solid #47a4c4;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #e2e8f0;
+}
+
+.conversaInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.conversaTopo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.conversaNome {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conversaHora {
+  font-size: 11px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.conversaPreview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.ultimaMensagemTexto {
+  font-size: 12.5px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badgeNaoLidas {
+  background: #ff4d4d;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.emptyConversas {
+  text-align: center;
+  padding: 40px 16px;
+  color: #94a3b8;
+  font-size: 13.5px;
+}
+
+/* =========================================
+   Painel Central da Conversa
+   ========================================= */
+.painelChat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  height: 100%;
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+  background: #ffffff;
+}
+
+.chatHeaderUsuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chatHeaderDetalhes h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.chatHeaderDetalhes span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.btnPerfilHeader {
+  padding: 6px 14px;
+  border-radius: var(--radius, 6px);
+  border: 1px solid #47a4c4;
+  color: #47a4c4;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btnPerfilHeader:hover {
+  background: #47a4c4;
+  color: #ffffff;
+}
+
+/* =========================================
+   Histórico de Mensagens
+   ========================================= */
+.historicoMensagens {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+}
+
+.linhaMensagem {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+}
+
+.linhaMensagem.enviada {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.linhaMensagem.recebida {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.balaoMensagem {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  word-break: break-word;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.linhaMensagem.enviada .balaoMensagem {
+  background: #47a4c4;
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+
+.linhaMensagem.recebida .balaoMensagem {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 2px;
+}
+
+.mensagemMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.linhaMensagem.enviada .mensagemMeta {
+  justify-content: flex-end;
+}
+
+.iconeStatus {
+  display: inline-flex;
+  align-items: center;
+}
+
+.iconeStatus.lida {
+  color: #47a4c4;
+}
+
+/* =========================================
+   Input / Rodapé de Envio
+   ========================================= */
+.chatFooter {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border, #e2e8f0);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.campoTextoWrapper {
+  flex: 1;
+}
+
+.campoTexto {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border, #cbd5e1);
+  font-size: 13.5px;
+  outline: none;
+  background: #f8fafc;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.campoTexto:focus {
+  border-color: #47a4c4;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(71, 164, 196, 0.15);
+}
+
+.btnEnviar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #47a4c4;
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btnEnviar:hover:not(:disabled) {
+  background: #3988a3;
+  transform: scale(1.05);
+}
+
+.btnEnviar:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================
+   Estado Vazio (Sem conversa selecionada)
+   ========================================= */
+.vazioPlaceholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.vazioPlaceholder h4 {
+  font-size: 17px;
+  color: #475569;
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.vazioPlaceholder p {
+  font-size: 13.5px;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* =========================================
+   Responsividade
+   ========================================= */
+@media (max-width: 768px) {
+  .chatMainWrapper {
+    padding: 0;
+    margin-top: 70px;
+    height: calc(100vh - 70px);
+  }
+
+  .chatCard {
+    border-radius: 0;
+    border: none;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .painelChat {
+    display: flex;
+    width: 100%;
+  }
+
+  /* Em telas menores, esconde sidebar se conversa estiver selecionada */
+  .esconderMobile {
+    display: none !important;
+  }
+
+  .btnVoltarMobile {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
