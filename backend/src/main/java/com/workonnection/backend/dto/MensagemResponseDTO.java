@@ -8,5 +8,7 @@ public record MensagemResponseDTO(
     String destinatarioId,
     String conteudo,
     Instant dataEnvio,
-    boolean lida
+    boolean lida,
+    Instant dataLeitura,
+    boolean editada
 ) {}
