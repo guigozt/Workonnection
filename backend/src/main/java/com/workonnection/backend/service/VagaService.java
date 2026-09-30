@@ -9,6 +9,10 @@ import com.workonnection.backend.model.Usuario;
 import com.workonnection.backend.model.Vaga;
 import com.workonnection.backend.repository.UsuarioRepository;
 import com.workonnection.backend.repository.VagaRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +22,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class VagaService {
@@ -25,13 +30,16 @@ public class VagaService {
     private final VagaRepository vagaRepository;
     private final UsuarioRepository usuarioRepository;
     private final NotificacaoService notificacaoService;
+    private final MongoTemplate mongoTemplate;
 
     public VagaService(VagaRepository vagaRepository, 
                        UsuarioRepository usuarioRepository, 
-                       NotificacaoService notificacaoService) {
+                       NotificacaoService notificacaoService,
+                       MongoTemplate mongoTemplate) {
         this.vagaRepository = vagaRepository;
         this.usuarioRepository = usuarioRepository;
         this.notificacaoService = notificacaoService;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public VagaResponseDTO salvar(VagaDTO dto, String usuarioId) {
@@ -158,8 +166,93 @@ public class VagaService {
         return toDTO(vagaRepository.save(vaga));
     }
 
+    public List<VagaResponseDTO> listar(String busca, String tipo, String modalidade) {
+        return vagaRepository.findAll().stream()
+                .filter(v -> {
+                    // Filtro por palavra-chave (cargo, empresa, requisitos, descricao)
+                    if (busca != null && !busca.isBlank()) {
+                        String b = busca.trim().toLowerCase();
+                        boolean matchCargo = v.getCargo() != null && v.getCargo().toLowerCase().contains(b);
+                        boolean matchEmpresa = v.getEmpresa() != null && v.getEmpresa().toLowerCase().contains(b);
+                        boolean matchDescricao = v.getDescricao() != null && v.getDescricao().toLowerCase().contains(b);
+                        boolean matchRequisitos = v.getRequisitos() != null && v.getRequisitos().toLowerCase().contains(b);
+                        if (!matchCargo && !matchEmpresa && !matchDescricao && !matchRequisitos) {
+                            return false;
+                        }
+                    }
+
+                    // Filtro por modalidade (Presencial, Remoto, Híbrido)
+                    if (modalidade != null && !modalidade.isBlank() && !modalidade.equalsIgnoreCase("todos") && !modalidade.equalsIgnoreCase("todas")) {
+                        if (v.getModalidade() == null || !v.getModalidade().trim().equalsIgnoreCase(modalidade.trim())) {
+                            return false;
+                        }
+                    }
+
+                    // Filtro por tipo de usuário (Aluno, Egresso, Professor, etc.)
+                    if (tipo != null && !tipo.isBlank() && !tipo.equalsIgnoreCase("todos") && !tipo.equalsIgnoreCase("todas")) {
+                        List<String> tipos = orEmpty(v.getTiposUsuario());
+                        String tBusca = tipo.trim().toLowerCase();
+                        boolean matchTipo = tipos.stream().anyMatch(t -> {
+                            String tLower = t.trim().toLowerCase();
+                            if (tLower.equals("todos") || tLower.equals(tBusca)) {
+                                return true;
+                            }
+                            if ((tBusca.equals("aluno") || tBusca.equals("estudante")) && (tLower.equals("aluno") || tLower.equals("estudante"))) {
+                                return true;
+                            }
+                            return false;
+                        });
+                        if (!matchTipo) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
+                .map(this::toDTO)
+                .toList();
+    }
+
     public List<VagaResponseDTO> listarTodas() {
-        return vagaRepository.findAll().stream().map(this::toDTO).toList();
+        return filtrar(null, null, null);
+    }
+
+    public List<VagaResponseDTO> filtrar(String busca, String tipo, String modalidade) {
+        Query query = new Query();
+        List<Criteria> criterias = new ArrayList<>();
+
+        if (busca != null && !busca.isBlank()) {
+            String termo = busca.trim();
+            String regex = Pattern.quote(termo);
+            Criteria textoCriteria = new Criteria().orOperator(
+                    Criteria.where("cargo").regex(regex, "i"),
+                    Criteria.where("empresa").regex(regex, "i"),
+                    Criteria.where("requisitos").regex(regex, "i"),
+                    Criteria.where("localizacao").regex(regex, "i"),
+                    Criteria.where("descricao").regex(regex, "i"),
+                    Criteria.where("modalidade").regex(regex, "i")
+            );
+            criterias.add(textoCriteria);
+        }
+
+        if (tipo != null && !tipo.isBlank() && !tipo.equalsIgnoreCase("todos")) {
+            String tipoLimpo = tipo.trim();
+            String regexTipo = "^(" + Pattern.quote(tipoLimpo) + "|todos)$";
+            criterias.add(Criteria.where("tiposUsuario").regex(regexTipo, "i"));
+        }
+
+        if (modalidade != null && !modalidade.isBlank() && !modalidade.equalsIgnoreCase("todos")) {
+            String modLimpa = modalidade.trim();
+            criterias.add(Criteria.where("modalidade").regex("^" + Pattern.quote(modLimpa) + "$", "i"));
+        }
+
+        if (!criterias.isEmpty()) {
+            query.addCriteria(new Criteria().andOperator(criterias.toArray(new Criteria[0])));
+        }
+
+        query.with(Sort.by(Sort.Direction.DESC, "_id"));
+
+        return mongoTemplate.find(query, Vaga.class).stream().map(this::toDTO).toList();
     }
 
     public List<VagaResponseDTO> listarPorUsuario(String usuarioId) {

@@ -1,16 +1,26 @@
 package com.workonnection.backend.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.workonnection.backend.dto.ComentarioDTO;
 import com.workonnection.backend.dto.VagaDTO;
 import com.workonnection.backend.dto.VagaResponseDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.VagaService;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/vagas")
@@ -29,8 +39,12 @@ public class VagaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VagaResponseDTO>> listar() { 
-        return ResponseEntity.ok(service.listarTodas()); 
+    public ResponseEntity<List<VagaResponseDTO>> listar(
+            @RequestParam(required = false) String busca,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String modalidade
+    ) { 
+        return ResponseEntity.ok(service.filtrar(busca, tipo, modalidade)); 
     }
 
     @GetMapping("/minhas")
