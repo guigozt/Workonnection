@@ -24,9 +24,6 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    /**
-     * Lista todas as conversas ativas do usuário com último recado e contagem de não lidas.
-     */
     @GetMapping
     public ResponseEntity<List<ConversaResumoDTO>> listarConversas(
             HttpServletRequest request,
@@ -36,9 +33,6 @@ public class ChatController {
         return ResponseEntity.ok(chatService.listarConversas(usuarioId));
     }
 
-    /**
-     * Histórico de mensagens entre os dois usuários.
-     */
     @GetMapping("/{contatoId}/mensagens")
     public ResponseEntity<List<MensagemResponseDTO>> buscarHistorico(
             @PathVariable String contatoId,
@@ -49,9 +43,6 @@ public class ChatController {
         return ResponseEntity.ok(chatService.buscarHistorico(usuarioId, contatoId));
     }
 
-    /**
-     * Envia nova mensagem para o contato especificado.
-     */
     @PostMapping("/{contatoId}/mensagens")
     public ResponseEntity<MensagemResponseDTO> enviarMensagem(
             @PathVariable String contatoId,
@@ -64,9 +55,6 @@ public class ChatController {
         return ResponseEntity.status(HttpStatus.CREATED).body(enviada);
     }
 
-    /**
-     * Marca todas as mensagens recebidas daquele contato como lidas.
-     */
     @PutMapping("/{contatoId}/ler")
     public ResponseEntity<Void> marcarComoLidas(
             @PathVariable String contatoId,
@@ -78,9 +66,40 @@ public class ChatController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Retorna a quantidade total de mensagens não lidas para o usuário logado.
-     */
+    @PutMapping("/mensagens/{mensagemId}")
+    public ResponseEntity<MensagemResponseDTO> editarMensagem(
+            @PathVariable String mensagemId,
+            @RequestBody MensagemDTO dto,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String usuarioId = getLoggerUserId(request, session);
+        MensagemResponseDTO editada = chatService.editarMensagem(usuarioId, mensagemId, dto);
+        return ResponseEntity.ok(editada);
+    }
+
+    @DeleteMapping("/mensagens/{mensagemId}")
+    public ResponseEntity<Void> excluirMensagem(
+            @PathVariable String mensagemId,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String usuarioId = getLoggerUserId(request, session);
+        chatService.excluirMensagem(usuarioId, mensagemId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{contatoId}")
+    public ResponseEntity<Void> excluirConversa(
+            @PathVariable String contatoId,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String usuarioId = getLoggerUserId(request, session);
+        chatService.excluirConversa(usuarioId, contatoId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/nao-lidas/total")
     public ResponseEntity<Map<String, Long>> totalNaoLidas(
             HttpServletRequest request,
