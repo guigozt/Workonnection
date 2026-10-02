@@ -13,5 +13,10 @@ public record PerfilDTO(
     List<String> habilidades,
     List<Map<String, Object>> formacoes,
     List<Map<String, Object>> experiencias,
-    List<Map<String, Object>> cursos
+    List<Map<String, Object>> cursos,
+    // Campos específicos opcionais por perfil
+    PerfilEstudanteDTO perfilEstudante,
+    PerfilMeiDTO perfilMei,
+    PerfilMeDTO perfilMe,
+    PerfilEmpresaDTO perfilEmpresa
 ) {}
