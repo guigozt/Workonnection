@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * DTO para exibição pública de perfil (LGPD).
- * Não inclui informações sensíveis como telefone.
+ * Não inclui informações sensíveis como telefone ou documentos sigilosos.
  */
 public record PerfilPublicoDTO(
     String sobre,
@@ -16,5 +16,10 @@ public record PerfilPublicoDTO(
     List<String> habilidades,
     List<Map<String, Object>> formacoes,
     List<Map<String, Object>> experiencias,
-    List<Map<String, Object>> cursos
+    List<Map<String, Object>> cursos,
+    String fotoPerfilUrl,
+    PerfilEstudanteDTO perfilEstudante,
+    PerfilMeiDTO perfilMei,
+    PerfilMeDTO perfilMe,
+    PerfilEmpresaDTO perfilEmpresa
 ) {}
