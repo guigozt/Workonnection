@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Topbar } from '../../components/Topbar/Topbar';
 
@@ -30,6 +31,7 @@ import styles from '../Home/Home.module.css';
 // Reutilizando o CSS da Home
 
 export const MinhasVagas: React.FC = () => {
+  const navigate = useNavigate();
   const {
     vagas,
     loading,
@@ -57,6 +59,10 @@ export const MinhasVagas: React.FC = () => {
     null
   );
 
+  const isEstudante =
+    usuarioLogado?.tipoUsuario?.toLowerCase() === 'estudante' ||
+    usuarioLogado?.tipoUsuario?.toLowerCase() === 'aluno';
+
   return (
     <div>
       <Topbar notificacoesNaoLidas={3} />
@@ -70,13 +76,47 @@ export const MinhasVagas: React.FC = () => {
               fontWeight: 'bold',
             }}
           >
-            Minhas Publicações
+            {isEstudante ? 'Painel do Estudante' : 'Minhas Publicações'}
           </h2>
 
           {loading ? (
             <p>
-              Carregando suas vagas...
+              Carregando...
             </p>
+          ) : isEstudante ? (
+            <div
+              style={{
+                textAlign: 'center',
+                padding: '48px 24px',
+                background: '#fff',
+                borderRadius: '12px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+                border: '1px solid #e2e8f0',
+              }}
+            >
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎓</div>
+              <h3 style={{ marginBottom: '8px', color: '#1e293b' }}>
+                Área de Candidaturas
+              </h3>
+              <p
+                style={{
+                  marginBottom: '24px',
+                  color: '#64748b',
+                  maxWidth: '520px',
+                  margin: '0 auto 24px auto',
+                  lineHeight: '1.6',
+                }}
+              >
+                Como estudante, seu perfil é focado na descoberta de vagas temporárias e candidaturas. Em breve, todo o seu histórico de candidaturas e feedbacks estará centralizado aqui!
+              </p>
+
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate('/home')}
+              >
+                Explorar Vagas Compatíveis
+              </button>
+            </div>
           ) : vagas.length === 0 ? (
             <div
               style={{
@@ -130,12 +170,14 @@ export const MinhasVagas: React.FC = () => {
         </div>
       </main>
 
-      <FloatingButton
-        onClick={() =>
-          handleAbrirCriacao()
-        }
-        title="Criar Nova Vaga"
-      />
+      {!isEstudante && (
+        <FloatingButton
+          onClick={() =>
+            handleAbrirCriacao()
+          }
+          title="Criar Nova Vaga"
+        />
+      )}
       {isModalOpen && (
         <ModalVaga
           isOpen={isModalOpen}
