@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { X, Send } from 'lucide-react';
+import { isAxiosError } from 'axios';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
 import styles from './ComentariosDrawer.module.css';
 
@@ -48,12 +49,13 @@ export const ComentariosDrawer: React.FC<ComentariosDrawerProps> = ({
       setErro(null);
       await onEnviarComentario(vaga.id, texto.trim());
       setTexto('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setErro(
-        err?.response?.data?.message ||
-        'Não foi possível enviar a resposta. Tente novamente.'
-      );
+      let mensagemErro = 'Não foi possível enviar a resposta. Tente novamente.';
+      if (isAxiosError<{ message?: string }>(err) && err.response?.data?.message) {
+        mensagemErro = err.response.data.message;
+      }
+      setErro(mensagemErro);
     } finally {
       setEnviando(false);
     }
