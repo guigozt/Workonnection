@@ -39,6 +39,10 @@ export const Home: React.FC = () => {
 
   const vagaDrawerAtualizada = vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
 
+  const isEstudante =
+    usuarioLogado?.tipoUsuario?.toLowerCase() === 'estudante' ||
+    usuarioLogado?.tipoUsuario?.toLowerCase() === 'aluno';
+
   return (
     <div>
       <Topbar notificacoesNaoLidas={3} />
@@ -54,6 +58,7 @@ export const Home: React.FC = () => {
           onLimparFiltros={handleLimparFiltros}
           temFiltrosAtivos={temFiltrosAtivos}
           totalVagas={vagas.length}
+          tipoUsuarioLogado={usuarioLogado?.tipoUsuario}
         />
 
         <div id="vagas-container">
@@ -73,7 +78,7 @@ export const Home: React.FC = () => {
                   </button>
                 </>
               ) : (
-                <p>Nenhuma vaga cadastrada no momento.</p>
+                <p>Nenhuma vaga cadastrada no momento para seu perfil.</p>
               )}
             </div>
           ) : (
@@ -93,7 +98,9 @@ export const Home: React.FC = () => {
         </div>
       </main>
 
-      <FloatingButton onClick={handleAbrirCriacao} title="Criar Nova Vaga" />
+      {!isEstudante && (
+        <FloatingButton onClick={handleAbrirCriacao} title="Criar Nova Vaga" />
+      )}
 
       {isModalOpen && (
         <ModalVaga

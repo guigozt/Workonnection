@@ -46,6 +46,13 @@ public class VagaService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
+        if (usuario.getTipoUsuario() != null) {
+            String tipo = usuario.getTipoUsuario().trim().toLowerCase();
+            if (tipo.equals("estudante") || tipo.equals("aluno")) {
+                throw new ApiException("Estudantes não têm permissão para publicar vagas", HttpStatus.FORBIDDEN);
+            }
+        }
+
         Vaga vaga = new Vaga();
         preencherVaga(vaga, dto);
         vaga.setUsuarioId(usuarioId);
@@ -115,7 +122,7 @@ public class VagaService {
     }
 
     public VagaResponseDTO comentar(String vagaId, String usuarioId, ComentarioDTO dto) {
-        if (dto.texto() == null || dto.texto().isBlank()) {
+        if (dto == null || dto.texto() == null || dto.texto().isBlank()) {
             throw new ApiException("Comentário não pode ser vazio", HttpStatus.BAD_REQUEST);
         }
 
@@ -136,14 +143,18 @@ public class VagaService {
         vaga.setComentarios(lista);
         VagaResponseDTO result = toDTO(vagaRepository.save(vaga));
 
-        notificacaoService.criar(
-            vaga.getUsuarioId(),
-            usuarioId,
-            usuario.getNome(),
-            "comentario",
-            usuario.getNome() + " comentou na sua vaga \"" + vaga.getCargo() + "\"",
-            vagaId
-        );
+        try {
+            notificacaoService.criar(
+                vaga.getUsuarioId(),
+                usuarioId,
+                usuario.getNome(),
+                "comentario",
+                usuario.getNome() + " comentou na sua vaga \"" + vaga.getCargo() + "\"",
+                vagaId
+            );
+        } catch (Exception e) {
+            System.err.println("Erro ao criar notificação de comentário: " + e.getMessage());
+        }
         
         return result;
     }
@@ -218,8 +229,42 @@ public class VagaService {
     }
 
     public List<VagaResponseDTO> filtrar(String busca, String tipo, String modalidade) {
+        return filtrar(busca, tipo, modalidade, null);
+    }
+
+    public List<VagaResponseDTO> filtrar(String busca, String tipo, String modalidade, String usuarioId) {
         Query query = new Query();
         List<Criteria> criterias = new ArrayList<>();
+
+        // Se o usuário estiver autenticado, identificamos e filtramos pelo perfil dele
+        if (usuarioId != null && !usuarioId.isBlank()) {
+            Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+            if (usuario != null && usuario.getTipoUsuario() != null) {
+                String tipoUsuario = usuario.getTipoUsuario().trim().toLowerCase();
+
+                if (tipoUsuario.equals("estudante") || tipoUsuario.equals("aluno")) {
+                    // Estudante só vê vagas para estudante ou todos (ou vagas sem restrição explícita)
+                    Criteria perfilCriteria = new Criteria().orOperator(
+                            Criteria.where("tiposUsuario").regex("^(estudante|aluno|todos)$", "i"),
+                            Criteria.where("tiposUsuario").is(null),
+                            Criteria.where("tiposUsuario").size(0)
+                    );
+                    criterias.add(perfilCriteria);
+                } else if (tipoUsuario.equals("microempreendedor") || tipoUsuario.equals("microempresa")
+                        || tipoUsuario.equals("empresa") || tipoUsuario.equals("mei")
+                        || tipoUsuario.equals("me") || tipoUsuario.equals("autonomo")
+                        || tipoUsuario.equals("prestador")) {
+                    // Prestador / MEI / Empresa vê vagas para prestador ou todos, ou vagas criadas por ele mesmo
+                    Criteria perfilCriteria = new Criteria().orOperator(
+                            Criteria.where("tiposUsuario").regex("^(prestador|todos|empresa|mei|microempreendedor|microempresa|autonomo)$", "i"),
+                            Criteria.where("tiposUsuario").is(null),
+                            Criteria.where("tiposUsuario").size(0),
+                            Criteria.where("usuarioId").is(usuarioId)
+                    );
+                    criterias.add(perfilCriteria);
+                }
+            }
+        }
 
         if (busca != null && !busca.isBlank()) {
             String termo = busca.trim();
