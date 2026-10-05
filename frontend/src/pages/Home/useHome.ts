@@ -166,6 +166,7 @@ export const useHome = () => {
       setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
     } catch (err) {
       console.error('Erro ao enviar comentário:', err);
+      throw err;
     }
   };
 
@@ -175,6 +176,7 @@ export const useHome = () => {
       setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
     } catch (err) {
       console.error('Erro ao excluir comentário:', err);
+      throw err;
     }
   };
 
