@@ -122,7 +122,7 @@ public class VagaService {
     }
 
     public VagaResponseDTO comentar(String vagaId, String usuarioId, ComentarioDTO dto) {
-        if (dto.texto() == null || dto.texto().isBlank()) {
+        if (dto == null || dto.texto() == null || dto.texto().isBlank()) {
             throw new ApiException("Comentário não pode ser vazio", HttpStatus.BAD_REQUEST);
         }
 
@@ -143,14 +143,18 @@ public class VagaService {
         vaga.setComentarios(lista);
         VagaResponseDTO result = toDTO(vagaRepository.save(vaga));
 
-        notificacaoService.criar(
-            vaga.getUsuarioId(),
-            usuarioId,
-            usuario.getNome(),
-            "comentario",
-            usuario.getNome() + " comentou na sua vaga \"" + vaga.getCargo() + "\"",
-            vagaId
-        );
+        try {
+            notificacaoService.criar(
+                vaga.getUsuarioId(),
+                usuarioId,
+                usuario.getNome(),
+                "comentario",
+                usuario.getNome() + " comentou na sua vaga \"" + vaga.getCargo() + "\"",
+                vagaId
+            );
+        } catch (Exception e) {
+            System.err.println("Erro ao criar notificação de comentário: " + e.getMessage());
+        }
         
         return result;
     }
