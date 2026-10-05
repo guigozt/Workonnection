@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { X, Send } from 'lucide-react';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
-import styles from './ComentariosDrawer.module.css'
+import styles from './ComentariosDrawer.module.css';
 
 const FOTO_DEFAULT =
   "https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png";
@@ -25,19 +25,35 @@ export const ComentariosDrawer: React.FC<ComentariosDrawerProps> = ({
 }) => {
   const [texto, setTexto] = useState('');
   const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   if (!vaga) return null;
 
   const comentarios = vaga.comentarios || [];
 
+  const handleResponder = (nomeUsuario: string) => {
+    const mencao = `@${nomeUsuario} `;
+    setTexto((prev) => (prev.startsWith(mencao) ? prev : `${mencao}${prev}`));
+    setErro(null);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 50);
+  };
+
   const handleEnviar = async () => {
     if (!texto.trim() || enviando) return;
     try {
       setEnviando(true);
+      setErro(null);
       await onEnviarComentario(vaga.id, texto.trim());
       setTexto('');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setErro(
+        err?.response?.data?.message ||
+        'Não foi possível enviar a resposta. Tente novamente.'
+      );
     } finally {
       setEnviando(false);
     }
@@ -85,16 +101,22 @@ export const ComentariosDrawer: React.FC<ComentariosDrawerProps> = ({
                       {c.nomeUsuario || 'Usuário'}
                     </div>
                     <div className={styles.comentarioTexto}>{c.texto}</div>
-                    {podeExcluir && c.id && (
-                      <div className={styles.comentarioMeta}>
+                    <div className={styles.comentarioMeta}>
+                      <button
+                        className={styles.btnResponderComentario}
+                        onClick={() => handleResponder(c.nomeUsuario || 'Usuário')}
+                      >
+                        Responder
+                      </button>
+                      {podeExcluir && c.id && (
                         <button
                           className={styles.btnExcluirComentario}
                           onClick={() => onExcluirComentario(vaga.id, c.id!)}
                         >
                           Excluir
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -102,13 +124,19 @@ export const ComentariosDrawer: React.FC<ComentariosDrawerProps> = ({
           )}
         </div>
 
+        {erro && <p className={styles.erroComentario}>{erro}</p>}
+
         <div className={styles.footer}>
           <input
+            ref={inputRef}
             className={styles.inputComentario}
-            placeholder="Adicione um comentário..."
+            placeholder="Adicione um comentário ou resposta..."
             maxLength={500}
             value={texto}
-            onChange={(e) => setTexto(e.target.value)}
+            onChange={(e) => {
+              setTexto(e.target.value);
+              if (erro) setErro(null);
+            }}
             onKeyDown={handleKeyDown}
           />
           <button
