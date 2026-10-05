@@ -59,6 +59,9 @@ export const MinhasVagas: React.FC = () => {
     null
   );
 
+  const vagaDrawerAtualizada =
+    vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
+
   const isEstudante =
     usuarioLogado?.tipoUsuario?.toLowerCase() === 'estudante' ||
     usuarioLogado?.tipoUsuario?.toLowerCase() === 'aluno';
@@ -191,7 +194,7 @@ export const MinhasVagas: React.FC = () => {
         isOpen={Boolean(
           vagaAtivaComentarios
         )}
-        vaga={vagaAtivaComentarios}
+        vaga={vagaDrawerAtualizada}
         usuarioLogado={usuarioLogado}
         onClose={() =>
           setVagaAtivaComentarios(null)
