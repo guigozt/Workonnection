@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   X,
   MapPin,
@@ -28,6 +29,7 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
   usuario,
   onSendMessage,
 }) => {
+  const navigate = useNavigate();
   // Fecha o modal ao pressionar a tecla ESC
   useEffect(() => {
     if (!isOpen || !usuario) return;
@@ -115,7 +117,8 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
     if (onSendMessage) {
       onSendMessage(usuario);
     } else {
-      alert(`Iniciar conversa com ${nome}`);
+      onClose();
+      navigate(`/mensagens?contatoId=${usuario.id}`);
     }
   };
 

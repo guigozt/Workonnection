@@ -49,6 +49,7 @@ public class SecurityConfig {
                     .requestMatchers("/usuarios", "/usuarios/**").permitAll()
                     .requestMatchers("/vagas", "/vagas/**").permitAll()
                     .requestMatchers("/notificacoes", "/notificacoes/**").permitAll()
+                    .requestMatchers("/conversas", "/conversas/**").permitAll()
                     .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
                     .anyRequest().authenticated()
                 );

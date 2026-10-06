@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, useCallback, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
 import { authService } from '../services/authService';
 
@@ -34,30 +34,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   }, []);
 
-  const login = async (dados: LoginDTO) => {
+  const login = useCallback(async (dados: LoginDTO) => {
     console.log('AUTH: executando login...', dados.email);
     const user = await authService.login(dados);
     console.log('AUTH: login retornou:', user);
     setUsuario(user);
-  };
+  }, []);
 
-  const loginComGoogleToken = async (token: string): Promise<UsuarioResponseDTO> => {
+  const loginComGoogleToken = useCallback(async (token: string): Promise<UsuarioResponseDTO> => {
     console.log('AUTH: executando login com Google...');
     const user = await authService.loginComGoogleToken(token);
     console.log('AUTH: login com Google retornou:', user);
     setUsuario(user);
     return user;
-  };
+  }, []);
 
-  const completarCadastro = async (dados: CompletarCadastroDTO): Promise<UsuarioResponseDTO> => {
+  const completarCadastro = useCallback(async (dados: CompletarCadastroDTO): Promise<UsuarioResponseDTO> => {
     console.log('AUTH: executando cadastro...', dados);
     const user = await authService.completarCadastro(dados);
     console.log('AUTH: cadastro retornou:', user);
     setUsuario(user);
     return user;
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authService.logout();
     } catch {
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setUsuario(null);
     }
-  };
+  }, []);
 
   return (
     <AuthContext.Provider

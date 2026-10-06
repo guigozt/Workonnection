@@ -66,6 +66,98 @@ public class UsuarioService {
                 .toList();
     }
 
+    public UsuarioPublicoDTO toPublicResponse(Usuario u) {
+        if (u == null) return null;
+
+        Usuario.Perfil perfil = u.getPerfil() != null ? u.getPerfil() : new Usuario.Perfil();
+
+        String fotoUrl = perfil.getFotoPerfil() != null ? perfil.getFotoPerfil().getUrl() : null;
+
+        PerfilEstudanteDTO peDto = null;
+        if (perfil.getPerfilEstudante() != null) {
+            var pe = perfil.getPerfilEstudante();
+            peDto = new PerfilEstudanteDTO(
+                    pe.getInstituicaoEnsino(),
+                    pe.getCurso(),
+                    pe.getSemestreAno(),
+                    pe.getPrevisaoConclusao(),
+                    pe.getTurno(),
+                    pe.getMatricula(),
+                    pe.getModalidadeInteresse()
+            );
+        }
+
+        PerfilMeiDTO pMeiDto = null;
+        if (perfil.getPerfilMei() != null) {
+            var pMei = perfil.getPerfilMei();
+            pMeiDto = new PerfilMeiDTO(
+                    pMei.getCnpj(),
+                    pMei.getRazaoSocial(),
+                    pMei.getNomeFantasia(),
+                    pMei.getOcupacaoPrincipal(),
+                    pMei.getChavePix(),
+                    pMei.getInscricaoMunicipal(),
+                    pMei.getEmiteNotaFiscal()
+            );
+        }
+
+        PerfilMeDTO pMeDto = null;
+        if (perfil.getPerfilMe() != null) {
+            var pMe = perfil.getPerfilMe();
+            pMeDto = new PerfilMeDTO(
+                    pMe.getCnpj(),
+                    pMe.getRazaoSocial(),
+                    pMe.getNomeFantasia(),
+                    pMe.getCnaePrincipal(),
+                    pMe.getInscricaoEstadual(),
+                    pMe.getInscricaoMunicipal(),
+                    pMe.getRegimeTributario(),
+                    pMe.getPorteEmpresa(),
+                    pMe.getQuantidadeFuncionarios()
+            );
+        }
+
+        PerfilEmpresaDTO pEmpDto = null;
+        if (perfil.getPerfilEmpresa() != null) {
+            var pEmp = perfil.getPerfilEmpresa();
+            pEmpDto = new PerfilEmpresaDTO(
+                    pEmp.getCnpj(),
+                    pEmp.getRazaoSocial(),
+                    pEmp.getNomeFantasia(),
+                    pEmp.getSetorAtuacao(),
+                    pEmp.getTamanhoEmpresa(),
+                    pEmp.getSiteOficial(),
+                    pEmp.getPaginaCarreiras(),
+                    pEmp.getContatoRhEmail(),
+                    pEmp.getContatoRhTelefone()
+            );
+        }
+
+        PerfilPublicoDTO perfilPublico = new PerfilPublicoDTO(
+                perfil.getSobre(),
+                perfil.getLocal(),
+                perfil.getInstagram(),
+                perfil.getLinkedin(),
+                perfil.getSite(),
+                perfil.getHabilidades(),
+                perfil.getFormacoes(),
+                perfil.getExperiencias(),
+                perfil.getCursos(),
+                fotoUrl,
+                peDto,
+                pMeiDto,
+                pMeDto,
+                pEmpDto
+        );
+
+        return new UsuarioPublicoDTO(
+                u.getId(),
+                u.getNome(),
+                u.getTipoUsuario(),
+                perfilPublico
+        );
+    }
+
     public UsuarioResponseDTO atualizarPerfil(String id, PerfilDTO dto) {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new ApiException(

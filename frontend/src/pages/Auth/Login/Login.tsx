@@ -14,7 +14,11 @@ declare global {
         google?: {
             accounts: {
                 id: {
-                    initialize: (config: { client_id: string; callback: (response: GoogleCredentialResponse) => void }) => void;
+                    initialize: (config: {
+                        client_id: string;
+                        callback: (response: GoogleCredentialResponse) => void;
+                        use_fedcm_for_prompt?: boolean;
+                    }) => void;
                     renderButton: (parent: HTMLElement, options: Record<string, unknown>) => void;
                     prompt: (notification?: unknown) => void;
                 };
@@ -28,7 +32,9 @@ export const Login = () => {
     const { loginComGoogleToken, usuario } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
     const googleBtnRef = useRef<HTMLDivElement>(null);
+    const googleInitializedRef = useRef(false);
 
     useEffect(() => {
         if (usuario && usuario.cadastroCompleto) {
@@ -68,13 +74,16 @@ export const Login = () => {
         };
 
         const setupGoogle = (resolvedClientId: string) => {
-            if (!isMounted) return;
+            if (!isMounted || googleInitializedRef.current) return;
 
             const initGoogleSignIn = () => {
-                if (window.google?.accounts?.id && googleBtnRef.current) {
+                if (window.google?.accounts?.id && googleBtnRef.current && !googleInitializedRef.current) {
+                    googleInitializedRef.current = true;
+
                     window.google.accounts.id.initialize({
                         client_id: resolvedClientId,
                         callback: handleCredentialResponse,
+                        use_fedcm_for_prompt: false,
                     });
 
                     window.google.accounts.id.renderButton(googleBtnRef.current, {
@@ -86,8 +95,6 @@ export const Login = () => {
                         logo_alignment: "left",
                         width: 320,
                     });
-
-                    window.google.accounts.id.prompt();
                 }
             };
 
@@ -106,6 +113,8 @@ export const Login = () => {
         };
 
         const resolveAndInit = async () => {
+            if (googleInitializedRef.current) return;
+
             const envClientId =
                 import.meta.env.VITE_GOOGLE_CLIENT_ID ||
                 import.meta.env.GOOGLE_CLIENT_ID;

@@ -13,6 +13,7 @@ import { Notificacoes } from "../pages/Notificacoes/Notificacoes";
 import { Colaboradores } from "../pages/Colaboradores/Colaboradores";
 import { MinhasVagas } from "../pages/MinhasVagas/MinhasVagas";
 import { Perfil } from "../pages/Perfil/Perfil";
+import { Mensagens } from "../pages/Mensagens/Mensagens";
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -79,6 +80,16 @@ export const AppRoutes = () => {
                     element={
                         <PrivateRoute>
                             <Colaboradores />
+                        </PrivateRoute>
+                    }
+                />
+
+                {/* Mensagens / Chat */}
+                <Route
+                    path="/mensagens"
+                    element={
+                        <PrivateRoute>
+                            <Mensagens />
                         </PrivateRoute>
                     }
                 />
