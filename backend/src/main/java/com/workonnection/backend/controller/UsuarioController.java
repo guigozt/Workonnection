@@ -154,6 +154,37 @@ public class UsuarioController {
     }
 
     /**
+     * Upload da foto de perfil.
+     */
+    @PostMapping(value = "/perfil/foto", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UsuarioResponseDTO> uploadFotoPerfil(
+            @RequestParam("foto") org.springframework.web.multipart.MultipartFile foto,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String id = getLoggerUserId(request, session);
+        return ResponseEntity.ok(
+            service.uploadFotoPerfil(id, foto)
+        );
+    }
+
+    /**
+     * Upload de documento comprobatório por tipo.
+     */
+    @PostMapping(value = "/perfil/documentos", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UsuarioResponseDTO> uploadDocumento(
+            @RequestParam("tipoDocumento") String tipoDocumento,
+            @RequestParam("arquivo") org.springframework.web.multipart.MultipartFile arquivo,
+            HttpServletRequest request,
+            HttpSession session
+    ) {
+        String id = getLoggerUserId(request, session);
+        return ResponseEntity.ok(
+            service.uploadDocumento(id, tipoDocumento, arquivo)
+        );
+    }
+
+    /**
      * Atualiza configurações.
      */
     @PutMapping("/configuracoes")

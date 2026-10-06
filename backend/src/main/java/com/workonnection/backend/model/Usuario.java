@@ -180,6 +180,14 @@ public class Usuario {
         private List<Map<String, Object>> cursos =
             new ArrayList<>();
 
+        private ArquivoMetadados fotoPerfil;
+        private List<ArquivoMetadados> documentos = new ArrayList<>();
+
+        private PerfilEstudante perfilEstudante;
+        private PerfilMei perfilMei;
+        private PerfilMe perfilMe;
+        private PerfilEmpresa perfilEmpresa;
+
         public String getSobre() {
             return sobre;
         }
@@ -266,6 +274,54 @@ public class Usuario {
                 List<Map<String, Object>> cursos
         ) {
             this.cursos = cursos;
+        }
+
+        public ArquivoMetadados getFotoPerfil() {
+            return fotoPerfil;
+        }
+
+        public void setFotoPerfil(ArquivoMetadados fotoPerfil) {
+            this.fotoPerfil = fotoPerfil;
+        }
+
+        public List<ArquivoMetadados> getDocumentos() {
+            return documentos;
+        }
+
+        public void setDocumentos(List<ArquivoMetadados> documentos) {
+            this.documentos = documentos;
+        }
+
+        public PerfilEstudante getPerfilEstudante() {
+            return perfilEstudante;
+        }
+
+        public void setPerfilEstudante(PerfilEstudante perfilEstudante) {
+            this.perfilEstudante = perfilEstudante;
+        }
+
+        public PerfilMei getPerfilMei() {
+            return perfilMei;
+        }
+
+        public void setPerfilMei(PerfilMei perfilMei) {
+            this.perfilMei = perfilMei;
+        }
+
+        public PerfilMe getPerfilMe() {
+            return perfilMe;
+        }
+
+        public void setPerfilMe(PerfilMe perfilMe) {
+            this.perfilMe = perfilMe;
+        }
+
+        public PerfilEmpresa getPerfilEmpresa() {
+            return perfilEmpresa;
+        }
+
+        public void setPerfilEmpresa(PerfilEmpresa perfilEmpresa) {
+            this.perfilEmpresa = perfilEmpresa;
         }
     }
 
