@@ -1,6 +1,5 @@
 package com.workonnection.backend.service;
 
-import com.pusher.rest.Pusher;
 import com.workonnection.backend.dto.*;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.Mensagem;
@@ -19,14 +18,14 @@ public class ChatService {
 
     private final MensagemRepository mensagemRepository;
     private final UsuarioRepository usuarioRepository;
-    private final Pusher pusher;
+    private final PusherService pusherService;
 
     public ChatService(MensagemRepository mensagemRepository,
                        UsuarioRepository usuarioRepository,
-                       Pusher pusher) {
+                       PusherService pusherService) {
         this.mensagemRepository = mensagemRepository;
         this.usuarioRepository = usuarioRepository;
-        this.pusher = pusher;
+        this.pusherService = pusherService;
     }
 
     public List<ConversaResumoDTO> listarConversas(String usuarioId) {
@@ -58,10 +57,27 @@ public class ChatService {
             Usuario contato = usuarioRepository.findById(contatoId).orElse(null);
             if (contato == null) continue;
 
+            PerfilPublicoDTO perfilDTO = null;
+            if (contato.getPerfil() != null) {
+                Usuario.Perfil p = contato.getPerfil();
+                perfilDTO = new PerfilPublicoDTO(
+                        p.getSobre(),
+                        p.getLocal(),
+                        p.getInstagram(),
+                        p.getLinkedin(),
+                        p.getSite(),
+                        p.getHabilidades(),
+                        p.getFormacoes(),
+                        p.getExperiencias(),
+                        p.getCursos()
+                );
+            }
+
             UsuarioPublicoDTO contatoDTO = new UsuarioPublicoDTO(
                     contato.getId(),
                     contato.getNome(),
-                    contato.getFotoUrl()
+                    contato.getTipoUsuario(),
+                    perfilDTO
             );
 
             resumos.add(new ConversaResumoDTO(contatoDTO, toDTO(ultima), naoLidas));
@@ -87,8 +103,8 @@ public class ChatService {
         Mensagem salva = mensagemRepository.save(msg);
         MensagemResponseDTO response = toDTO(salva);
 
-        notificarPusher("chat-" + destinatarioId, "nova-mensagem", response);
-        notificarPusher("chat-" + remetenteId, "nova-mensagem", response);
+        pusherService.dispararEvento("chat-" + destinatarioId, "nova-mensagem", response);
+        pusherService.dispararEvento("chat-" + remetenteId, "nova-mensagem", response);
 
         return response;
     }
@@ -110,7 +126,7 @@ public class ChatService {
                 "dataLeitura", agora
         );
 
-        notificarPusher("chat-" + contatoId, "mensagens-lidas", payload);
+        pusherService.dispararEvento("chat-" + contatoId, "mensagens-lidas", payload);
     }
 
     public MensagemResponseDTO editarMensagem(String usuarioId, String mensagemId, MensagemDTO dto) {
@@ -132,8 +148,8 @@ public class ChatService {
         Mensagem salva = mensagemRepository.save(msg);
         MensagemResponseDTO response = toDTO(salva);
 
-        notificarPusher("chat-" + msg.getDestinatarioId(), "mensagem-editada", response);
-        notificarPusher("chat-" + msg.getRemetenteId(), "mensagem-editada", response);
+        pusherService.dispararEvento("chat-" + msg.getDestinatarioId(), "mensagem-editada", response);
+        pusherService.dispararEvento("chat-" + msg.getRemetenteId(), "mensagem-editada", response);
 
         return response;
     }
@@ -152,7 +168,7 @@ public class ChatService {
         }
 
         Map<String, String> payload = Map.of("mensagemId", mensagemId, "usuarioId", usuarioId);
-        notificarPusher("chat-" + usuarioId, "mensagem-excluida", payload);
+        pusherService.dispararEvento("chat-" + usuarioId, "mensagem-excluida", payload);
     }
 
     public void excluirConversa(String usuarioId, String contatoId) {
@@ -167,7 +183,7 @@ public class ChatService {
         mensagemRepository.saveAll(historico);
 
         Map<String, String> payload = Map.of("contatoId", contatoId);
-        notificarPusher("chat-" + usuarioId, "conversa-excluida", payload);
+        pusherService.dispararEvento("chat-" + usuarioId, "conversa-excluida", payload);
     }
 
     public long contarTotalNaoLidas(String usuarioId) {
@@ -186,15 +202,5 @@ public class ChatService {
                 m.getDataLeitura(),
                 m.isEditada()
         );
-    }
-
-    private void notificarPusher(String channel, String event, Object data) {
-        try {
-            if (pusher != null) {
-                pusher.trigger(channel, event, data);
-            }
-        } catch (Exception e) {
-            System.err.println("Erro ao disparar evento Pusher: " + e.getMessage());
-        }
     }
 }

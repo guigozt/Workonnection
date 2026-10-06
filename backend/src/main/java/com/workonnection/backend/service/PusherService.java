@@ -10,10 +10,10 @@ public class PusherService {
     private final Pusher pusher;
 
     public PusherService(
-            @Value("${pusher.app-id}") String appId,
-            @Value("${pusher.key}") String key,
-            @Value("${pusher.secret}") String secret,
-            @Value("${pusher.cluster}") String cluster
+            @Value("${pusher.app-id:}") String appId,
+            @Value("${pusher.key:}") String key,
+            @Value("${pusher.secret:}") String secret,
+            @Value("${pusher.cluster:mt1}") String cluster
     ) {
         Pusher p = null;
         try {
