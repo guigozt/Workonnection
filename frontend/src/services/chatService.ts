@@ -46,4 +46,28 @@ export const chatService = {
       return 0;
     }
   },
+
+  /**
+   * Edita o conteúdo de uma mensagem enviada pelo usuário logado.
+   */
+  editarMensagem: async (mensagemId: string, conteudo: string): Promise<MensagemResponseDTO> => {
+    const { data } = await api.put<MensagemResponseDTO>(`/conversas/mensagens/${mensagemId}`, {
+      conteudo,
+    });
+    return data;
+  },
+
+  /**
+   * Exclui unilateralmente uma mensagem para o usuário logado.
+   */
+  excluirMensagem: async (mensagemId: string): Promise<void> => {
+    await api.delete(`/conversas/mensagens/${mensagemId}`);
+  },
+
+  /**
+   * Exclui unilateralmente todo o histórico da conversa com um contato.
+   */
+  excluirConversa: async (contatoId: string): Promise<void> => {
+    await api.delete(`/conversas/${contatoId}`);
+  },
 };
