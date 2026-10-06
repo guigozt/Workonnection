@@ -10,6 +10,8 @@ import { Habilidades } from '../../components/Perfil/Habilidades';
 import { Formacoes } from '../../components/Perfil/Formacoes';
 import { Experiencias } from '../../components/Perfil/Experiencias';
 import { Cursos } from '../../components/Perfil/Cursos';
+import { DocumentosSection } from '../../components/Perfil/DocumentosSection';
+import { SubperfilSection } from '../../components/Perfil/SubperfilSection';
 
 import { PerfilModal } from '../../components/Perfil/PerfilModal';
 
@@ -22,6 +24,7 @@ export const Perfil: React.FC = () => {
     usuario,
     perfil,
     loading,
+    carregandoFoto,
 
     modalAberto,
     abrirModal,
@@ -34,6 +37,10 @@ export const Perfil: React.FC = () => {
     setFormacaoEditando,
     setExperienciaEditando,
     setCursoEditando,
+
+    uploadFoto,
+    uploadDocumento,
+    salvarSubperfil,
 
     atualizarContatos,
     atualizarSobre,
@@ -84,22 +91,19 @@ export const Perfil: React.FC = () => {
       <Topbar notificacoesNaoLidas={3} />
 
       <main className={styles.perfilWrapper}>
-
         <section className={styles.perfilSection}>
           <PerfilHeader
             usuario={usuario}
-            onEditarContatos={() =>
-              abrirModal('contatos')
-            }
+            onEditarContatos={() => abrirModal('contatos')}
+            onUploadFoto={uploadFoto}
+            carregandoFoto={carregandoFoto}
           />
 
           <Contatos perfil={perfil} />
 
           <div className={styles.analiseFooter}>
             <p>
-              <i className="fas fa-eye" />
-              {' '}
-              {0} visualizações no perfil
+              <i className="fas fa-eye" /> {0} visualizações no perfil
             </p>
 
             <button
@@ -111,6 +115,20 @@ export const Perfil: React.FC = () => {
           </div>
         </section>
 
+        {/* Informações Específicas da Categoria (Subperfil) */}
+        <SubperfilSection
+          tipoUsuario={usuario.tipoUsuario}
+          perfil={perfil}
+          onEditar={() => abrirModal('subperfil')}
+        />
+
+        {/* Gestão de Documentos Comprobatórios */}
+        <DocumentosSection
+          tipoUsuario={usuario.tipoUsuario}
+          documentos={perfil.documentos || []}
+          onUploadDocumento={uploadDocumento}
+        />
+
         <Feedbacks />
 
         <Sobre
@@ -120,9 +138,7 @@ export const Perfil: React.FC = () => {
 
         <Habilidades
           habilidades={perfil.habilidades || []}
-          onAdicionar={() =>
-            abrirModal('habilidade')
-          }
+          onAdicionar={() => abrirModal('habilidade')}
           onExcluir={excluirHabilidade}
         />
 
@@ -155,27 +171,25 @@ export const Perfil: React.FC = () => {
           onEditar={editarCurso}
           onExcluir={excluirCurso}
         />
-
       </main>
 
       {modalAberto && (
         <PerfilModal
           key={modalAberto}
           tipo={modalAberto}
+          tipoUsuario={usuario.tipoUsuario}
           onClose={fecharModal}
-
           perfil={perfil}
-
           formacao={formacaoSelecionada}
           experiencia={experienciaSelecionada}
           curso={cursoSelecionado}
-
           onSalvarContatos={atualizarContatos}
           onSalvarSobre={atualizarSobre}
           onSalvarHabilidade={adicionarHabilidade}
           onSalvarFormacao={adicionarFormacao}
           onSalvarExperiencia={adicionarExperiencia}
           onSalvarCurso={adicionarCurso}
+          onSalvarSubperfil={salvarSubperfil}
         />
       )}
     </div>
