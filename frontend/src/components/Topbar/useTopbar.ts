@@ -37,6 +37,8 @@ export const useTopbar = () => {
 
         canal.bind('nova-mensagem', onAtualizarContador);
         canal.bind('mensagens-lidas', onAtualizarContador);
+        canal.bind('mensagem-excluida', onAtualizarContador);
+        canal.bind('conversa-excluida', onAtualizarContador);
 
         // Heartbeat de backup
         const interval = setInterval(carregarTotal, 15000);
@@ -46,6 +48,8 @@ export const useTopbar = () => {
             clearInterval(interval);
             canal.unbind('nova-mensagem', onAtualizarContador);
             canal.unbind('mensagens-lidas', onAtualizarContador);
+            canal.unbind('mensagem-excluida', onAtualizarContador);
+            canal.unbind('conversa-excluida', onAtualizarContador);
             pusher.unsubscribe(canalNome);
         };
     }, [usuario?.id]);
