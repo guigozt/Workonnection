@@ -11,6 +11,9 @@ export interface MensagemResponseDTO {
   conteudo: string;
   dataEnvio: string;
   lida: boolean;
+  dataLeitura?: string;
+  editada?: boolean;
+  dataEdicao?: string;
 }
 
 export interface ConversaResumoDTO {

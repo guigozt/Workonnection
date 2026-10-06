@@ -8,6 +8,10 @@ import {
   MessageSquare,
   ArrowLeft,
   User,
+  MoreVertical,
+  Pencil,
+  Trash2,
+  X,
 } from 'lucide-react';
 import { Topbar } from '../../components/Topbar/Topbar';
 import { useChat } from './useChat';
@@ -28,15 +32,25 @@ export const Mensagens: React.FC = () => {
     setFiltroBusca,
     selecionarContato,
     enviarMensagem,
+    editarMensagem,
+    excluirMensagem,
+    excluirConversa,
     fimMensagensRef,
   } = useChat();
 
   const [mostrarConversaMobile, setMostrarConversaMobile] = useState(false);
+  const [mensagemEmEdicaoId, setMensagemEmEdicaoId] = useState<string | null>(null);
+  const [textoEdicao, setTextoEdicao] = useState('');
+  const [menuAbertoId, setMenuAbertoId] = useState<string | null>(null);
+  const [menuHeaderAberto, setMenuHeaderAberto] = useState(false);
 
   const handleSelecionarContato = (contato: typeof contatoSelecionado) => {
     if (!contato) return;
     selecionarContato(contato);
     setMostrarConversaMobile(true);
+    setMenuAbertoId(null);
+    setMenuHeaderAberto(false);
+    setMensagemEmEdicaoId(null);
   };
 
   const handleVoltarListaMobile = () => {
@@ -47,6 +61,55 @@ export const Mensagens: React.FC = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       enviarMensagem();
+    }
+  };
+
+  const iniciarEdicao = (id: string, conteudo: string) => {
+    setMensagemEmEdicaoId(id);
+    setTextoEdicao(conteudo);
+    setMenuAbertoId(null);
+  };
+
+  const cancelarEdicao = () => {
+    setMensagemEmEdicaoId(null);
+    setTextoEdicao('');
+  };
+
+  const salvarEdicao = async (id: string) => {
+    if (!textoEdicao.trim()) return;
+    try {
+      await editarMensagem(id, textoEdicao.trim());
+      setMensagemEmEdicaoId(null);
+      setTextoEdicao('');
+    } catch {
+      // ignora
+    }
+  };
+
+  const handleExcluirMensagem = async (id: string) => {
+    if (!window.confirm('Deseja excluir esta mensagem para você?')) return;
+    try {
+      await excluirMensagem(id);
+      setMenuAbertoId(null);
+    } catch {
+      // ignora
+    }
+  };
+
+  const handleExcluirConversa = async () => {
+    if (!contatoSelecionado) return;
+    if (
+      !window.confirm(
+        `Tem certeza de que deseja apagar o histórico da conversa com ${contatoSelecionado.nome}? As mensagens serão excluídas apenas para você.`
+      )
+    ) {
+      return;
+    }
+    try {
+      await excluirConversa(String(contatoSelecionado.id));
+      setMenuHeaderAberto(false);
+    } catch {
+      // ignora
     }
   };
 
@@ -205,17 +268,49 @@ export const Mensagens: React.FC = () => {
                     </div>
                   </div>
 
-                  <Link
-                    to={`/perfil/${contatoSelecionado.id}`}
-                    className={styles.btnPerfilHeader}
-                  >
-                    <User size={14} />
-                    Ver Perfil
-                  </Link>
+                  <div className={styles.headerAcoes}>
+                    <Link
+                      to={`/perfil/${contatoSelecionado.id}`}
+                      className={styles.btnPerfilHeader}
+                    >
+                      <User size={14} />
+                      Ver Perfil
+                    </Link>
+
+                    <div className={styles.dropdownWrapper}>
+                      <button
+                        type="button"
+                        className={styles.btnMenuHeader}
+                        onClick={() => setMenuHeaderAberto(!menuHeaderAberto)}
+                        title="Opções da conversa"
+                      >
+                        <MoreVertical size={18} />
+                      </button>
+
+                      {menuHeaderAberto && (
+                        <div className={styles.menuDropdown}>
+                          <button
+                            type="button"
+                            className={styles.menuItemPerigo}
+                            onClick={handleExcluirConversa}
+                          >
+                            <Trash2 size={14} />
+                            Limpar histórico desta conversa
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Histórico com Balões */}
-                <div className={styles.historicoMensagens}>
+                <div
+                  className={styles.historicoMensagens}
+                  onClick={() => {
+                    setMenuAbertoId(null);
+                    setMenuHeaderAberto(false);
+                  }}
+                >
                   {carregandoMensagens ? (
                     <div className={styles.emptyConversas}>Carregando mensagens...</div>
                   ) : mensagens.length === 0 ? (
@@ -227,6 +322,7 @@ export const Mensagens: React.FC = () => {
                     mensagens.map((msg) => {
                       const souRemetente =
                         String(msg.remetenteId) === String(usuarioLogado?.id);
+                      const emEdicao = mensagemEmEdicaoId === msg.id;
 
                       return (
                         <div
@@ -235,17 +331,107 @@ export const Mensagens: React.FC = () => {
                             souRemetente ? styles.enviada : styles.recebida
                           }`}
                         >
-                          <div className={styles.balaoMensagem}>
-                            {msg.conteudo}
+                          <div className={styles.balaoWrapper}>
+                            {emEdicao ? (
+                              <div className={styles.edicaoContainer}>
+                                <input
+                                  type="text"
+                                  className={styles.inputEdicao}
+                                  value={textoEdicao}
+                                  onChange={(e) => setTextoEdicao(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      salvarEdicao(msg.id);
+                                    } else if (e.key === 'Escape') {
+                                      cancelarEdicao();
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <div className={styles.edicaoBotoes}>
+                                  <button
+                                    type="button"
+                                    className={styles.btnSalvarEdicao}
+                                    onClick={() => salvarEdicao(msg.id)}
+                                  >
+                                    Salvar
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={styles.btnCancelarEdicao}
+                                    onClick={cancelarEdicao}
+                                  >
+                                    <X size={13} />
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                <div className={styles.balaoMensagem}>
+                                  {msg.conteudo}
+                                </div>
+
+                                <div className={styles.mensagemAcoes}>
+                                  <button
+                                    type="button"
+                                    className={styles.btnAcaoBalao}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setMenuAbertoId(menuAbertoId === msg.id ? null : msg.id);
+                                    }}
+                                  >
+                                    <MoreVertical size={13} />
+                                  </button>
+
+                                  {menuAbertoId === msg.id && (
+                                    <div
+                                      className={styles.menuMensagemDropdown}
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {souRemetente && (
+                                        <button
+                                          type="button"
+                                          onClick={() => iniciarEdicao(msg.id, msg.conteudo)}
+                                        >
+                                          <Pencil size={12} />
+                                          Editar
+                                        </button>
+                                      )}
+                                      <button
+                                        type="button"
+                                        className={styles.itemExcluir}
+                                        onClick={() => handleExcluirMensagem(msg.id)}
+                                      >
+                                        <Trash2 size={12} />
+                                        Apagar para mim
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </>
+                            )}
                           </div>
 
                           <div className={styles.mensagemMeta}>
+                            {msg.editada && (
+                              <span className={styles.tagEditada} title="Editada">
+                                (editada)
+                              </span>
+                            )}
                             <span>{formatarHora(msg.dataEnvio)}</span>
                             {souRemetente && (
                               <span
                                 className={`${styles.iconeStatus} ${
                                   msg.lida ? styles.lida : ''
                                 }`}
+                                title={
+                                  msg.lida && msg.dataLeitura
+                                    ? `Lida às ${formatarHora(msg.dataLeitura)}`
+                                    : msg.lida
+                                    ? 'Lida'
+                                    : 'Enviada'
+                                }
                               >
                                 {msg.lida ? (
                                   <CheckCheck size={14} />
