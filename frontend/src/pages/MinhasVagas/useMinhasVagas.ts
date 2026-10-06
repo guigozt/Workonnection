@@ -113,20 +113,43 @@ export const useMinhasVagas = () => {
     }
   };
 
-  // Funções mockadas para não quebrar
-  // as dependências do card,
-  // já que na tela "Minhas Vagas"
-  // o foco é visualização/edição rápida.
+  const handleLike = async (vagaId: string) => {
+    try {
+      const vagaAtualizada = await vagaService.darLike(vagaId);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
+    } catch (err) {
+      console.error('Erro ao dar like:', err);
+    }
+  };
 
-  const handleLike = () => { };
+  const handleDislike = async (vagaId: string) => {
+    try {
+      const vagaAtualizada = await vagaService.darDislike(vagaId);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
+    } catch (err) {
+      console.error('Erro ao dar dislike:', err);
+    }
+  };
 
-  const handleDislike = () => { };
+  const handleEnviarComentario = async (vagaId: string, texto: string) => {
+    try {
+      const vagaAtualizada = await vagaService.comentar(vagaId, { texto });
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
+    } catch (err) {
+      console.error('Erro ao enviar comentário:', err);
+      throw err;
+    }
+  };
 
-  const handleEnviarComentario =
-    async () => { };
-
-  const handleExcluirComentario =
-    async () => { };
+  const handleExcluirComentario = async (vagaId: string, comentarioId: string) => {
+    try {
+      const vagaAtualizada = await vagaService.excluirComentario(vagaId, comentarioId);
+      setVagas((prev) => prev.map((v) => (v.id === vagaId ? vagaAtualizada : v)));
+    } catch (err) {
+      console.error('Erro ao excluir comentário:', err);
+      throw err;
+    }
+  };
 
   return {
     vagas,

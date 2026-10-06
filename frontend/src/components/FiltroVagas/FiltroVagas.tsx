@@ -12,10 +12,10 @@ export interface FiltroVagasProps {
   onLimparFiltros: () => void;
   temFiltrosAtivos: boolean;
   totalVagas?: number;
+  tipoUsuarioLogado?: string;
 }
 
 const MODALIDADES = ['Todos', 'Presencial', 'Remoto', 'Híbrido'];
-const TIPOS_USUARIO = ['Todos', 'Aluno', 'Egresso', 'Professor'];
 
 export const FiltroVagas: React.FC<FiltroVagasProps> = ({
   busca,
@@ -27,7 +27,15 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
   onLimparFiltros,
   temFiltrosAtivos,
   totalVagas,
+  tipoUsuarioLogado,
 }) => {
+  const isEstudante =
+    tipoUsuarioLogado?.toLowerCase() === 'estudante' ||
+    tipoUsuarioLogado?.toLowerCase() === 'aluno';
+
+  const tiposDisponiveis = isEstudante
+    ? ['Todos', 'Estudante']
+    : ['Todos', 'Prestador', 'Estudante'];
   return (
     <section className={styles.filtroContainer} aria-label="Filtros de vagas">
       {/* Campo de Busca Textual */}
@@ -99,8 +107,14 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
             <span>Público-alvo:</span>
           </div>
           <div className={styles.chipsList}>
-            {TIPOS_USUARIO.map((item) => {
+            {tiposDisponiveis.map((item) => {
               const ativo = tipo === item || (!tipo && item === 'Todos');
+              const label =
+                item === 'Prestador'
+                  ? 'Prestador de Serviço'
+                  : item === 'Estudante'
+                  ? 'Estudante'
+                  : 'Todos';
               return (
                 <button
                   type="button"
@@ -108,7 +122,7 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
                   className={`${styles.chip} ${ativo ? styles.chipAtivo : ''}`}
                   onClick={() => onTipoChange(item)}
                 >
-                  {item}
+                  {label}
                 </button>
               );
             })}

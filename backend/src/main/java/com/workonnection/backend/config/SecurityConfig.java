@@ -47,8 +47,8 @@ public class SecurityConfig {
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                     .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
                     .requestMatchers("/usuarios", "/usuarios/**").permitAll()
-                    .requestMatchers("/uploads/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                    .requestMatchers("/vagas", "/vagas/**").permitAll()
+                    .requestMatchers("/notificacoes", "/notificacoes/**").permitAll()
                     .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
                     .anyRequest().authenticated()
                 );

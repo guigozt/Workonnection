@@ -26,7 +26,7 @@ public class NotificacaoService {
     public void criar(String destinatarioId, String remetenteId, String remetenteNome,
                         String tipo, String mensagem, String vagaId) {
         
-        if (destinatarioId.equals(remetenteId)) return;
+        if (destinatarioId == null || destinatarioId.isBlank() || destinatarioId.equals(remetenteId)) return;
 
         Usuario destinatario = usuarioRepository.findById(destinatarioId).orElse(null);
         if (destinatario == null) return;

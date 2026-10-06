@@ -50,16 +50,16 @@ export const VagaCard: React.FC<VagaCardProps> = ({
       return true;
     }
 
-    const tipo = (usuarioLogado.tipoUsuario || '').toLowerCase();
+    const tipo = (usuarioLogado.tipoUsuario || '').toLowerCase().trim();
 
     if (
       tipos.includes('prestador') &&
-      ['empresa', 'mei', 'me'].includes(tipo)
+      ['empresa', 'mei', 'me', 'microempreendedor', 'microempresa', 'autonomo', 'prestador'].includes(tipo)
     ) {
       return true;
     }
 
-    if (tipos.includes('estudante') && tipo === 'estudante') {
+    if (tipos.includes('estudante') && ['estudante', 'aluno'].includes(tipo)) {
       return true;
     }
 
@@ -72,7 +72,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
     }
 
     return tipos.map((t) =>
-      t === 'prestador' ? 'Prestadores' : 'Estudantes'
+      t === 'prestador' ? 'Prestadores de Serviço' : t === 'estudante' ? 'Estudantes' : t
     );
   };
 
