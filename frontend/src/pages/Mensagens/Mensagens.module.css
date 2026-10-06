@@ -238,9 +238,66 @@
   gap: 6px;
 }
 
-.btnPerfilHeader:hover {
-  background: #47a4c4;
-  color: #ffffff;
+.headerAcoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.btnMenuHeader {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btnMenuHeader:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.menuDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  min-width: 230px;
+  z-index: 50;
+  padding: 4px;
+}
+
+.menuItemPerigo {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.menuItemPerigo:hover {
+  background: #fee2e2;
 }
 
 /* =========================================
@@ -260,6 +317,7 @@
   display: flex;
   flex-direction: column;
   max-width: 70%;
+  position: relative;
 }
 
 .linhaMensagem.enviada {
@@ -270,6 +328,17 @@
 .linhaMensagem.recebida {
   align-self: flex-start;
   align-items: flex-start;
+}
+
+.balaoWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.linhaMensagem.enviada .balaoWrapper {
+  flex-direction: row-reverse;
 }
 
 .balaoMensagem {
@@ -295,12 +364,131 @@
   border-bottom-left-radius: 2px;
 }
 
+.mensagemAcoes {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  position: relative;
+}
+
+.balaoWrapper:hover .mensagemAcoes {
+  opacity: 1;
+}
+
+.btnAcaoBalao {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnAcaoBalao:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.menuMensagemDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  z-index: 40;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuMensagemDropdown button {
+  background: transparent;
+  border: none;
+  padding: 6px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #334155;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.menuMensagemDropdown button:hover {
+  background: #f1f5f9;
+}
+
+.menuMensagemDropdown button.itemExcluir {
+  color: #ef4444;
+}
+
+.menuMensagemDropdown button.itemExcluir:hover {
+  background: #fee2e2;
+}
+
+.edicaoContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  padding: 4px 6px;
+  border-radius: 10px;
+  border: 1px solid #47a4c4;
+}
+
+.inputEdicao {
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  padding: 4px 6px;
+  color: #1e293b;
+  min-width: 180px;
+}
+
+.edicaoBotoes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btnSalvarEdicao {
+  background: #47a4c4;
+  color: #ffffff;
+  border: none;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnCancelarEdicao {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+
 .mensagemMeta {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-top: 3px;
   font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.tagEditada {
+  font-style: italic;
+  font-size: 10px;
   color: #94a3b8;
 }
 
