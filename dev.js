@@ -8,100 +8,37 @@ const frontendDir = path.join(rootDir, 'frontend');
 const backendDir = path.join(rootDir, 'backend');
 
 console.log('🤖 ===================================================');
-console.log('🤖 [Workonnection] Setup & Dev Bot Iniciado');
+console.log('🤖 [Workonnection] Dev Runner Iniciado');
 console.log(`🤖 Sistema Operacional detectado: ${process.platform} (${isWindows ? 'Windows' : 'Unix/Linux/macOS'})`);
 console.log('🤖 ===================================================\n');
 
-// 1. Criar frontend/.env
+// 1. Avisar de forma amigável caso os arquivos de configuração não existam
 const frontEnvPath = path.join(frontendDir, '.env');
-const frontEnvExamplePath = path.join(frontendDir, '.env.example');
+const backendLocalPropsPath = path.join(backendDir, 'src', 'main', 'resources', 'application-local.properties');
+
+let hasMissingConfig = false;
 
 if (!fs.existsSync(frontEnvPath)) {
-  console.log('📄 [1/3] Criando frontend/.env...');
-  if (fs.existsSync(frontEnvExamplePath)) {
-    fs.copyFileSync(frontEnvExamplePath, frontEnvPath);
-    console.log('✅ frontend/.env copiado de .env.example com sucesso!');
-  } else {
-    const frontEnvContent = [
-      'VITE_API_URL=http://localhost:8080',
-      'VITE_GOOGLE_CLIENT_ID=SEU_GOOGLE_CLIENT_ID',
-      'VITE_PUSHER_KEY=SUA_PUSHER_KEY',
-      'VITE_PUSHER_CLUSTER=sa1',
-      ''
-    ].join('\n');
-    fs.writeFileSync(frontEnvPath, frontEnvContent, 'utf-8');
-    console.log('✅ frontend/.env criado com sucesso!');
-  }
-} else {
-  console.log('✔ frontend/.env já existe.');
+  console.warn('⚠️  [AVISO] frontend/.env não foi encontrado.');
+  console.warn('👉 Crie o arquivo frontend/.env (pode copiar de frontend/.env.example).\n');
+  hasMissingConfig = true;
 }
-
-// 2. Criar backend/src/main/resources/application-local.properties
-const backendResourcesDir = path.join(backendDir, 'src', 'main', 'resources');
-const backendLocalPropsPath = path.join(backendResourcesDir, 'application-local.properties');
-const rootTemplatePropsPath = path.join(rootDir, 'application-local.properties.example');
 
 if (!fs.existsSync(backendLocalPropsPath)) {
-  console.log('📄 [2/3] Criando backend/src/main/resources/application-local.properties...');
-  fs.mkdirSync(backendResourcesDir, { recursive: true });
-
-  if (fs.existsSync(rootTemplatePropsPath)) {
-    fs.copyFileSync(rootTemplatePropsPath, backendLocalPropsPath);
-    console.log('✅ application-local.properties copiado do template local com sucesso!');
-  } else {
-    const localPropsContent = [
-      '# BANCO DE DADOS (Preencha com sua URI do MongoDB Atlas ou MongoDB local)',
-      'spring.data.mongodb.uri=mongodb+srv://<USUARIO>:<SENHA>@<CLUSTER>.mongodb.net/workonnection?retryWrites=true&w=majority&appName=Workonnection',
-      '',
-      '# SESSÃO',
-      'server.servlet.session.cookie.same-site=lax',
-      'server.servlet.session.cookie.secure=false',
-      '',
-      '# GOOGLE OAUTH2 (Preencha com suas credenciais do Google Cloud Console)',
-      'spring.security.oauth2.client.registration.google.client-id=SEU_GOOGLE_CLIENT_ID',
-      'spring.security.oauth2.client.registration.google.client-secret=SEU_GOOGLE_CLIENT_SECRET',
-      'spring.security.oauth2.client.registration.google.scope=email,profile',
-      'spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/login/oauth2/code/google',
-      'spring.security.oauth2.client.registration.google.client-name=Google',
-      '',
-      '# EMAIL (Preencha com email e senha de app do Gmail)',
-      'spring.mail.host=smtp.gmail.com',
-      'spring.mail.port=587',
-      'spring.mail.username=seu_email@gmail.com',
-      'spring.mail.password=sua_senha_de_app',
-      'spring.mail.protocol=smtp',
-      'spring.mail.properties.mail.smtp.auth=true',
-      'spring.mail.properties.mail.smtp.starttls.enable=true',
-      '',
-      '# FRONTEND',
-      'app.frontend.url=http://localhost:5173',
-      '',
-      '# PUSHER (Preencha com credenciais do painel Pusher)',
-      'pusher.app-id=SEU_PUSHER_APP_ID',
-      'pusher.key=SUA_PUSHER_KEY',
-      'pusher.secret=SEU_PUSHER_SECRET',
-      'pusher.cluster=sa1',
-      ''
-    ].join('\n');
-    fs.writeFileSync(backendLocalPropsPath, localPropsContent, 'utf-8');
-    console.log('✅ application-local.properties criado com sucesso!');
-  }
-} else {
-  console.log('✔ application-local.properties já existe.');
+  console.warn('⚠️  [AVISO] backend/src/main/resources/application-local.properties não foi encontrado.');
+  console.warn('👉 Crie o arquivo application-local.properties com suas configurações locais.\n');
+  hasMissingConfig = true;
 }
 
-// Verifica se foi passado argumento --setup-only
-const args = process.argv.slice(2);
-if (args.indexOf('--setup-only') !== -1) {
-  console.log('\n✨ Setup concluído com sucesso (--setup-only solicitado).');
-  process.exit(0);
+if (hasMissingConfig) {
+  console.log('ℹ️  Iniciando a aplicação mesmo assim...\n');
 }
 
-// 3. Checar dependências do frontend
+// 2. Instalação automática de dependências do frontend (se necessário)
 const nodeModulesPath = path.join(frontendDir, 'node_modules');
 function installFrontendDeps(callback) {
   if (!fs.existsSync(nodeModulesPath)) {
-    console.log('📦 [3/3] Instalando dependências do frontend (npm install)...');
+    console.log('📦 Instalando dependências do frontend (npm install)...');
     const npmCmd = isWindows ? 'npm.cmd' : 'npm';
     const child = spawn(npmCmd, ['install'], {
       cwd: frontendDir,
@@ -116,11 +53,11 @@ function installFrontendDeps(callback) {
       }
     });
   } else {
-    console.log('✔ Dependências do frontend já instaladas.');
     callback();
   }
 }
 
+// 3. Liberação de portas para evitar conflitos (8080 e 5173)
 function killPortProcess(port) {
   return new Promise((resolve) => {
     if (isWindows) {
@@ -144,7 +81,6 @@ function killPortProcess(port) {
       const fuserCmd = spawn('fuser', ['-k', `${port}/tcp`]);
       fuserCmd.on('close', () => resolve());
       fuserCmd.on('error', () => {
-        // Fallback para lsof/kill se fuser não estiver disponível
         try {
           const lsof = spawn('sh', ['-c', `lsof -t -i :${port} | xargs -r kill -9`]);
           lsof.on('close', () => resolve());
@@ -158,11 +94,12 @@ function killPortProcess(port) {
 }
 
 async function preparePorts() {
-  console.log('🔍 Verificando portas 8080 e 5173...');
+  console.log('🔍 Garantindo que portas 8080 e 5173 estão livres...');
   await killPortProcess(8080);
   await killPortProcess(5173);
 }
 
+// 4. Execução paralela do Backend e Frontend com Graceful Shutdown
 function startApps() {
   installFrontendDeps(async () => {
     await preparePorts();
@@ -170,7 +107,7 @@ function startApps() {
 
     const runningProcesses = [];
 
-    // Iniciar Backend (Spring Boot com profile local)
+    // Iniciar Backend
     const mvnExecutable = isWindows ? 'mvnw.cmd' : './mvnw';
     const backendProc = spawn(mvnExecutable, ['spring-boot:run', '-Dspring-boot.run.profiles=local'], {
       cwd: backendDir,
