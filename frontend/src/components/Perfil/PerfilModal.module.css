@@ -128,7 +128,42 @@
     margin-top: 14px;
 }
 
-.body label:first-child {
+.labelRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+    margin-top: 14px;
+}
+
+.labelRow label {
+    margin: 0;
+}
+
+.tagObrigatorio {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.gridDatas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 480px) {
+    .gridDatas {
+        grid-template-columns: 1fr;
+    }
+}
+
+.body label:first-child,
+.labelRow:first-child {
     margin-top: 0;
 }
 

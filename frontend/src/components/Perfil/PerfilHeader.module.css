@@ -52,6 +52,30 @@
     font-weight: 600;
 }
 
+.btnCameraBadge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-dark, #1e293b);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    border: 2px solid var(--card-bg, #ffffff);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    transition: transform 0.2s ease, background 0.2s ease;
+    z-index: 2;
+}
+
+.fotoContainer:hover .btnCameraBadge {
+    transform: scale(1.1);
+    background: var(--primary, #3988a3);
+}
+
 .fotoContainer:hover .fotoOverlay {
     opacity: 1;
 }

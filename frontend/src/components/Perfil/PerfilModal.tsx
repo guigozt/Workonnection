@@ -98,11 +98,30 @@ export const PerfilModal: React.FC<Props> = ({
     return '';
   });
 
-  const [periodo, setPeriodo] = useState(() => {
+  const parsePeriodoInicio = (str?: string) => {
+    if (!str) return '';
+    const partes = str.split(/\s*[-–—aA]\s*/);
+    return partes[0]?.trim() || '';
+  };
+
+  const parsePeriodoFim = (str?: string) => {
+    if (!str) return '';
+    const partes = str.split(/\s*[-–—aA]\s*/);
+    return partes[1]?.trim() || '';
+  };
+
+  const periodoAtual = (() => {
     if (tipo === 'formacao') return formacao?.periodo || '';
     if (tipo === 'experiencia') return experiencia?.periodo || '';
     if (tipo === 'curso') return curso?.periodo || '';
     return '';
+  })();
+
+  const [dataInicio, setDataInicio] = useState(() => parsePeriodoInicio(periodoAtual));
+  const [dataFim, setDataFim] = useState(() => parsePeriodoFim(periodoAtual));
+  const [atualmente, setAtualmente] = useState(() => {
+    const f = parsePeriodoFim(periodoAtual).toLowerCase();
+    return f.includes('atual') || f.includes('presente');
   });
 
   const [empresa, setEmpresa] = useState(() => experiencia?.empresa || '');
@@ -169,6 +188,36 @@ export const PerfilModal: React.FC<Props> = ({
       v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
     }
     return v;
+  };
+
+  const formatarCnpj = (valor: string) => {
+    let v = valor.replace(/\D/g, '');
+    if (v.length > 14) v = v.slice(0, 14);
+    if (v.length > 12) {
+      v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+    } else if (v.length > 8) {
+      v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4})/, '$1.$2.$3/$4');
+    } else if (v.length > 5) {
+      v = v.replace(/^(\d{2})(\d{3})(\d{0,3})/, '$1.$2.$3');
+    } else if (v.length > 2) {
+      v = v.replace(/^(\d{2})(\d{0,3})/, '$1.$2');
+    }
+    return v;
+  };
+
+  const formatarMesAno = (valor: string) => {
+    // Permite formato MM/AAAA
+    let v = valor.replace(/\D/g, '');
+    if (v.length > 6) v = v.slice(0, 6);
+    if (v.length > 2) {
+      v = v.replace(/^(\d{2})(\d{1,4})/, '$1/$2');
+    }
+    return v;
+  };
+
+  const validarCnpj = (cnpj: string) => {
+    const limpo = cnpj.replace(/\D/g, '');
+    return limpo.length === 14;
   };
 
   const validar = async () => {
@@ -238,96 +287,237 @@ export const PerfilModal: React.FC<Props> = ({
     }
 
     if (tipo === 'formacao') {
-      if (!universidade || !cursoNome || !periodo) {
-        setErro('Preencha todos os campos obrigatórios.');
+      if (!universidade.trim()) {
+        setErro('Informe a instituição de ensino.');
         return;
       }
+      if (!cursoNome.trim()) {
+        setErro('Informe o nome do curso.');
+        return;
+      }
+      if (!dataInicio.trim()) {
+        setErro('Informe a data de início (MM/AAAA).');
+        return;
+      }
+      if (!atualmente && !dataFim.trim()) {
+        setErro('Informe a data de término/previsão ou marque "Atualmente cursando".');
+        return;
+      }
+
+      // Validação de formato MM/AAAA ou AAAA
+      const regexData = /^(\d{2}\/\d{4}|\d{4})$/;
+      if (!regexData.test(dataInicio.trim())) {
+        setErro('Data de início inválida. Use o formato MM/AAAA (ex: 02/2021).');
+        return;
+      }
+      if (!atualmente && !regexData.test(dataFim.trim())) {
+        setErro('Data de conclusão/previsão inválida. Use o formato MM/AAAA (ex: 12/2025).');
+        return;
+      }
+
+      const periodoCalculado = atualmente
+        ? `${dataInicio.trim()} - Atual`
+        : `${dataInicio.trim()} - ${dataFim.trim()}`;
+
       await onSalvarFormacao({
-        universidade,
-        curso: cursoNome,
-        periodo,
+        universidade: universidade.trim(),
+        curso: cursoNome.trim(),
+        periodo: periodoCalculado,
       });
       return;
     }
 
     if (tipo === 'experiencia') {
-      if (!empresa || !cargo || !periodo) {
-        setErro('Preencha os campos obrigatórios.');
+      if (!empresa.trim()) {
+        setErro('Informe a empresa.');
         return;
       }
+      if (!cargo.trim()) {
+        setErro('Informe o cargo ocupado.');
+        return;
+      }
+      if (!dataInicio.trim()) {
+        setErro('Informe a data de início (MM/AAAA).');
+        return;
+      }
+      if (!atualmente && !dataFim.trim()) {
+        setErro('Informe a data de término ou marque "Trabalho atualmente aqui".');
+        return;
+      }
+
+      const regexData = /^(\d{2}\/\d{4}|\d{4})$/;
+      if (!regexData.test(dataInicio.trim())) {
+        setErro('Data de início inválida. Use o formato MM/AAAA (ex: 03/2022).');
+        return;
+      }
+      if (!atualmente && !regexData.test(dataFim.trim())) {
+        setErro('Data de término inválida. Use o formato MM/AAAA (ex: 10/2024).');
+        return;
+      }
+
+      const periodoCalculado = atualmente
+        ? `${dataInicio.trim()} - Atual`
+        : `${dataInicio.trim()} - ${dataFim.trim()}`;
+
       await onSalvarExperiencia({
-        empresa,
-        cargo,
-        periodo,
-        descricao,
+        empresa: empresa.trim(),
+        cargo: cargo.trim(),
+        periodo: periodoCalculado,
+        descricao: descricao.trim(),
       });
       return;
     }
 
     if (tipo === 'curso') {
-      if (!cursoNome || !instituicao || !periodo) {
-        setErro('Preencha todos os campos.');
+      if (!cursoNome.trim()) {
+        setErro('Informe o nome do curso.');
         return;
       }
+      if (!instituicao.trim()) {
+        setErro('Informe a instituição emissora.');
+        return;
+      }
+      if (!dataInicio.trim()) {
+        setErro('Informe a data de conclusão (MM/AAAA).');
+        return;
+      }
+
+      const regexData = /^(\d{2}\/\d{4}|\d{4})$/;
+      if (!regexData.test(dataInicio.trim())) {
+        setErro('Data inválida. Use o formato MM/AAAA ou AAAA (ex: 06/2024).');
+        return;
+      }
+
       await onSalvarCurso({
-        nome: cursoNome,
-        instituicao,
-        periodo,
+        nome: cursoNome.trim(),
+        instituicao: instituicao.trim(),
+        periodo: dataInicio.trim(),
       });
       return;
     }
 
     if (tipo === 'subperfil' && onSalvarSubperfil) {
       if (tipoNorm === 'ESTUDANTE') {
+        if (!estInstituicao.trim()) {
+          setErro('Instituição de ensino é obrigatória.');
+          return;
+        }
+        if (!estCurso.trim()) {
+          setErro('Nome do curso é obrigatório.');
+          return;
+        }
+        if (estPrevisao.trim()) {
+          const regexData = /^(\d{2}\/\d{4}|\d{4})$/;
+          if (!regexData.test(estPrevisao.trim())) {
+            setErro('Previsão de conclusão deve estar no formato MM/AAAA (ex: 12/2026).');
+            return;
+          }
+        }
+
         await onSalvarSubperfil({
           perfilEstudante: {
-            instituicaoEnsino: estInstituicao,
-            curso: estCurso,
-            semestreAno: estSemestre,
-            previsaoConclusao: estPrevisao,
-            turno: estTurno,
-            matricula: estMatricula,
-            modalidadeInteresse: estModalidade,
+            instituicaoEnsino: estInstituicao.trim(),
+            curso: estCurso.trim(),
+            semestreAno: estSemestre.trim(),
+            previsaoConclusao: estPrevisao.trim(),
+            turno: estTurno.trim(),
+            matricula: estMatricula.trim(),
+            modalidadeInteresse: estModalidade.trim(),
           },
         });
       } else if (tipoNorm === 'MEI') {
+        if (!meiCnpj.trim()) {
+          setErro('CNPJ é obrigatório para MEI.');
+          return;
+        }
+        if (!validarCnpj(meiCnpj)) {
+          setErro('CNPJ inválido. Digite os 14 dígitos completos.');
+          return;
+        }
+        if (!meiRazaoSocial.trim()) {
+          setErro('Razão Social é obrigatória.');
+          return;
+        }
+        if (!meiNomeFantasia.trim()) {
+          setErro('Nome Fantasia é obrigatório.');
+          return;
+        }
+
         await onSalvarSubperfil({
           perfilMei: {
-            cnpj: meiCnpj,
-            razaoSocial: meiRazaoSocial,
-            nomeFantasia: meiNomeFantasia,
-            ocupacaoPrincipal: meiOcupacao,
-            chavePix: meiChavePix,
-            inscricaoMunicipal: meiInscricaoMunicipal,
+            cnpj: meiCnpj.trim(),
+            razaoSocial: meiRazaoSocial.trim(),
+            nomeFantasia: meiNomeFantasia.trim(),
+            ocupacaoPrincipal: meiOcupacao.trim(),
+            chavePix: meiChavePix.trim(),
+            inscricaoMunicipal: meiInscricaoMunicipal.trim(),
             emiteNotaFiscal: meiEmiteNf,
           },
         });
       } else if (tipoNorm === 'ME') {
+        if (!meCnpj.trim()) {
+          setErro('CNPJ é obrigatório para Microempresa.');
+          return;
+        }
+        if (!validarCnpj(meCnpj)) {
+          setErro('CNPJ inválido. Digite os 14 dígitos completos.');
+          return;
+        }
+        if (!meRazaoSocial.trim()) {
+          setErro('Razão Social é obrigatória.');
+          return;
+        }
+        if (!meNomeFantasia.trim()) {
+          setErro('Nome Fantasia é obrigatório.');
+          return;
+        }
+
         await onSalvarSubperfil({
           perfilMe: {
-            cnpj: meCnpj,
-            razaoSocial: meRazaoSocial,
-            nomeFantasia: meNomeFantasia,
-            cnaePrincipal: meCnae,
-            inscricaoEstadual: meInscricaoEstadual,
-            inscricaoMunicipal: meInscricaoMunicipal,
-            regimeTributario: meRegime,
-            porteEmpresa: mePorte,
+            cnpj: meCnpj.trim(),
+            razaoSocial: meRazaoSocial.trim(),
+            nomeFantasia: meNomeFantasia.trim(),
+            cnaePrincipal: meCnae.trim(),
+            inscricaoEstadual: meInscricaoEstadual.trim(),
+            inscricaoMunicipal: meInscricaoMunicipal.trim(),
+            regimeTributario: meRegime.trim(),
+            porteEmpresa: mePorte.trim(),
             quantidadeFuncionarios: meQtdFuncionarios ? parseInt(meQtdFuncionarios, 10) : undefined,
           },
         });
       } else if (tipoNorm === 'EMPRESA') {
+        if (!empCnpj.trim()) {
+          setErro('CNPJ é obrigatório para Empresa.');
+          return;
+        }
+        if (!validarCnpj(empCnpj)) {
+          setErro('CNPJ inválido. Digite os 14 dígitos completos.');
+          return;
+        }
+        if (!empRazaoSocial.trim()) {
+          setErro('Razão Social é obrigatória.');
+          return;
+        }
+        if (!empNomeFantasia.trim()) {
+          setErro('Nome Fantasia é obrigatório.');
+          return;
+        }
+        if (empRhEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(empRhEmail.trim())) {
+          setErro('E-mail do RH em formato inválido.');
+          return;
+        }
+
         await onSalvarSubperfil({
           perfilEmpresa: {
-            cnpj: empCnpj,
-            razaoSocial: empRazaoSocial,
-            nomeFantasia: empNomeFantasia,
-            setorAtuacao: empSetor,
-            tamanhoEmpresa: empTamanho,
-            siteOficial: empSiteOficial,
-            paginaCarreiras: empPaginaCarreiras,
-            contatoRhEmail: empRhEmail,
-            contatoRhTelefone: empRhTelefone,
+            cnpj: empCnpj.trim(),
+            razaoSocial: empRazaoSocial.trim(),
+            nomeFantasia: empNomeFantasia.trim(),
+            setorAtuacao: empSetor.trim(),
+            tamanhoEmpresa: empTamanho.trim(),
+            siteOficial: empSiteOficial.trim(),
+            paginaCarreiras: empPaginaCarreiras.trim(),
+            contatoRhEmail: empRhEmail.trim(),
+            contatoRhTelefone: empRhTelefone.trim(),
           },
         });
       }
@@ -429,51 +619,135 @@ export const PerfilModal: React.FC<Props> = ({
 
           {tipo === 'formacao' && (
             <>
-              <label>Instituição de Ensino</label>
+              <div className={styles.labelRow}>
+                <label>Instituição de Ensino</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={universidade}
                 onChange={(e) => setUniversidade(e.target.value)}
                 placeholder="Ex: USP, UNIP, Fatec"
               />
 
-              <label>Curso</label>
+              <div className={styles.labelRow}>
+                <label>Curso</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={cursoNome}
                 onChange={(e) => setCursoNome(e.target.value)}
                 placeholder="Ex: Ciência da Computação"
               />
 
-              <label>Período / Ano</label>
-              <input
-                value={periodo}
-                onChange={(e) => setPeriodo(e.target.value)}
-                placeholder="Ex: 2021 - 2025"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <div className={styles.labelRow}>
+                    <label>Data de Início</label>
+                    <span className={styles.tagObrigatorio}>Obrigatório</span>
+                  </div>
+                  <input
+                    value={dataInicio}
+                    onChange={(e) => setDataInicio(formatarMesAno(e.target.value))}
+                    placeholder="MM/AAAA (ex: 02/2021)"
+                  />
+                </div>
+
+                <div>
+                  <div className={styles.labelRow}>
+                    <label>Término / Previsão</label>
+                    {!atualmente && <span className={styles.tagObrigatorio}>Obrigatório</span>}
+                  </div>
+                  <input
+                    value={dataFim}
+                    disabled={atualmente}
+                    onChange={(e) => setDataFim(formatarMesAno(e.target.value))}
+                    placeholder="MM/AAAA (ex: 12/2025)"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  id="chkFormacaoAtual"
+                  type="checkbox"
+                  style={{ width: 'auto', cursor: 'pointer' }}
+                  checked={atualmente}
+                  onChange={(e) => {
+                    setAtualmente(e.target.checked);
+                    if (e.target.checked) setDataFim('');
+                  }}
+                />
+                <label htmlFor="chkFormacaoAtual" style={{ margin: 0, cursor: 'pointer', textTransform: 'none' }}>
+                  Atualmente cursando esta formação
+                </label>
+              </div>
             </>
           )}
 
           {tipo === 'experiencia' && (
             <>
-              <label>Empresa</label>
+              <div className={styles.labelRow}>
+                <label>Empresa</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={empresa}
                 onChange={(e) => setEmpresa(e.target.value)}
                 placeholder="Ex: Google, Nubank, Freelance"
               />
 
-              <label>Cargo</label>
+              <div className={styles.labelRow}>
+                <label>Cargo</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={cargo}
                 onChange={(e) => setCargo(e.target.value)}
                 placeholder="Ex: Desenvolvedor Front-end"
               />
 
-              <label>Período</label>
-              <input
-                value={periodo}
-                onChange={(e) => setPeriodo(e.target.value)}
-                placeholder="Ex: Jan 2022 - Atual"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <div className={styles.labelRow}>
+                    <label>Data de Início</label>
+                    <span className={styles.tagObrigatorio}>Obrigatório</span>
+                  </div>
+                  <input
+                    value={dataInicio}
+                    onChange={(e) => setDataInicio(formatarMesAno(e.target.value))}
+                    placeholder="MM/AAAA (ex: 03/2022)"
+                  />
+                </div>
+
+                <div>
+                  <div className={styles.labelRow}>
+                    <label>Data de Saída</label>
+                    {!atualmente && <span className={styles.tagObrigatorio}>Obrigatório</span>}
+                  </div>
+                  <input
+                    value={dataFim}
+                    disabled={atualmente}
+                    onChange={(e) => setDataFim(formatarMesAno(e.target.value))}
+                    placeholder="MM/AAAA (ex: 10/2024)"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  id="chkExpAtual"
+                  type="checkbox"
+                  style={{ width: 'auto', cursor: 'pointer' }}
+                  checked={atualmente}
+                  onChange={(e) => {
+                    setAtualmente(e.target.checked);
+                    if (e.target.checked) setDataFim('');
+                  }}
+                />
+                <label htmlFor="chkExpAtual" style={{ margin: 0, cursor: 'pointer', textTransform: 'none' }}>
+                  Trabalho atualmente nesta empresa / função
+                </label>
+              </div>
 
               <label>Descrição das Atividades</label>
               <textarea
@@ -486,72 +760,99 @@ export const PerfilModal: React.FC<Props> = ({
 
           {tipo === 'curso' && (
             <>
-              <label>Nome do Curso</label>
+              <div className={styles.labelRow}>
+                <label>Nome do Curso / Certificação</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={cursoNome}
                 onChange={(e) => setCursoNome(e.target.value)}
                 placeholder="Ex: React do Zero ao Avançado"
               />
 
-              <label>Instituição</label>
+              <div className={styles.labelRow}>
+                <label>Instituição Emissora</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={instituicao}
                 onChange={(e) => setInstituicao(e.target.value)}
-                placeholder="Ex: Udemy, Alura, Coursera"
+                placeholder="Ex: Udemy, Alura, Coursera, Senac"
               />
 
-              <label>Período / Ano</label>
+              <div className={styles.labelRow}>
+                <label>Data de Conclusão</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
-                value={periodo}
-                onChange={(e) => setPeriodo(e.target.value)}
-                placeholder="Ex: 2024"
+                value={dataInicio}
+                onChange={(e) => setDataInicio(formatarMesAno(e.target.value))}
+                placeholder="MM/AAAA (ex: 06/2024)"
               />
             </>
           )}
 
           {tipo === 'subperfil' && tipoNorm === 'ESTUDANTE' && (
             <>
-              <label>Instituição de Ensino</label>
+              <div className={styles.labelRow}>
+                <label>Instituição de Ensino</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={estInstituicao}
                 onChange={(e) => setEstInstituicao(e.target.value)}
                 placeholder="Ex: Faculdade Impacta"
               />
 
-              <label>Curso</label>
+              <div className={styles.labelRow}>
+                <label>Curso</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={estCurso}
                 onChange={(e) => setEstCurso(e.target.value)}
                 placeholder="Ex: Engenharia de Software"
               />
 
-              <label>Semestre / Ano</label>
-              <input
-                value={estSemestre}
-                onChange={(e) => setEstSemestre(e.target.value)}
-                placeholder="Ex: 5º Semestre"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Semestre / Ano</label>
+                  <input
+                    value={estSemestre}
+                    onChange={(e) => setEstSemestre(e.target.value)}
+                    placeholder="Ex: 5º Semestre"
+                  />
+                </div>
 
-              <label>Previsão de Conclusão</label>
-              <input
-                value={estPrevisao}
-                onChange={(e) => setEstPrevisao(e.target.value)}
-                placeholder="Ex: 12/2026"
-              />
+                <div>
+                  <label>Previsão de Conclusão</label>
+                  <input
+                    value={estPrevisao}
+                    onChange={(e) => setEstPrevisao(formatarMesAno(e.target.value))}
+                    placeholder="MM/AAAA (ex: 12/2026)"
+                  />
+                </div>
+              </div>
 
-              <label>Turno</label>
-              <input
-                value={estTurno}
-                onChange={(e) => setEstTurno(e.target.value)}
-                placeholder="Ex: Noturno, Matutino, EAD"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Turno</label>
+                  <input
+                    value={estTurno}
+                    onChange={(e) => setEstTurno(e.target.value)}
+                    placeholder="Ex: Noturno, Matutino, EAD"
+                  />
+                </div>
 
-              <label>Matrícula</label>
-              <input
-                value={estMatricula}
-                onChange={(e) => setEstMatricula(e.target.value)}
-                placeholder="Ex: 202301928"
-              />
+                <div>
+                  <label>Matrícula / RA</label>
+                  <input
+                    value={estMatricula}
+                    onChange={(e) => setEstMatricula(e.target.value)}
+                    placeholder="Ex: 202301928"
+                  />
+                </div>
+              </div>
 
               <label>Modalidade de Interesse</label>
               <input
@@ -564,47 +865,62 @@ export const PerfilModal: React.FC<Props> = ({
 
           {tipo === 'subperfil' && tipoNorm === 'MEI' && (
             <>
-              <label>CNPJ</label>
+              <div className={styles.labelRow}>
+                <label>CNPJ (14 dígitos)</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meiCnpj}
-                onChange={(e) => setMeiCnpj(e.target.value)}
+                onChange={(e) => setMeiCnpj(formatarCnpj(e.target.value))}
                 placeholder="00.000.000/0001-00"
               />
 
-              <label>Razão Social</label>
+              <div className={styles.labelRow}>
+                <label>Razão Social</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meiRazaoSocial}
                 onChange={(e) => setMeiRazaoSocial(e.target.value)}
-                placeholder="Razão Social MEI"
+                placeholder="Nome do Titular MEI"
               />
 
-              <label>Nome Fantasia</label>
+              <div className={styles.labelRow}>
+                <label>Nome Fantasia</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meiNomeFantasia}
                 onChange={(e) => setMeiNomeFantasia(e.target.value)}
-                placeholder="Nome Fantasia"
+                placeholder="Nome Comercial ou Fantasia"
               />
 
               <label>Ocupação Principal</label>
               <input
                 value={meiOcupacao}
                 onChange={(e) => setMeiOcupacao(e.target.value)}
-                placeholder="Ex: Programador, Designer"
+                placeholder="Ex: Programador, Designer, Eletricista"
               />
 
-              <label>Chave PIX</label>
-              <input
-                value={meiChavePix}
-                onChange={(e) => setMeiChavePix(e.target.value)}
-                placeholder="E-mail, CPF, celular ou aleatória"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Chave PIX</label>
+                  <input
+                    value={meiChavePix}
+                    onChange={(e) => setMeiChavePix(e.target.value)}
+                    placeholder="E-mail, CPF, celular ou chave"
+                  />
+                </div>
 
-              <label>Inscrição Municipal</label>
-              <input
-                value={meiInscricaoMunicipal}
-                onChange={(e) => setMeiInscricaoMunicipal(e.target.value)}
-                placeholder="Número da inscrição municipal"
-              />
+                <div>
+                  <label>Inscrição Municipal</label>
+                  <input
+                    value={meiInscricaoMunicipal}
+                    onChange={(e) => setMeiInscricaoMunicipal(e.target.value)}
+                    placeholder="Número no município"
+                  />
+                </div>
+              </div>
 
               <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input
@@ -623,21 +939,30 @@ export const PerfilModal: React.FC<Props> = ({
 
           {tipo === 'subperfil' && tipoNorm === 'ME' && (
             <>
-              <label>CNPJ</label>
+              <div className={styles.labelRow}>
+                <label>CNPJ (14 dígitos)</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meCnpj}
-                onChange={(e) => setMeCnpj(e.target.value)}
+                onChange={(e) => setMeCnpj(formatarCnpj(e.target.value))}
                 placeholder="00.000.000/0001-00"
               />
 
-              <label>Razão Social</label>
+              <div className={styles.labelRow}>
+                <label>Razão Social</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meRazaoSocial}
                 onChange={(e) => setMeRazaoSocial(e.target.value)}
                 placeholder="Razão Social LTDA"
               />
 
-              <label>Nome Fantasia</label>
+              <div className={styles.labelRow}>
+                <label>Nome Fantasia</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={meNomeFantasia}
                 onChange={(e) => setMeNomeFantasia(e.target.value)}
@@ -651,26 +976,47 @@ export const PerfilModal: React.FC<Props> = ({
                 placeholder="Ex: 62.01-5-01"
               />
 
-              <label>Inscrição Estadual</label>
-              <input
-                value={meInscricaoEstadual}
-                onChange={(e) => setMeInscricaoEstadual(e.target.value)}
-                placeholder="Inscrição Estadual (se aplicável)"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Inscrição Estadual</label>
+                  <input
+                    value={meInscricaoEstadual}
+                    onChange={(e) => setMeInscricaoEstadual(e.target.value)}
+                    placeholder="IE (se aplicável)"
+                  />
+                </div>
 
-              <label>Inscrição Municipal</label>
-              <input
-                value={meInscricaoMunicipal}
-                onChange={(e) => setMeInscricaoMunicipal(e.target.value)}
-                placeholder="Inscrição Municipal"
-              />
+                <div>
+                  <label>Inscrição Municipal</label>
+                  <input
+                    value={meInscricaoMunicipal}
+                    onChange={(e) => setMeInscricaoMunicipal(e.target.value)}
+                    placeholder="IM no município"
+                  />
+                </div>
+              </div>
 
-              <label>Regime Tributário</label>
-              <input
-                value={meRegime}
-                onChange={(e) => setMeRegime(e.target.value)}
-                placeholder="Ex: Simples Nacional, Lucro Presumido"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Regime Tributário</label>
+                  <input
+                    value={meRegime}
+                    onChange={(e) => setMeRegime(e.target.value)}
+                    placeholder="Ex: Simples Nacional"
+                  />
+                </div>
+
+                <div>
+                  <label>Quantidade de Funcionários</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={meQtdFuncionarios}
+                    onChange={(e) => setMeQtdFuncionarios(e.target.value)}
+                    placeholder="Ex: 8"
+                  />
+                </div>
+              </div>
 
               <label>Porte da Empresa</label>
               <input
@@ -678,53 +1024,60 @@ export const PerfilModal: React.FC<Props> = ({
                 onChange={(e) => setMePorte(e.target.value)}
                 placeholder="Ex: Microempresa (ME)"
               />
-
-              <label>Quantidade de Funcionários</label>
-              <input
-                type="number"
-                value={meQtdFuncionarios}
-                onChange={(e) => setMeQtdFuncionarios(e.target.value)}
-                placeholder="Ex: 5"
-              />
             </>
           )}
 
           {tipo === 'subperfil' && tipoNorm === 'EMPRESA' && (
             <>
-              <label>CNPJ</label>
+              <div className={styles.labelRow}>
+                <label>CNPJ (14 dígitos)</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={empCnpj}
-                onChange={(e) => setEmpCnpj(e.target.value)}
+                onChange={(e) => setEmpCnpj(formatarCnpj(e.target.value))}
                 placeholder="00.000.000/0001-00"
               />
 
-              <label>Razão Social</label>
+              <div className={styles.labelRow}>
+                <label>Razão Social</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={empRazaoSocial}
                 onChange={(e) => setEmpRazaoSocial(e.target.value)}
-                placeholder="Razão Social"
+                placeholder="Razão Social completa"
               />
 
-              <label>Nome Fantasia</label>
+              <div className={styles.labelRow}>
+                <label>Nome Fantasia</label>
+                <span className={styles.tagObrigatorio}>Obrigatório</span>
+              </div>
               <input
                 value={empNomeFantasia}
                 onChange={(e) => setEmpNomeFantasia(e.target.value)}
-                placeholder="Nome Fantasia"
+                placeholder="Nome Fantasia / Marca"
               />
 
-              <label>Setor de Atuação</label>
-              <input
-                value={empSetor}
-                onChange={(e) => setEmpSetor(e.target.value)}
-                placeholder="Ex: Tecnologia, Financeiro, Varejo"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>Setor de Atuação</label>
+                  <input
+                    value={empSetor}
+                    onChange={(e) => setEmpSetor(e.target.value)}
+                    placeholder="Ex: Tecnologia, Varejo"
+                  />
+                </div>
 
-              <label>Tamanho da Empresa</label>
-              <input
-                value={empTamanho}
-                onChange={(e) => setEmpTamanho(e.target.value)}
-                placeholder="Ex: 50-200 funcionários"
-              />
+                <div>
+                  <label>Tamanho da Empresa</label>
+                  <input
+                    value={empTamanho}
+                    onChange={(e) => setEmpTamanho(e.target.value)}
+                    placeholder="Ex: 50-200 funcionários"
+                  />
+                </div>
+              </div>
 
               <label>Site Oficial</label>
               <input
@@ -740,19 +1093,26 @@ export const PerfilModal: React.FC<Props> = ({
                 placeholder="https://empresa.com/carreiras"
               />
 
-              <label>E-mail do RH</label>
-              <input
-                value={empRhEmail}
-                onChange={(e) => setEmpRhEmail(e.target.value)}
-                placeholder="vagas@empresa.com"
-              />
+              <div className={styles.gridDatas}>
+                <div>
+                  <label>E-mail do RH</label>
+                  <input
+                    type="email"
+                    value={empRhEmail}
+                    onChange={(e) => setEmpRhEmail(e.target.value)}
+                    placeholder="vagas@empresa.com"
+                  />
+                </div>
 
-              <label>Telefone do RH</label>
-              <input
-                value={empRhTelefone}
-                onChange={(e) => setEmpRhTelefone(e.target.value)}
-                placeholder="(00) 0000-0000"
-              />
+                <div>
+                  <label>Telefone do RH</label>
+                  <input
+                    value={empRhTelefone}
+                    onChange={(e) => setEmpRhTelefone(formatarTelefone(e.target.value))}
+                    placeholder="(00) 00000-0000"
+                  />
+                </div>
+              </div>
             </>
           )}
 

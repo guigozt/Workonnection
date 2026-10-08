@@ -93,6 +93,24 @@ export const DocumentosSection: React.FC<Props> = ({
         </span>
       </div>
 
+      {documentosConfig.some((c) => c.obrigatorio && !documentos.some((d) => d.tipoDocumento?.toUpperCase() === c.codigo)) && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 14px',
+          marginBottom: '16px',
+          borderRadius: '8px',
+          backgroundColor: '#fffbeb',
+          border: '1px solid #fef3c7',
+          color: '#b45309',
+          fontSize: '13px'
+        }}>
+          <i className="fas fa-triangle-exclamation" />
+          <span>Atenção: Você possui documento(s) obrigatório(s) pendente(s) de envio para validação do seu perfil.</span>
+        </div>
+      )}
+
       <div className={styles.listaDocumentos}>
         {documentosConfig.map((item) => {
           const docEnviado = documentos.find(

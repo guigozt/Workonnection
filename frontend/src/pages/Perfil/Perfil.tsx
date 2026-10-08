@@ -142,15 +142,18 @@ export const Perfil: React.FC = () => {
           onExcluir={excluirHabilidade}
         />
 
-        <Formacoes
-          formacoes={perfil.formacoes || []}
-          onAdicionar={() => {
-            setFormacaoEditando(null);
-            abrirModal('formacao');
-          }}
-          onEditar={editarFormacao}
-          onExcluir={excluirFormacao}
-        />
+        {/* Formações e Cursos acadêmicos/pessoais são exibidos para pessoas físicas (Estudantes e MEIs autônomos) */}
+        {!['EMPRESA', 'ME'].includes(usuario.tipoUsuario?.toUpperCase() || '') && (
+          <Formacoes
+            formacoes={perfil.formacoes || []}
+            onAdicionar={() => {
+              setFormacaoEditando(null);
+              abrirModal('formacao');
+            }}
+            onEditar={editarFormacao}
+            onExcluir={excluirFormacao}
+          />
+        )}
 
         <Experiencias
           experiencias={perfil.experiencias || []}
@@ -162,15 +165,17 @@ export const Perfil: React.FC = () => {
           onExcluir={excluirExperiencia}
         />
 
-        <Cursos
-          cursos={perfil.cursos || []}
-          onAdicionar={() => {
-            setCursoEditando(null);
-            abrirModal('curso');
-          }}
-          onEditar={editarCurso}
-          onExcluir={excluirCurso}
-        />
+        {!['EMPRESA', 'ME'].includes(usuario.tipoUsuario?.toUpperCase() || '') && (
+          <Cursos
+            cursos={perfil.cursos || []}
+            onAdicionar={() => {
+              setCursoEditando(null);
+              abrirModal('curso');
+            }}
+            onEditar={editarCurso}
+            onExcluir={excluirCurso}
+          />
+        )}
       </main>
 
       {modalAberto && (

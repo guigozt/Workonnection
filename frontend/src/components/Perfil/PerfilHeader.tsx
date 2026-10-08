@@ -75,6 +75,14 @@ export const PerfilHeader: React.FC<Props> = ({
           alt={usuario.nome || 'Foto do perfil'}
         />
 
+        <div className={styles.btnCameraBadge}>
+          {carregandoFoto ? (
+            <i className={`fas fa-spinner ${styles.spinner}`} />
+          ) : (
+            <i className="fas fa-camera" />
+          )}
+        </div>
+
         <div className={styles.fotoOverlay}>
           {carregandoFoto ? (
             <i className={`fas fa-spinner ${styles.spinner}`} />
