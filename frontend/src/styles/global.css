@@ -53,11 +53,74 @@ html[data-tema="escuro"],
 body.dark-mode {
   --bg: #0f172a;
   --card-bg: #1e293b;
-  --text: #e2e8f0;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --text: #f1f5f9;
+  --text-h: #ffffff;
   --text-light: #94a3b8;
-  --border: #2e3340;
+  --border: #334155;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
+/* Forçar cores de fundo e texto adaptadas em modo escuro */
+html[data-tema="escuro"] body,
+body.dark-mode {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Cards e Contêineres comuns que possam ter ficado com fundo branco fixo */
+html[data-tema="escuro"] [class*="Card"],
+html[data-tema="escuro"] [class*="card"],
+body.dark-mode [class*="Card"],
+body.dark-mode [class*="card"] {
+  background-color: var(--card-bg);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Inputs, Textareas e Selects em modo escuro */
+html[data-tema="escuro"] input,
+html[data-tema="escuro"] textarea,
+html[data-tema="escuro"] select,
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-tema="escuro"] input::placeholder,
+html[data-tema="escuro"] textarea::placeholder,
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Headers e Títulos em modo escuro */
+html[data-tema="escuro"] h1,
+html[data-tema="escuro"] h2,
+html[data-tema="escuro"] h3,
+html[data-tema="escuro"] h4,
+html[data-tema="escuro"] h5,
+html[data-tema="escuro"] h6,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--text-h, #ffffff);
+}
+
+/* Textos secundários em modo escuro */
+html[data-tema="escuro"] p,
+html[data-tema="escuro"] span,
+body.dark-mode p,
+body.dark-mode span {
+  color: inherit;
 }
 
 /* ======================= */

@@ -6,6 +6,7 @@ import { ComentariosDrawer } from '../../components/ComentariosDrawer/Comentario
 import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
 import { FiltroVagas } from '../../components/FiltroVagas/FiltroVagas';
 import { useHome } from './useHome';
+import { obterTraducoes } from '../../utils/i18n';
 import type { VagaResponseDTO } from '../../types/vagas';
 import styles from './Home.module.css';
 
@@ -34,6 +35,8 @@ export const Home: React.FC = () => {
     handleEnviarComentario,
     handleExcluirComentario,
   } = useHome();
+
+  const t = obterTraducoes();
 
   const [vagaAtivaComentarios, setVagaAtivaComentarios] = useState<VagaResponseDTO | null>(null);
 
@@ -65,20 +68,20 @@ export const Home: React.FC = () => {
           {loading ? (
             <div className={styles.estadoVazio}>
               <div className={styles.spinner} />
-              <p>Carregando vagas...</p>
+              <p>{t.carregandoVagas}</p>
             </div>
           ) : vagas.length === 0 ? (
             <div className={styles.estadoVazio}>
               {temFiltrosAtivos ? (
                 <>
-                  <p className={styles.msgVaziaTitulo}>Nenhuma vaga encontrada com os critérios informados.</p>
-                  <p className={styles.msgVaziaSub}>Tente alterar os termos de busca ou remover alguns filtros.</p>
+                  <p className={styles.msgVaziaTitulo}>{t.nenhumaVagaEncontrada}</p>
+                  <p className={styles.msgVaziaSub}>{t.nenhumaVagaSub}</p>
                   <button type="button" className={styles.btnResetVazio} onClick={handleLimparFiltros}>
-                    Limpar Filtros
+                    {t.limparFiltros}
                   </button>
                 </>
               ) : (
-                <p>Nenhuma vaga cadastrada no momento para seu perfil.</p>
+                <p>{t.nenhumaVagaCadastrada}</p>
               )}
             </div>
           ) : (
@@ -99,7 +102,7 @@ export const Home: React.FC = () => {
       </main>
 
       {!isEstudante && (
-        <FloatingButton onClick={handleAbrirCriacao} title="Criar Nova Vaga" />
+        <FloatingButton onClick={handleAbrirCriacao} title={t.criarNovaVaga} />
       )}
 
       {isModalOpen && (

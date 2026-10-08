@@ -627,3 +627,64 @@
     justify-content: center;
   }
 }
+
+/* =========================================
+   Suporte a Tema Escuro em Mensagens
+   ========================================= */
+:global(html[data-tema="escuro"]) .chatCard,
+:global(body.dark-mode) .chatCard {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .sidebar,
+:global(body.dark-mode) .sidebar {
+  background: var(--bg);
+  border-right-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .sidebarHeader,
+:global(html[data-tema="escuro"]) .chatHeader,
+:global(body.dark-mode) .sidebarHeader,
+:global(body.dark-mode) .chatHeader {
+  background: var(--card-bg);
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .painelChat,
+:global(body.dark-mode) .painelChat {
+  background: var(--card-bg);
+}
+
+:global(html[data-tema="escuro"]) .conversaItem,
+:global(body.dark-mode) .conversaItem {
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .conversaItem:hover,
+:global(body.dark-mode) .conversaItem:hover {
+  background: var(--surface-hover, #334155);
+}
+
+:global(html[data-tema="escuro"]) .conversaItem.ativo,
+:global(body.dark-mode) .conversaItem.ativo {
+  background: rgba(71, 164, 196, 0.18);
+}
+
+:global(html[data-tema="escuro"]) .chatHeaderDetalhes h3,
+:global(body.dark-mode) .chatHeaderDetalhes h3 {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .mensagemTexto,
+:global(body.dark-mode) .mensagemTexto {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .chatInputArea,
+:global(body.dark-mode) .chatInputArea {
+  background: var(--card-bg);
+  border-top-color: var(--border);
+}

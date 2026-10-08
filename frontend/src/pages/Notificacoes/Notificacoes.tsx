@@ -19,11 +19,13 @@ import type {
 } from '../../types/notificacao';
 
 import { useNotificacoes } from './useNotificacoes';
+import { obterTraducoes } from '../../utils/i18n';
 
 import styles from './Notificacoes.module.css';
 
 export const Notificacoes = () => {
   const navigate = useNavigate();
+  const t = obterTraducoes();
 
   const [agora] = useState(() => Date.now());
 
@@ -38,7 +40,6 @@ export const Notificacoes = () => {
     limparTodas,
   } = useNotificacoes();
 
-
   const formatarTempo = (instante: string) => {
     if (!instante) {
       return '';
@@ -52,23 +53,23 @@ export const Notificacoes = () => {
     const dias = Math.floor(diff / 86400000);
 
     if (minutos < 1) {
-      return 'Agora mesmo';
+      return t.agoraMesmo;
     }
 
     if (minutos < 60) {
-      return `${minutos} min atrás`;
+      return `${minutos} ${t.minAtras}`;
     }
 
     if (horas < 24) {
-      return `${horas}h atrás`;
+      return `${horas}${t.horasAtras}`;
     }
 
     if (dias === 1) {
-      return 'Ontem';
+      return t.ontem;
     }
 
     if (dias < 7) {
-      return `${dias} dias atrás`;
+      return `${dias} ${t.diasAtras}`;
     }
 
     return new Date(instante).toLocaleDateString('pt-BR');
@@ -123,7 +124,7 @@ export const Notificacoes = () => {
         <Topbar notificacoesNaoLidas={0} />
 
         <main className={styles.wrapper}>
-          <p>Carregando notificações...</p>
+          <p>{t.carregandoNotificacoes}</p>
         </main>
       </>
     );
@@ -137,7 +138,7 @@ export const Notificacoes = () => {
 
       <main className={styles.wrapper}>
         <header className={styles.header}>
-          <h1>Notificações</h1>
+          <h1>{t.tituloNotificacoes}</h1>
 
           <div className={styles.acoes}>
             <button
@@ -146,7 +147,7 @@ export const Notificacoes = () => {
               onClick={marcarTodasComoLidas}
             >
               <CheckCheck size={15} />
-              Marcar Todas como lidas
+              {t.marcarLidas}
             </button>
 
             <button
@@ -155,7 +156,7 @@ export const Notificacoes = () => {
               onClick={handleLimparTodas}
             >
               <Trash2 size={15} />
-              Limpar tudo
+              {t.limparTodas}
             </button>
           </div>
         </header>
@@ -171,7 +172,7 @@ export const Notificacoes = () => {
             <Bell size={32} />
 
             <p>
-              Nenhuma notificação por enquanto.
+              {t.nenhumaNotificacao}
             </p>
           </div>
         )}

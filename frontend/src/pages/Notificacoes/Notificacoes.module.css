@@ -27,7 +27,7 @@
 .header h1 {
     font-size: 18px;
     font-weight: 800;
-    color: #111;
+    color: var(--text-h, #111);
     margin: 0;
 }
 
@@ -107,7 +107,7 @@
 
 .naoLida {
     border-left: 3px solid #47a4c4;
-    background: #f5fbfe;
+    background: rgba(71, 164, 196, 0.08);
 }
 
 .icone {
@@ -152,14 +152,14 @@
 
 .mensagem {
     font-size: 14px;
-    color: #333;
+    color: var(--text, #333);
     line-height: 1.5;
     margin-bottom: 3px;
 }
 
 .tempo {
     font-size: 11px;
-    color: #aaa;
+    color: var(--text-light, #aaa);
     font-weight: 500;
 }
 

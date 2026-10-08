@@ -1,15 +1,15 @@
 .card {
-  background: #ffffff;
+  background: var(--card-bg, #ffffff);
   border-radius: 18px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border, #eaeaea);
+  box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.05));
   margin-bottom: 18px;
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1));
   transform: translateY(-2px);
 }
 
@@ -26,7 +26,7 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 2px solid #eaeaea;
+  border: 2px solid var(--border, #eaeaea);
 }
 
 .autor {
@@ -37,7 +37,7 @@
 .autorNome {
   font-size: 15px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-h, #333);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -45,7 +45,7 @@
 
 .autorMeta {
   font-size: 12px;
-  color: #47a4c4;
+  color: var(--primary-dark, #47a4c4);
   font-weight: 600;
   text-transform: capitalize;
 }
@@ -57,7 +57,7 @@
 .cargoTitle {
   font-size: 18px;
   font-weight: 800;
-  color: #333;
+  color: var(--text-h, #333);
   margin-bottom: 12px;
 }
 
@@ -69,10 +69,10 @@
 }
 
 .detalheBloco {
-  background: #f8f9fa;
+  background: var(--bg, #f8f9fa);
   border-radius: 12px;
   padding: 10px 14px;
-  border: 1px solid #eaeaea;
+  border: 1px solid var(--border, #eaeaea);
 }
 
 .detalheLabel {
@@ -80,14 +80,14 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #888;
+  color: var(--text-light, #888);
   margin-bottom: 4px;
 }
 
 .detalheValor {
   font-size: 12px;
   font-weight: 600;
-  color: #333;
+  color: var(--text, #333);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -104,9 +104,9 @@
   align-items: center;
   gap: 5px;
   font-size: 11px;
-  color: #666;
-  background: #f8f9fa;
-  border: 1px solid #eaeaea;
+  color: var(--text, #666);
+  background: var(--bg, #f8f9fa);
+  border: 1px solid var(--border, #eaeaea);
   border-radius: 20px;
   padding: 5px 12px;
   font-weight: 600;
@@ -117,14 +117,14 @@
   align-items: center;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid var(--border, #eaeaea);
   background: rgba(0, 0, 0, 0.01);
 }
 
 .acaoBtn {
   background: transparent;
   border: none;
-  color: #666;
+  color: var(--text-light, #666);
   font-size: 13px;
   font-weight: 600;
   display: flex;
@@ -137,7 +137,8 @@
 }
 
 .acaoBtn:hover {
-  background: #eaeaea;
+  background: var(--border, #eaeaea);
+  color: var(--text);
   color: #333;
 }
 

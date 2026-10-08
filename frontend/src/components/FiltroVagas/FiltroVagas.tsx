@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, X, RotateCcw, Filter, Briefcase, GraduationCap } from 'lucide-react';
+import { obterTraducoes } from '../../utils/i18n';
 import styles from './FiltroVagas.module.css';
 
 export interface FiltroVagasProps {
@@ -15,8 +16,6 @@ export interface FiltroVagasProps {
   tipoUsuarioLogado?: string;
 }
 
-const MODALIDADES = ['Todos', 'Presencial', 'Remoto', 'Híbrido'];
-
 export const FiltroVagas: React.FC<FiltroVagasProps> = ({
   busca,
   onBuscaChange,
@@ -29,13 +28,30 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
   totalVagas,
   tipoUsuarioLogado,
 }) => {
+  const t = obterTraducoes();
+
+  const MODALIDADES = [
+    { valor: 'Todos', label: t.filtroTodos },
+    { valor: 'Presencial', label: t.filtroPresencial },
+    { valor: 'Remoto', label: t.filtroRemoto },
+    { valor: 'Híbrido', label: t.filtroHibrido },
+  ];
+
   const isEstudante =
     tipoUsuarioLogado?.toLowerCase() === 'estudante' ||
     tipoUsuarioLogado?.toLowerCase() === 'aluno';
 
   const tiposDisponiveis = isEstudante
-    ? ['Todos', 'Estudante']
-    : ['Todos', 'Prestador', 'Estudante'];
+    ? [
+        { valor: 'Todos', label: t.filtroTodos },
+        { valor: 'Estudante', label: t.filtroEstudante },
+      ]
+    : [
+        { valor: 'Todos', label: t.filtroTodos },
+        { valor: 'Prestador', label: t.filtroPrestador },
+        { valor: 'Estudante', label: t.filtroEstudante },
+      ];
+
   return (
     <section className={styles.filtroContainer} aria-label="Filtros de vagas">
       {/* Campo de Busca Textual */}
@@ -45,7 +61,7 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Buscar por cargo, empresa, tecnologia..."
+            placeholder={t.filtroBuscaPlaceholder}
             value={busca}
             onChange={(e) => onBuscaChange(e.target.value)}
           />
@@ -54,8 +70,8 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
               type="button"
               className={styles.clearInputBtn}
               onClick={() => onBuscaChange('')}
-              title="Limpar texto da busca"
-              aria-label="Limpar texto da busca"
+              title="Limpar"
+              aria-label="Limpar"
             >
               <X size={16} />
             </button>
@@ -67,10 +83,10 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
             type="button"
             className={styles.btnLimpar}
             onClick={onLimparFiltros}
-            title="Restaurar todos os filtros"
+            title={t.limparFiltros}
           >
             <RotateCcw size={14} />
-            <span>Limpar Filtros</span>
+            <span>{t.limparFiltros}</span>
           </button>
         )}
       </div>
@@ -81,19 +97,19 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
         <div className={styles.filterGroup}>
           <div className={styles.groupLabel}>
             <Briefcase size={14} />
-            <span>Modalidade:</span>
+            <span>{t.filtroModalidade}:</span>
           </div>
           <div className={styles.chipsList}>
             {MODALIDADES.map((item) => {
-              const ativo = modalidade === item || (!modalidade && item === 'Todos');
+              const ativo = modalidade === item.valor || (!modalidade && item.valor === 'Todos');
               return (
                 <button
                   type="button"
-                  key={item}
+                  key={item.valor}
                   className={`${styles.chip} ${ativo ? styles.chipAtivo : ''}`}
-                  onClick={() => onModalidadeChange(item)}
+                  onClick={() => onModalidadeChange(item.valor)}
                 >
-                  {item}
+                  {item.label}
                 </button>
               );
             })}
@@ -104,25 +120,19 @@ export const FiltroVagas: React.FC<FiltroVagasProps> = ({
         <div className={styles.filterGroup}>
           <div className={styles.groupLabel}>
             <GraduationCap size={14} />
-            <span>Público-alvo:</span>
+            <span>{t.filtroTipo}:</span>
           </div>
           <div className={styles.chipsList}>
             {tiposDisponiveis.map((item) => {
-              const ativo = tipo === item || (!tipo && item === 'Todos');
-              const label =
-                item === 'Prestador'
-                  ? 'Prestador de Serviço'
-                  : item === 'Estudante'
-                  ? 'Estudante'
-                  : 'Todos';
+              const ativo = tipo === item.valor || (!tipo && item.valor === 'Todos');
               return (
                 <button
                   type="button"
-                  key={item}
+                  key={item.valor}
                   className={`${styles.chip} ${ativo ? styles.chipAtivo : ''}`}
-                  onClick={() => onTipoChange(item)}
+                  onClick={() => onTipoChange(item.valor)}
                 >
-                  {label}
+                  {item.label}
                 </button>
               );
             })}

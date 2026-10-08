@@ -11,6 +11,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
+import { obterTraducoes } from '../../utils/i18n';
 import styles from './VagaCard.module.css';
 
 const FOTO_DEFAULT =
@@ -37,6 +38,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   onEditar,
   onExcluir,
 }) => {
+  const t = obterTraducoes();
   const isDono = Boolean(
     usuarioLogado && vaga.usuarioId === usuarioLogado.id
   );
@@ -142,14 +144,14 @@ export const VagaCard: React.FC<VagaCardProps> = ({
 
             <div className={styles.detalhes}>
               <div className={styles.detalheBloco}>
-                <div className={styles.detalheLabel}>Benefícios</div>
+                <div className={styles.detalheLabel}>{t.beneficios}</div>
                 <div className={styles.detalheValor}>
                   {vaga.beneficios || '—'}
                 </div>
               </div>
 
               <div className={styles.detalheBloco}>
-                <div className={styles.detalheLabel}>Requisitos</div>
+                <div className={styles.detalheLabel}>{t.requisitos}</div>
                 <div className={styles.detalheValor}>
                   {vaga.requisitos || '—'}
                 </div>
@@ -228,20 +230,20 @@ export const VagaCard: React.FC<VagaCardProps> = ({
           <span
             className={`${styles.btnCandidatar} ${styles.candidatarDono}`}
           >
-            Sua vaga
+            {t.suaVaga}
           </span>
         ) : podeCand ? (
           <a
             href={`mailto:${vaga.email || ''}`}
             className={`${styles.btnCandidatar} ${styles.candidatarAtivo}`}
           >
-            Candidatar-se
+            {t.candidatarSe}
           </a>
         ) : (
           <span
             className={`${styles.btnCandidatar} ${styles.candidatarBloqueado}`}
           >
-            Fora do perfil
+            {t.foraDoPerfil}
           </span>
         )}
       </div>

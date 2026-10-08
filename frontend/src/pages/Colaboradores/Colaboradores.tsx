@@ -4,6 +4,7 @@ import { UsuarioCard } from '../../components/UsuarioCard/UsuarioCard';
 import { PerfilPublicoModal } from '../../components/PerfilPublicoModal/PerfilPublicoModal';
 import type { UsuarioPublicoDTO } from '../../types/usuarios';
 import { useColaboradores } from './useColaboradores';
+import { obterTraducoes } from '../../utils/i18n';
 import {
   UsersIcon,
   LayoutGrid,
@@ -18,6 +19,8 @@ export const Colaboradores: React.FC = () => {
     isCompacto,
     setIsCompacto,
   } = useColaboradores();
+
+  const t = obterTraducoes();
 
   const [usuarioModal, setUsuarioModal] = useState<UsuarioPublicoDTO | null>(null);
 
@@ -41,8 +44,8 @@ export const Colaboradores: React.FC = () => {
               marginBottom: '24px',
             }}
           >
-            <h2 style={{ fontWeight: 'bold' }}>
-              Colaboradores
+            <h2 style={{ fontWeight: 'bold', color: 'var(--text-h, inherit)' }}>
+              {t.tituloColaboradores}
             </h2>
 
             {/* Botão para alternar entre Compacto e Expandido */}
@@ -68,19 +71,19 @@ export const Colaboradores: React.FC = () => {
               )}
 
               {isCompacto
-                ? 'Ver Detalhes'
-                : 'Modo Compacto'}
+                ? t.verDetalhes
+                : t.modoCompacto}
             </button>
           </div>
 
           {loading ? (
-            <p>Carregando rede...</p>
+            <p>{t.carregandoRede}</p>
           ) : colaboradores.length === 0 ? (
             <div
               style={{
                 textAlign: 'center',
                 padding: '80px 20px',
-                color: '#888',
+                color: 'var(--text-light, #888)',
               }}
             >
               <UsersIcon
@@ -91,7 +94,7 @@ export const Colaboradores: React.FC = () => {
                 }}
               />
 
-              <p>Nenhum perfil encontrado.</p>
+              <p>{t.nenhumPerfilEncontrado}</p>
             </div>
           ) : (
             <div>

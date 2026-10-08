@@ -2,6 +2,7 @@ import { MapPin, Phone } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 
 import { Topbar } from '../../components/Topbar/Topbar';
+import { obterTraducoes } from '../../utils/i18n';
 
 import styles from './Sobre.module.css';
 
@@ -12,70 +13,63 @@ import gabrielImg from "../../assets/photoMembers/gabriel.jpg";
 import priscilaImg from "../../assets/photoMembers/Priscila.jpeg"
 import carolineImg from "../../assets/photoMembers/Caroline.jpeg"
 
-const cards = [
-    {
-        titulo: 'Rápido e Simples',
-        descricao:
-            'Encontre novos trabalhos em minutos. Cadastre-se, crie seu perfil e comece a receber propostas. Rápido, simples e direto ao ponto.',
-        imagem:
-            'https://tse1.explicit.bing.net/th/id/OIP.CZ8GbxzrGZ7Y9nkB1fnmSAHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-    },
-    {
-        titulo: 'Para Autônomos',
-        descricao:
-            'Você trabalha por conta? A gente te conecta com clientes de verdade. Mostre suas habilidades e conquiste projetos que pagam.',
-        imagem:
-            'https://tse4.mm.bing.net/th/id/OIP.u0-Xyv8WNpc3SDSbZuvKEwHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-    },
-    {
-        titulo: 'MEIs para MEIs',
-        descricao:
-            'De microempreendedor para microempreendedor: aqui você se conecta com quem também faz acontecer. Negocie entre MEIs, com segurança e facilidade.',
-        imagem:
-            'https://tse1.mm.bing.net/th/id/OIP.k1327HTjhDW4O1wxZxw5CgHaEv?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-    },
-];
-
-const desenvolvedores = [
-    {
-        nome: 'Hugo Oliveira',
-        imagem:
-            hugoImg,
-        github: 'https://github.com/Hugo-Oliveira9',
-    },
-    {
-        nome: 'Paulo Roberto',
-        imagem:
-            pauloImg,
-        github: 'https://github.com/PauloElias07',
-    },
-    {
-        nome: 'Guilherme Gomes',
-        imagem:
-            guilhermeImg,
-        github: 'https://github.com/guigozt',
-    },
-    {
-        nome: 'Gabriel Gutierres',
-        imagem:
-            gabrielImg,
-        github: 'https://github.com/GabrielDaSilvaGutierres',
-    },
-    {
-        nome: 'Priscila Mendes',
-        imagem:
-            priscilaImg,
-        github: 'https://github.com/Priscilamendes18',
-    },
-    {
-        nome: 'Carolina Mendes',
-        imagem:
-            carolineImg,
-        github: 'https://github.com/carolinecarvalho06',
-    },
-];
-
 function Sobre() {
+    const t = obterTraducoes();
+
+    const cards = [
+        {
+            titulo: t.sobreRapidoTitulo,
+            descricao: t.sobreRapidoDesc,
+            imagem:
+                'https://tse1.explicit.bing.net/th/id/OIP.CZ8GbxzrGZ7Y9nkB1fnmSAHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        },
+        {
+            titulo: t.sobreAutonomosTitulo,
+            descricao: t.sobreAutonomosDesc,
+            imagem:
+                'https://tse4.mm.bing.net/th/id/OIP.u0-Xyv8WNpc3SDSbZuvKEwHaE7?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        },
+        {
+            titulo: t.sobreMeiTitulo,
+            descricao: t.sobreMeiDesc,
+            imagem:
+                'https://tse1.mm.bing.net/th/id/OIP.k1327HTjhDW4O1wxZxw5CgHaEv?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        },
+    ];
+
+    const desenvolvedores = [
+        {
+            nome: 'Hugo Oliveira',
+            imagem: hugoImg,
+            github: 'https://github.com/Hugo-Oliveira9',
+        },
+        {
+            nome: 'Paulo Roberto',
+            imagem: pauloImg,
+            github: 'https://github.com/PauloElias07',
+        },
+        {
+            nome: 'Guilherme Gomes',
+            imagem: guilhermeImg,
+            github: 'https://github.com/guigozt',
+        },
+        {
+            nome: 'Gabriel Gutierres',
+            imagem: gabrielImg,
+            github: 'https://github.com/GabrielDaSilvaGutierres',
+        },
+        {
+            nome: 'Priscila Mendes',
+            imagem: priscilaImg,
+            github: 'https://github.com/Priscilamendes18',
+        },
+        {
+            nome: 'Carolina Mendes',
+            imagem: carolineImg,
+            github: 'https://github.com/carolinecarvalho06',
+        },
+    ];
+
     return (
         <div>
             <Topbar />
@@ -86,14 +80,11 @@ function Sobre() {
                 <section className={styles.mainSection}>
 
                     <h3 className={styles.sobreTitulo}>
-                        O que você está procurando?
+                        {t.sobreTitulo}
                     </h3>
 
                     <p className={styles.sobreSubtitulo}>
-                        Somos uma plataforma inovadora que busca simplificar e
-                        tornar o processo seletivo algo mais rápido e menos
-                        burocrático. Nunca foi tão simples encontrar a vaga
-                        perfeita para você.
+                        {t.sobreSubtitulo}
                     </p>
 
                     <div className={styles.cardsInfo}>
@@ -122,7 +113,7 @@ function Sobre() {
                 <section className={styles.teamSection}>
 
                     <h4 className={styles.sobreTituloSecundario}>
-                        Desenvolvedores do Projeto
+                        {t.sobreSecaoDevs}
                     </h4>
 
                     <div className={styles.teamMembers}>

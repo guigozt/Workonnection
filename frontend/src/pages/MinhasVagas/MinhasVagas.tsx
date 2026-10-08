@@ -23,6 +23,8 @@ import {
   useMinhasVagas,
 } from './useMinhasVagas';
 
+import { obterTraducoes } from '../../utils/i18n';
+
 import type {
   VagaResponseDTO,
 } from '../../types/vagas';
@@ -32,6 +34,7 @@ import styles from '../Home/Home.module.css';
 
 export const MinhasVagas: React.FC = () => {
   const navigate = useNavigate();
+  const t = obterTraducoes();
   const {
     vagas,
     loading,
@@ -77,47 +80,48 @@ export const MinhasVagas: React.FC = () => {
             style={{
               marginBottom: '24px',
               fontWeight: 'bold',
+              color: 'var(--text-h, inherit)',
             }}
           >
-            {isEstudante ? 'Painel do Estudante' : 'Minhas Publicações'}
+            {isEstudante ? t.painelEstudante : t.minhasPublicacoes}
           </h2>
 
           {loading ? (
             <p>
-              Carregando...
+              {t.carregandoVagas}
             </p>
           ) : isEstudante ? (
             <div
               style={{
                 textAlign: 'center',
                 padding: '48px 24px',
-                background: '#fff',
+                background: 'var(--card-bg, #fff)',
                 borderRadius: '12px',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-                border: '1px solid #e2e8f0',
+                boxShadow: 'var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.04))',
+                border: '1px solid var(--border, #e2e8f0)',
               }}
             >
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎓</div>
-              <h3 style={{ marginBottom: '8px', color: '#1e293b' }}>
-                Área de Candidaturas
+              <h3 style={{ marginBottom: '8px', color: 'var(--text-h, #1e293b)' }}>
+                {t.areaCandidaturas}
               </h3>
               <p
                 style={{
                   marginBottom: '24px',
-                  color: '#64748b',
+                  color: 'var(--text-light, #64748b)',
                   maxWidth: '520px',
                   margin: '0 auto 24px auto',
                   lineHeight: '1.6',
                 }}
               >
-                Como estudante, seu perfil é focado na descoberta de vagas temporárias e candidaturas. Em breve, todo o seu histórico de candidaturas e feedbacks estará centralizado aqui!
+                {t.estudanteDesc}
               </p>
 
               <button
                 className="btn btn-primary"
                 onClick={() => navigate('/home')}
               >
-                Explorar Vagas Compatíveis
+                {t.explorarVagasCompativeis}
               </button>
             </div>
           ) : vagas.length === 0 ? (
@@ -125,17 +129,18 @@ export const MinhasVagas: React.FC = () => {
               style={{
                 textAlign: 'center',
                 padding: '40px',
-                background: '#fff',
+                background: 'var(--card-bg, #fff)',
                 borderRadius: '8px',
+                border: '1px solid var(--border, #e2e8f0)',
               }}
             >
               <p
                 style={{
                   marginBottom: '16px',
+                  color: 'var(--text-light, #64748b)',
                 }}
               >
-                Você ainda não publicou
-                nenhuma vaga.
+                {t.nenhumaVagaPublicada}
               </p>
 
               <button
