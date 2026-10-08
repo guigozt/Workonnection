@@ -5,6 +5,20 @@ export interface TipoDocumentoConfig {
   obrigatorio?: boolean;
 }
 
+export const normalizarTipoUsuario = (tipo?: string): 'ESTUDANTE' | 'MEI' | 'ME' | 'EMPRESA' => {
+  const t = (tipo || 'ESTUDANTE').trim().toUpperCase();
+  if (t === 'MICROEMPREENDEDOR' || t === 'MEI') {
+    return 'MEI';
+  }
+  if (t === 'MICROEMPRESA' || t === 'ME') {
+    return 'ME';
+  }
+  if (t === 'EMPRESA') {
+    return 'EMPRESA';
+  }
+  return 'ESTUDANTE';
+};
+
 export const DOCUMENTOS_POR_CATEGORIA: Record<string, TipoDocumentoConfig[]> = {
   ESTUDANTE: [
     {

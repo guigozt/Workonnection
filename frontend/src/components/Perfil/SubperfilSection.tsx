@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PerfilData } from '../../types/perfil';
+import { normalizarTipoUsuario } from '../../utils/documentosPorCategoria';
 import styles from './SubperfilSection.module.css';
 
 interface Props {
@@ -13,7 +14,7 @@ export const SubperfilSection: React.FC<Props> = ({
   perfil,
   onEditar,
 }) => {
-  const tipo = (tipoUsuario || 'ESTUDANTE').toUpperCase();
+  const tipo = normalizarTipoUsuario(tipoUsuario);
 
   const renderConteudo = () => {
     switch (tipo) {

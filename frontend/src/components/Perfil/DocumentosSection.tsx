@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import type { ArquivoMetadados } from '../../types/perfil';
 import {
   DOCUMENTOS_POR_CATEGORIA,
+  normalizarTipoUsuario,
   obterUrlArquivo,
 } from '../../utils/documentosPorCategoria';
 import styles from './DocumentosSection.module.css';
@@ -21,7 +22,7 @@ export const DocumentosSection: React.FC<Props> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [tipoSelecionado, setTipoSelecionado] = useState<string | null>(null);
 
-  const tipoNormalizado = (tipoUsuario || 'ESTUDANTE').toUpperCase();
+  const tipoNormalizado = normalizarTipoUsuario(tipoUsuario);
   const documentosConfig = DOCUMENTOS_POR_CATEGORIA[tipoNormalizado] || [];
 
   const handleIniciarUpload = (codigo: string) => {

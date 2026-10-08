@@ -10,6 +10,7 @@ import type {
   PerfilMe,
   PerfilEmpresa,
 } from '../../types/perfil';
+import { normalizarTipoUsuario } from '../../utils/documentosPorCategoria';
 
 import styles from './PerfilModal.module.css';
 
@@ -130,7 +131,7 @@ export const PerfilModal: React.FC<Props> = ({
   const [instituicao, setInstituicao] = useState(() => curso?.instituicao || '');
 
   // Estados dos Subperfis
-  const tipoNorm = (tipoUsuario || 'ESTUDANTE').toUpperCase();
+  const tipoNorm = normalizarTipoUsuario(tipoUsuario);
 
   // Estudante
   const [estInstituicao, setEstInstituicao] = useState(() => perfil.perfilEstudante?.instituicaoEnsino || '');

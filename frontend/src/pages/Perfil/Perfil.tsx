@@ -14,6 +14,7 @@ import { DocumentosSection } from '../../components/Perfil/DocumentosSection';
 import { SubperfilSection } from '../../components/Perfil/SubperfilSection';
 
 import { PerfilModal } from '../../components/Perfil/PerfilModal';
+import { normalizarTipoUsuario } from '../../utils/documentosPorCategoria';
 
 import { usePerfil } from './usePerfil';
 
@@ -86,6 +87,8 @@ export const Perfil: React.FC = () => {
       ? perfil.cursos?.[cursoEditando]
       : undefined;
 
+  const tipoNormalizado = normalizarTipoUsuario(usuario.tipoUsuario);
+
   return (
     <div>
       <Topbar />
@@ -142,8 +145,8 @@ export const Perfil: React.FC = () => {
           onExcluir={excluirHabilidade}
         />
 
-        {/* Formações e Cursos acadêmicos/pessoais são exibidos para pessoas físicas (Estudantes e MEIs autônomos) */}
-        {!['EMPRESA', 'ME'].includes(usuario.tipoUsuario?.toUpperCase() || '') && (
+        {/* Formações e Cursos acadêmicos/pessoais são exibidos apenas para Estudantes */}
+        {tipoNormalizado === 'ESTUDANTE' && (
           <Formacoes
             formacoes={perfil.formacoes || []}
             onAdicionar={() => {
@@ -155,17 +158,21 @@ export const Perfil: React.FC = () => {
           />
         )}
 
-        <Experiencias
-          experiencias={perfil.experiencias || []}
-          onAdicionar={() => {
-            setExperienciaEditando(null);
-            abrirModal('experiencia');
-          }}
-          onEditar={editarExperiencia}
-          onExcluir={excluirExperiencia}
-        />
+        {/* Experiências profissionais como funcionário/estagiário também só para Estudantes */}
+        {tipoNormalizado === 'ESTUDANTE' && (
+          <Experiencias
+            experiencias={perfil.experiencias || []}
+            onAdicionar={() => {
+              setExperienciaEditando(null);
+              abrirModal('experiencia');
+            }}
+            onEditar={editarExperiencia}
+            onExcluir={excluirExperiencia}
+          />
+        )}
 
-        {!['EMPRESA', 'ME'].includes(usuario.tipoUsuario?.toUpperCase() || '') && (
+        {/* Cursos extracurriculares também apenas para Estudantes */}
+        {tipoNormalizado === 'ESTUDANTE' && (
           <Cursos
             cursos={perfil.cursos || []}
             onAdicionar={() => {
