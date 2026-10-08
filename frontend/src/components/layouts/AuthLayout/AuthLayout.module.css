@@ -6,6 +6,48 @@
     overflow: hidden;
 }
 
+/* Escopo forçado para Tema Claro no fluxo de autenticação */
+.authLightScope {
+    --bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --surface: #ffffff;
+    --text: #333333;
+    --text-h: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    color: #333333 !important;
+    background-color: #f8f9fa !important;
+}
+
+.authLightScope :global(h1),
+.authLightScope :global(h2),
+.authLightScope :global(h3),
+.authLightScope :global(h4),
+.authLightScope :global(h5),
+.authLightScope :global(h6) {
+    color: #1e293b !important;
+}
+
+.authLightScope :global(p),
+.authLightScope :global(span),
+.authLightScope :global(label),
+.authLightScope :global(small) {
+    color: #475569 !important;
+}
+
+.authLightScope :global(input),
+.authLightScope :global(textarea),
+.authLightScope :global(select) {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #1e293b !important;
+}
+
+.authLightScope :global(input::placeholder),
+.authLightScope :global(textarea::placeholder) {
+    color: #94a3b8 !important;
+}
+
 .left {
     flex: 1;
     background: #e4e4e4;
@@ -29,7 +71,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    background: #f8f9fa;
+    background: #f8f9fa !important;
     padding: 32px 24px;
     box-sizing: border-box;
 }

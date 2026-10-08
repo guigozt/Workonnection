@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 
 export const AuthLayout = ({ children, imageSrc, imageAlt }: AuthLayoutProps) => {
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${styles.authLightScope}`} data-tema="claro">
             <div className={styles.left}>
                 <img src={imageSrc} alt={imageAlt} />
             </div>
