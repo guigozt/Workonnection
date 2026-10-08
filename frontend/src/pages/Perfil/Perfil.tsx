@@ -4,7 +4,6 @@ import { Topbar } from '../../components/Topbar/Topbar';
 
 import { PerfilHeader } from '../../components/Perfil/PerfilHeader';
 import { Contatos } from '../../components/Perfil/Contato';
-import { Feedbacks } from '../../components/Perfil/Feedback';
 import { Sobre } from '../../components/Perfil/Sobre';
 import { Habilidades } from '../../components/Perfil/Habilidades';
 import { Formacoes } from '../../components/Perfil/Formacoes';
@@ -131,8 +130,6 @@ export const Perfil: React.FC = () => {
           documentos={perfil.documentos || []}
           onUploadDocumento={uploadDocumento}
         />
-
-        <Feedbacks />
 
         <Sobre
           perfil={perfil}
