@@ -45,7 +45,7 @@ export const Home: React.FC = () => {
 
   return (
     <div>
-      <Topbar notificacoesNaoLidas={3} />
+      <Topbar />
 
       <main className={styles.homeWrapper}>
         <FiltroVagas

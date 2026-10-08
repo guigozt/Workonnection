@@ -23,7 +23,7 @@ export const Colaboradores: React.FC = () => {
 
   return (
     <div>
-      <Topbar notificacoesNaoLidas={3} />
+      <Topbar />
 
       <main className={styles.homeWrapper}>
         <div

@@ -68,7 +68,7 @@ export const MinhasVagas: React.FC = () => {
 
   return (
     <div>
-      <Topbar notificacoesNaoLidas={3} />
+      <Topbar />
 
       <main className={styles.homeWrapper}>
         <div id="vagas-container">

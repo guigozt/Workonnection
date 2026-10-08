@@ -88,7 +88,7 @@ export const Perfil: React.FC = () => {
 
   return (
     <div>
-      <Topbar notificacoesNaoLidas={3} />
+      <Topbar />
 
       <main className={styles.perfilWrapper}>
         <section className={styles.perfilSection}>

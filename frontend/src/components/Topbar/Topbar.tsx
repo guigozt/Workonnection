@@ -18,11 +18,12 @@ interface TopbarProps {
     mensagensNaoLidas?: number;
 }
 
-export const Topbar = ({ notificacoesNaoLidas = 0, mensagensNaoLidas }: TopbarProps) => {
+export const Topbar = ({ notificacoesNaoLidas, mensagensNaoLidas }: TopbarProps) => {
     // Importando a lógica do nosso custom hook
-    const { isActive, handleLogout, totalMensagensNaoLidas } = useTopbar();
+    const { isActive, handleLogout, totalMensagensNaoLidas, totalNotificacoesNaoLidas } = useTopbar();
 
     const badgeMensagens = mensagensNaoLidas !== undefined ? mensagensNaoLidas : totalMensagensNaoLidas;
+    const badgeNotificacoes = notificacoesNaoLidas !== undefined ? notificacoesNaoLidas : totalNotificacoesNaoLidas;
 
     return (
         <header className={styles.topbar}>
@@ -44,9 +45,9 @@ export const Topbar = ({ notificacoesNaoLidas = 0, mensagensNaoLidas }: TopbarPr
 
                 <Link to="/notificacoes" className={`${styles.navLink} ${isActive('/notificacoes') ? styles.ativo : ''}`}>
                     <Bell size={18} />
-                    {notificacoesNaoLidas > 0 && (
+                    {badgeNotificacoes > 0 && (
                         <span className={styles.notifBadge}>
-                            {notificacoesNaoLidas > 99 ? '99+' : notificacoesNaoLidas}
+                            {badgeNotificacoes > 99 ? '99+' : badgeNotificacoes}
                         </span>
                     )}
                     <span className={styles.iconText}>Avisos</span>

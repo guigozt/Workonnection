@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 import { chatService } from '../../services/chatService';
+import { notificacaoService } from '../../services/notificacaoService';
 import { getPusherClient } from '../../services/pusher';
 
 export const useTopbar = () => {
@@ -10,6 +11,7 @@ export const useTopbar = () => {
 
     const { usuario, logout } = useAuth();
     const [totalMensagensNaoLidas, setTotalMensagensNaoLidas] = useState(0);
+    const [totalNotificacoesNaoLidas, setTotalNotificacoesNaoLidas] = useState(0);
 
     const isActive = (path: string) => location.pathname === path;
 
@@ -17,14 +19,30 @@ export const useTopbar = () => {
         if (!usuario?.id) return;
 
         let isMounted = true;
-        const carregarTotal = async () => {
-            const total = await chatService.obterTotalNaoLidas();
-            if (isMounted) {
-                setTotalMensagensNaoLidas(total);
+        const carregarTotais = async () => {
+            try {
+                const totalMensagens = await chatService.obterTotalNaoLidas();
+                if (isMounted) {
+                    setTotalMensagensNaoLidas(totalMensagens);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar mensagens não lidas:", error);
+            }
+
+            try {
+                const listaNotificacoes = await notificacaoService.listar();
+                const totalNotif = Array.isArray(listaNotificacoes)
+                    ? listaNotificacoes.filter((n) => !n.lida).length
+                    : 0;
+                if (isMounted) {
+                    setTotalNotificacoesNaoLidas(totalNotif);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar notificações não lidas:", error);
             }
         };
 
-        carregarTotal();
+        carregarTotais();
 
         // Conexão em tempo real via Pusher
         const pusher = getPusherClient();
@@ -32,7 +50,7 @@ export const useTopbar = () => {
         const canal = pusher.subscribe(canalNome);
 
         const onAtualizarContador = () => {
-            carregarTotal();
+            carregarTotais();
         };
 
         canal.bind('nova-mensagem', onAtualizarContador);
@@ -41,7 +59,7 @@ export const useTopbar = () => {
         canal.bind('conversa-excluida', onAtualizarContador);
 
         // Heartbeat de backup
-        const interval = setInterval(carregarTotal, 15000);
+        const interval = setInterval(carregarTotais, 15000);
 
         return () => {
             isMounted = false;
@@ -68,5 +86,6 @@ export const useTopbar = () => {
         isActive,
         handleLogout,
         totalMensagensNaoLidas,
+        totalNotificacoesNaoLidas,
     };
 };

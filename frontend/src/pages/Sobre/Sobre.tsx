@@ -78,7 +78,7 @@ const desenvolvedores = [
 function Sobre() {
     return (
         <div>
-            <Topbar notificacoesNaoLidas={3} />
+            <Topbar />
 
             <main className={styles.sobreWrapper}>
 
