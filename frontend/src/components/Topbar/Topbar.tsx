@@ -11,6 +11,7 @@ import {
     LogOut 
 } from 'lucide-react';
 import { useTopbar } from './useTopbar';
+import { DICIONARIO, type Idioma } from '../../utils/i18n';
 import styles from './Topbar.module.css';
 
 interface TopbarProps {
@@ -20,10 +21,13 @@ interface TopbarProps {
 
 export const Topbar = ({ notificacoesNaoLidas, mensagensNaoLidas }: TopbarProps) => {
     // Importando a lógica do nosso custom hook
-    const { isActive, handleLogout, totalMensagensNaoLidas, totalNotificacoesNaoLidas } = useTopbar();
+    const { usuario, isActive, handleLogout, totalMensagensNaoLidas, totalNotificacoesNaoLidas } = useTopbar();
 
     const badgeMensagens = mensagensNaoLidas !== undefined ? mensagensNaoLidas : totalMensagensNaoLidas;
     const badgeNotificacoes = notificacoesNaoLidas !== undefined ? notificacoesNaoLidas : totalNotificacoesNaoLidas;
+
+    const idiomaAtivo = ((usuario?.configuracoes?.idioma || localStorage.getItem('workonnection_idioma') || 'pt-BR') as Idioma);
+    const t = DICIONARIO[idiomaAtivo] || DICIONARIO['pt-BR'];
 
     return (
         <header className={styles.topbar}>
@@ -34,13 +38,13 @@ export const Topbar = ({ notificacoesNaoLidas, mensagensNaoLidas }: TopbarProps)
             </div>
 
             <div className={styles.searchBar}>
-                <input type="text" placeholder='Pesquisar...' />
+                <input type="text" placeholder={t.pesquisar} />
             </div>
 
             <nav className={styles.topIcons}>
                 <Link to='/home' className={`${styles.navLink} ${isActive('/home') ? styles.ativo : ''}`}>
                     <Home size={18} />
-                    <span className={styles.iconText}>Home</span>
+                    <span className={styles.iconText}>{t.home}</span>
                 </Link>
 
                 <Link to="/notificacoes" className={`${styles.navLink} ${isActive('/notificacoes') ? styles.ativo : ''}`}>
@@ -50,7 +54,7 @@ export const Topbar = ({ notificacoesNaoLidas, mensagensNaoLidas }: TopbarProps)
                             {badgeNotificacoes > 99 ? '99+' : badgeNotificacoes}
                         </span>
                     )}
-                    <span className={styles.iconText}>Avisos</span>
+                    <span className={styles.iconText}>{t.avisos}</span>
                 </Link>
 
                 <Link to="/mensagens" className={`${styles.navLink} ${isActive('/mensagens') ? styles.ativo : ''}`}>
@@ -60,37 +64,37 @@ export const Topbar = ({ notificacoesNaoLidas, mensagensNaoLidas }: TopbarProps)
                             {badgeMensagens > 99 ? '99+' : badgeMensagens}
                         </span>
                     )}
-                    <span className={styles.iconText}>Chat</span>
+                    <span className={styles.iconText}>{t.chat}</span>
                 </Link>
 
                 <Link to="/vagas" className={`${styles.navLink} ${isActive('/vagas') ? styles.ativo : ''}`}>
                     <Briefcase size={18} />
-                    <span className={styles.iconText}>Vagas</span>
+                    <span className={styles.iconText}>{t.vagas}</span>
                 </Link>
                 
                 <Link to="/colaboradores" className={`${styles.navLink} ${isActive('/colaboradores') ? styles.ativo : ''}`}>
                     <Users size={18} />
-                    <span className={styles.iconText}>Rede</span>
+                    <span className={styles.iconText}>{t.rede}</span>
                 </Link>
 
                 <Link to="/perfil" className={`${styles.navLink} ${isActive('/perfil') ? styles.ativo : ''}`}>
                     <User size={18} />
-                    <span className={styles.iconText}>Perfil</span>
+                    <span className={styles.iconText}>{t.perfil}</span>
                 </Link>
 
                 <Link to="/sobre" className={`${styles.navLink} ${isActive('/sobre') ? styles.ativo : ''}`}>
                     <Info size={18} />
-                    <span className={styles.iconText}>Sobre</span>
+                    <span className={styles.iconText}>{t.sobre}</span>
                 </Link>
 
                 <Link to="/configuracoes" className={`${styles.navLink} ${isActive('/configuracoes') ? styles.ativo : ''}`}>
                     <Settings size={18} />
-                    <span className={styles.iconText}>Opções</span>
+                    <span className={styles.iconText}>{t.opcoes}</span>
                 </Link>
 
-                <button type="button" onClick={handleLogout} className={styles.navLink} title="Sair">
+                <button type="button" onClick={handleLogout} className={styles.navLink} title={t.sair}>
                     <LogOut size={18} />
-                    <span className={styles.iconText}>Sair</span>
+                    <span className={styles.iconText}>{t.sair}</span>
                 </button>
             </nav>
         </header>

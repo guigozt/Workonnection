@@ -83,6 +83,7 @@ export const useTopbar = () => {
     };
 
     return {
+        usuario,
         isActive,
         handleLogout,
         totalMensagensNaoLidas,

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
 import { authService } from '../services/authService';
+import { contasManager } from '../utils/contasManager';
 
 import type {
   UsuarioResponseDTO,
@@ -15,6 +16,28 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [usuario, setUsuario] = useState<UsuarioResponseDTO | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Sincroniza tema e idioma no documento
+  useEffect(() => {
+    const temaSalvo = usuario?.configuracoes?.tema || localStorage.getItem('workonnection_tema') || 'claro';
+    const idiomaSalvo = usuario?.configuracoes?.idioma || localStorage.getItem('workonnection_idioma') || 'pt-BR';
+
+    if (temaSalvo === 'escuro') {
+      document.documentElement.setAttribute('data-tema', 'escuro');
+      document.body.classList.add('dark-mode');
+    } else {
+      document.documentElement.setAttribute('data-tema', 'claro');
+      document.body.classList.remove('dark-mode');
+    }
+
+    document.documentElement.setAttribute('lang', idiomaSalvo);
+    localStorage.setItem('workonnection_tema', temaSalvo);
+    localStorage.setItem('workonnection_idioma', idiomaSalvo);
+
+    if (usuario) {
+      contasManager.salvarConta(usuario);
+    }
+  }, [usuario]);
 
   useEffect(() => {
     console.log('AUTH: verificando usuário logado...');
@@ -39,6 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = await authService.login(dados);
     console.log('AUTH: login retornou:', user);
     setUsuario(user);
+    contasManager.salvarConta(user);
   }, []);
 
   const loginComGoogleToken = useCallback(async (token: string): Promise<UsuarioResponseDTO> => {
@@ -46,6 +70,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = await authService.loginComGoogleToken(token);
     console.log('AUTH: login com Google retornou:', user);
     setUsuario(user);
+    contasManager.salvarConta(user);
     return user;
   }, []);
 
@@ -54,6 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const user = await authService.completarCadastro(dados);
     console.log('AUTH: cadastro retornou:', user);
     setUsuario(user);
+    contasManager.salvarConta(user);
     return user;
   }, []);
 
@@ -67,6 +93,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
+  const atualizarConfiguracoes = useCallback(async (dados: { tema?: string; idioma?: string }) => {
+    try {
+      const atualizado = await authService.atualizarConfiguracoes(dados);
+      setUsuario(atualizado);
+    } catch (error) {
+      console.error('Erro ao atualizar configurações no backend:', error);
+      // Atualiza no estado local mesmo se der erro
+      setUsuario((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          configuracoes: {
+            ...prev.configuracoes,
+            ...dados,
+          },
+        };
+      });
+    }
+  }, []);
+
+  const excluirConta = useCallback(async () => {
+    try {
+      await authService.excluirConta();
+    } finally {
+      setUsuario(null);
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -75,7 +129,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         logout,
         loginComGoogleToken,
-        completarCadastro
+        completarCadastro,
+        atualizarConfiguracoes,
+        excluirConta,
+        setUsuario,
       }}
     >
       {children}

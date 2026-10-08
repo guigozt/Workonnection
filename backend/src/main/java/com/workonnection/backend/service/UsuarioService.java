@@ -407,6 +407,15 @@ public class UsuarioService {
         return toResponse(repository.save(usuario));
     }
 
+    public void excluirConta(String id) {
+        Usuario usuario = repository.findById(id)
+                .orElseThrow(() -> new ApiException(
+                        "Usuário não encontrado",
+                        HttpStatus.NOT_FOUND
+                ));
+        repository.delete(usuario);
+    }
+
     private UsuarioResponseDTO toResponse(Usuario u) {
         long naoLidas = (u.getNotificacoes() == null)
                 ? 0

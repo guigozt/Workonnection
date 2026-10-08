@@ -11,6 +11,11 @@ export interface CompletarCadastroDTO {
     tipoUsuario: string;
 }
 
+export interface ConfiguracoesDTO {
+    tema?: string;
+    idioma?: string;
+}
+
 export interface UsuarioResponseDTO {
     id: string;
     nome: string;
@@ -20,4 +25,11 @@ export interface UsuarioResponseDTO {
     telefone?: string;
     tipoUsuario: string;
     cadastroCompleto?: boolean;
+    foto?: string;
+    configuracoes?: ConfiguracoesDTO;
+    perfil?: {
+        fotoPerfil?: {
+            url?: string;
+        };
+    };
 }

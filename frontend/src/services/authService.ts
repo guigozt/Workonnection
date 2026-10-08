@@ -133,5 +133,19 @@ export const authService = {
         console.log(
             "AUTH SERVICE: logout realizado"
         );
+    },
+
+    atualizarConfiguracoes: async (dados: { tema?: string; idioma?: string }): Promise<UsuarioResponseDTO> => {
+        const response = await api.put<UsuarioResponseDTO>("/usuarios/configuracoes", dados);
+        return response.data;
+    },
+
+    excluirConta: async (): Promise<void> => {
+        try {
+            await api.delete("/usuarios/conta");
+        } finally {
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("authToken");
+        }
     }
 };

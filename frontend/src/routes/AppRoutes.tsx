@@ -14,6 +14,7 @@ import { Colaboradores } from "../pages/Colaboradores/Colaboradores";
 import { MinhasVagas } from "../pages/MinhasVagas/MinhasVagas";
 import { Perfil } from "../pages/Perfil/Perfil";
 import { Mensagens } from "../pages/Mensagens/Mensagens";
+import { Configuracoes } from "../pages/Configuracoes/Configuracoes";
 
 import { PrivateRoute } from "./PrivateRoute";
 
@@ -110,6 +111,16 @@ export const AppRoutes = () => {
                     element={
                         <PrivateRoute>
                             <MinhasVagas />
+                        </PrivateRoute>
+                    }
+                />
+
+                {/* Configurações */}
+                <Route
+                    path="/configuracoes"
+                    element={
+                        <PrivateRoute>
+                            <Configuracoes />
                         </PrivateRoute>
                     }
                 />

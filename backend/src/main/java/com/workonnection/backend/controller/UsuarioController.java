@@ -265,4 +265,19 @@ public class UsuarioController {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * Exclui a conta do usuário logado e invalida a sessão.
+     */
+    @DeleteMapping("/conta")
+    public ResponseEntity<Void> excluirConta(HttpServletRequest request, HttpSession session) {
+        String id = getLoggerUserId(request, session);
+        service.excluirConta(id);
+
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.noContent().build();
+    }
 }
