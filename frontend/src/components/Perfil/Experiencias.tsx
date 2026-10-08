@@ -1,4 +1,5 @@
 import React from 'react';
+import { Plus, Pencil, Trash2, Briefcase } from 'lucide-react';
 
 import type { Experiencia } from '../../types/perfil';
 
@@ -26,8 +27,9 @@ export const Experiencias: React.FC<Props> = ({
         <button
           className={styles.action}
           onClick={onAdicionar}
+          title="Adicionar experiência"
         >
-          <i className="fas fa-plus" />
+          <Plus size={15} />
         </button>
       </div>
 
@@ -39,7 +41,7 @@ export const Experiencias: React.FC<Props> = ({
         experiencias.map((experiencia, index) => (
           <div className={styles.item} key={index}>
 
-            <i className="fas fa-briefcase" />
+            <Briefcase size={20} className={styles.icone} />
 
             <div>
               <b>{experiencia.cargo}</b>
@@ -59,14 +61,16 @@ export const Experiencias: React.FC<Props> = ({
 
               <button
                 onClick={() => onEditar(index)}
+                title="Editar"
               >
-                <i className="fas fa-pen" />
+                <Pencil size={13} />
               </button>
 
               <button
                 onClick={() => onExcluir(index)}
+                title="Excluir"
               >
-                <i className="fas fa-trash" />
+                <Trash2 size={13} />
               </button>
 
             </div>

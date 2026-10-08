@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pencil, IdCard } from 'lucide-react';
 import type { PerfilData } from '../../types/perfil';
 import { normalizarTipoUsuario } from '../../utils/documentosPorCategoria';
 import styles from './SubperfilSection.module.css';
@@ -266,11 +267,11 @@ export const SubperfilSection: React.FC<Props> = ({
     <section className={styles.card}>
       <div className={styles.header}>
         <div className={styles.tituloSecao}>
-          <i className="fas fa-id-card-clip" />
+          <IdCard size={20} />
           <h3>{getTitulo()}</h3>
         </div>
         <button type="button" className={styles.btnEditar} onClick={onEditar}>
-          <i className="fas fa-pen" />
+          <Pencil size={14} />
           <span>Editar dados</span>
         </button>
       </div>

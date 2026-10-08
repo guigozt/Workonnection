@@ -1,4 +1,6 @@
 import React from 'react';
+import { MapPin, Phone, Globe } from 'lucide-react';
+import { FaInstagram, FaLinkedin } from 'react-icons/fa6';
 
 import type { PerfilData } from '../../types/perfil';
 
@@ -15,27 +17,27 @@ export const Contatos: React.FC<Props> = ({
     <div className={styles.grid}>
 
       <a href="#" className={styles.item}>
-        <i className="fas fa-map-marker-alt" />
+        <MapPin size={16} />
         <span>{perfil.local || '—'}</span>
       </a>
 
       <a href="#" className={styles.item}>
-        <i className="fas fa-phone" />
+        <Phone size={16} />
         <span>{perfil.telefone || '—'}</span>
       </a>
 
       <a href="#" className={styles.item}>
-        <i className="fab fa-instagram" />
+        <FaInstagram size={16} />
         <span>{perfil.instagram || '—'}</span>
       </a>
 
       <a href="#" className={styles.item}>
-        <i className="fab fa-linkedin" />
+        <FaLinkedin size={16} />
         <span>{perfil.linkedin || '—'}</span>
       </a>
 
       <a href="#" className={styles.item}>
-        <i className="fas fa-globe" />
+        <Globe size={16} />
         <span>{perfil.site || '—'}</span>
       </a>
 

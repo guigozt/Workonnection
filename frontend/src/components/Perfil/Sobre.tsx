@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pencil } from 'lucide-react';
 
 import type { PerfilData } from '../../types/perfil';
 
@@ -24,7 +25,7 @@ export const Sobre: React.FC<Props> = ({
           title="Editar"
           onClick={onEditar}
         >
-          <i className="fas fa-pen" />
+          <Pencil size={13} />
         </button>
       </div>
 

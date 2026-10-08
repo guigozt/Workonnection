@@ -1,4 +1,5 @@
 import React from 'react';
+import { Plus, X } from 'lucide-react';
 
 import styles from './Habilidades.module.css';
 
@@ -21,10 +22,10 @@ export const Habilidades: React.FC<Props> = ({
 
         <button
           className={styles.action}
-          title="Adicionar"
+          title="Adicionar habilidade"
           onClick={onAdicionar}
         >
-          <i className="fas fa-plus" />
+          <Plus size={15} />
         </button>
       </div>
 
@@ -45,8 +46,9 @@ export const Habilidades: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onExcluir(index)}
+                title="Remover habilidade"
               >
-                <i className="fa-solid fa-xmark" />
+                <X size={12} />
               </button>
             </span>
           ))

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Plus, Pencil, Trash2, Award } from 'lucide-react';
 
 import type { Curso } from '../../types/perfil';
 
@@ -26,8 +27,9 @@ export const Cursos: React.FC<Props> = ({
         <button
           className={styles.action}
           onClick={onAdicionar}
+          title="Adicionar curso"
         >
-          <i className="fas fa-plus" />
+          <Plus size={15} />
         </button>
       </div>
 
@@ -39,7 +41,7 @@ export const Cursos: React.FC<Props> = ({
         cursos.map((curso, index) => (
           <div className={styles.item} key={index}>
 
-            <i className="fas fa-graduation-cap" />
+            <Award size={20} className={styles.icone} />
 
             <div>
               <b>{curso.nome}</b>
@@ -53,14 +55,16 @@ export const Cursos: React.FC<Props> = ({
 
               <button
                 onClick={() => onEditar(index)}
+                title="Editar"
               >
-                <i className="fas fa-pen" />
+                <Pencil size={13} />
               </button>
 
               <button
                 onClick={() => onExcluir(index)}
+                title="Excluir"
               >
-                <i className="fas fa-trash" />
+                <Trash2 size={13} />
               </button>
 
             </div>

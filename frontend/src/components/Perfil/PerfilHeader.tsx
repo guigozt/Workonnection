@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Camera, Pencil } from 'lucide-react';
 import type { UsuarioPerfil } from '../../types/perfil';
 import { obterUrlArquivo } from '../../utils/documentosPorCategoria';
 import styles from './PerfilHeader.module.css';
@@ -79,7 +80,7 @@ export const PerfilHeader: React.FC<Props> = ({
           {carregandoFoto ? (
             <i className={`fas fa-spinner ${styles.spinner}`} />
           ) : (
-            <i className="fas fa-camera" />
+            <Camera size={14} />
           )}
         </div>
 
@@ -88,7 +89,7 @@ export const PerfilHeader: React.FC<Props> = ({
             <i className={`fas fa-spinner ${styles.spinner}`} />
           ) : (
             <>
-              <i className="fas fa-camera" />
+              <Camera size={20} />
               <span>Trocar</span>
             </>
           )}
@@ -109,7 +110,7 @@ export const PerfilHeader: React.FC<Props> = ({
         title="Editar contatos"
         onClick={onEditarContatos}
       >
-        <i className="fas fa-pen" />
+        <Pencil size={15} />
       </button>
     </div>
   );
