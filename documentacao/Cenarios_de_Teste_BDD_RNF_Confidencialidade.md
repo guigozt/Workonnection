@@ -140,3 +140,4 @@ Esta conclusão veio da inspeção do código-fonte. Nenhuma chamada real à API
 ---
 
 **Observação:** este documento especifica comportamentos esperados e critérios de teste; não é evidência de que os cenários tenham sido executados. Use somente dados fictícios ou anonimizados em qualquer validação.
+#final corrigido
