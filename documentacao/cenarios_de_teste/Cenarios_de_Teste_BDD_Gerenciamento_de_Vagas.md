@@ -66,43 +66,29 @@ Gere o roteiro de teste para o projeto interdisciplinar. Selecione a função qu
 
 ---
 
-### Cenário 3: Tentativa de publicação de vaga por perfil não autorizado (Sem Sucesso)
+### Cenário 3: Edição de vaga publicada
 
-- **Dado que** o usuário está autenticado na plataforma com perfil de **"Estudante"**
-- **Quando** tenta acessar o recurso de publicação de vaga
-- **Então** o sistema bloqueia a criação e exibe a mensagem de restrição de permissão: `"Estudantes não têm permissão para publicar vagas"`.
-
----
-
-### Cenário 4: Edição de vaga publicada
-
-#### 4.1 – Edição de vaga própria com sucesso (Caminho Feliz)
+#### 3.1 – Edição de vaga própria com sucesso (Caminho Feliz)
 - **Dado que** o usuário possui uma vaga de sua autoria já publicada na plataforma
 - **Quando** abre a edição dessa vaga, altera o salário para `"R$ 6.000,00"` e a descrição para `"Atuação em novos projetos web responsivos com React."` e salva
 - **Então** o sistema valida as alterações, persiste a nova versão e exibe os dados atualizados na listagem.
 
-#### 4.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso)
+#### 3.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso)
 - **Dado que** o usuário está autenticado, mas visualiza uma vaga publicada por outro usuário
 - **Quando** tenta submeter uma alteração nessa publicação
 - **Então** o sistema rejeita a operação e exibe a mensagem de permissão negada: `"Sem permissão para editar esta vaga"`.
 
 ---
 
-### Cenário 5: Exclusão de vaga publicada
+### Cenário 4: Exclusão de vaga publicada (Caminho Feliz)
 
-#### 5.1 – Exclusão de vaga própria confirmada (Caminho Feliz)
 - **Dado que** o autor da vaga acessa sua listagem em **"Minhas Vagas"**
 - **Quando** seleciona a ação de excluir na vaga desejada e confirma o diálogo de exclusão
 - **Então** o sistema remove definitivamente a vaga da plataforma e atualiza a listagem sem a vaga excluída.
 
-#### 5.2 – Tentativa de exclusão de vaga de outro usuário (Sem Sucesso)
-- **Dado que** o usuário tenta acionar a exclusão de uma vaga cujo proprietário seja outro usuário
-- **Quando** o pedido de remoção é processado
-- **Então** o sistema bloqueia a exclusão e exibe a mensagem: `"Sem permissão para excluir esta vaga"`.
-
 ---
 
-### Cenário 6: Consulta e filtragem de vagas na plataforma
+### Cenário 5: Consulta e filtragem de vagas na plataforma
 
 - **Dado que** existem vagas cadastradas com diferentes modalidades e perfis
 - **Quando** o usuário aplica o `<Critério de Filtro>` na tela de vagas

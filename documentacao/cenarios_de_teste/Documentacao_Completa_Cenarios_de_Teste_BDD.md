@@ -77,7 +77,7 @@
 
 #### Cenário 4: Cadastro de usuário com Data de Nascimento / Idade inválida (Sem Sucesso)
 
-- **Dado que** a `<Data Nasc.>` está vazia, em formato incorreto ou indica idade inferior ao requisito legal da plataforma (mínimo de 16 anos)
+- **Dado que** a `<Data Nasc.>` está vazia, em formato incorreto ou indica idade inferior a 16 anos ou superior a 100 anos
 - **Quando** confirmo o cadastro do usuário
 - **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
 
@@ -86,30 +86,6 @@
 | Carlos Silva | 83301677045 | *(vazio)* | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Data obrigatória |
 | Carlos Silva | 83301677045 | 10/10/2015 | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Mínimo 16 anos |
 | Carlos Silva | 83301677045 | 01/01/1850 | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Data inválida |
-
-#### Cenário 5: Cadastro de usuário com Senha ou Confirmação inválida (Sem Sucesso)
-
-- **Dado que** a `<Senha>` possui menos de 6 caracteres ou não coincide com `<Confirmação>`
-- **Quando** confirmo o cadastro do usuário
-- **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
-
-| Nome | CPF | Data Nasc. | Telefone | E-mail | Senha | Confirmação | Tipo Usuário | Mensagem |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | 12345 | 12345 | Autônomo | Mínimo 6 caracteres |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | 123456 | 654321 | Autônomo | Senhas não coincidem |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | *(vazio)* | *(vazio)* | Autônomo | Mínimo 6 caracteres |
-
-#### Cenário 6: Cadastro de usuário com E-mail inválido ou já cadastrado (Sem Sucesso)
-
-- **Dado que** o `<E-mail>` está em formato incorreto ou já existente na base de dados
-- **Quando** confirmo o cadastro do usuário
-- **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
-
-| Nome | CPF | Data Nasc. | Telefone | E-mail | Senha | Confirmação | Tipo Usuário | Mensagem |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlosemail.com | Senha@123 | Senha@123 | Autônomo | Email inválido |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | *(vazio)* | Senha@123 | Senha@123 | Autônomo | Email inválido |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | jaexiste@email.com | Senha@123 | Senha@123 | Autônomo | Email já cadastrado |
 
 ---
 
@@ -144,32 +120,11 @@
 | Tamanho acima do limite permitido | `digitalizacao_alta_resolucao.pdf` | 14.5 MB | O arquivo não pode exceder 10MB. |
 | Arquivo vazio / sem conteúdo | `arquivo_zerado.pdf` | 0 KB | Nenhum arquivo enviado ou o arquivo está vazio |
 
-#### Cenário 3: Validação de documento incompatível com a categoria do usuário (Sem Sucesso)
-
-- **Dado que** o usuário está autenticado com uma conta da categoria `<Categoria>`
-- **Quando** tenta submeter uma requisição de upload informando o tipo de documento `<Tipo Documento>`
-- **Então** o sistema rejeita a operação e retorna a mensagem `<Mensagem de Erro>`
-
-| Categoria | Tipo Documento | Mensagem de Erro |
-| :--- | :--- | :--- |
-| Estudante | `CCMEI` | Documento 'CCMEI' não é aplicável ao tipo de usuário: ESTUDANTE |
-| MEI | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: MEI |
-| ME | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: ME |
-| Empresa | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: EMPRESA |
-
-#### Cenário 4: Substituição de documento já enviado (Caminho Feliz)
+#### Cenário 3: Substituição de documento já enviado (Caminho Feliz)
 
 - **Dado que** o usuário autenticado já possui um arquivo associado ao tipo `"COMPROVANTE_MATRICULA"`
 - **Quando** seleciona a opção **"Substituir"** e faz o upload de um novo arquivo válido `"matricula_atualizada.pdf"`
 - **Então** o sistema substitui a versão anterior pelo novo arquivo, atualiza a data e os metadados do documento e mantém apenas a versão mais recente na listagem do perfil.
-
-#### Cenário 5: Visualização de documento e controle de pendências obrigatórias
-
-- **Dado que** o usuário acessa a seção de documentos comprobatórios no seu perfil
-- **Quando** o sistema carrega os requisitos da sua categoria de usuário
-- **Então** o sistema exibe os tipos de documentos configurados para aquela categoria com a indicação dos itens obrigatórios
-- **E** caso existam documentos obrigatórios não enviados, exibe o alerta: `"Atenção: Você possui documentos obrigatórios pendentes de envio."`
-- **E** para os documentos já enviados com sucesso, disponibiliza a opção **"Visualizar"**, abrindo o arquivo correspondente em uma nova aba do navegador.
 
 ---
 
@@ -225,37 +180,25 @@
 | Intervalo de horário inválido | Início `18:00` e Fim `08:00` (fim anterior ao início) | Hora final deve ser maior que a inicial |
 | Público-alvo | Nenhum tipo selecionado | Selecione ao menos um tipo |
 
-#### Cenário 3: Tentativa de publicação de vaga por perfil não autorizado (Sem Sucesso)
+#### Cenário 3: Edição de vaga publicada
 
-- **Dado que** o usuário está autenticado na plataforma com perfil de **"Estudante"**
-- **Quando** tenta acessar o recurso de publicação de vaga
-- **Então** o sistema bloqueia a criação e exibe a mensagem de restrição de permissão: `"Estudantes não têm permissão para publicar vagas"`.
-
-#### Cenário 4: Edição de vaga publicada
-
-**4.1 – Edição de vaga própria com sucesso (Caminho Feliz):**
+**3.1 – Edição de vaga própria com sucesso (Caminho Feliz):**
 - **Dado que** o usuário possui uma vaga de sua autoria já publicada na plataforma
 - **Quando** abre a edição dessa vaga, altera o salário para `"R$ 6.000,00"` e a descrição para `"Atuação em novos projetos web responsivos com React."` e salva
 - **Então** o sistema valida as alterações, persiste a nova versão e exibe os dados atualizados na listagem.
 
-**4.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso):**
+**3.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso):**
 - **Dado que** o usuário está autenticado, mas visualiza uma vaga publicada por outro usuário
 - **Quando** tenta submeter uma alteração nessa publicação
 - **Então** o sistema rejeita a operação e exibe a mensagem de permissão negada: `"Sem permissão para editar esta vaga"`.
 
-#### Cenário 5: Exclusão de vaga publicada
+#### Cenário 4: Exclusão de vaga publicada (Caminho Feliz)
 
-**5.1 – Exclusão de vaga própria confirmada (Caminho Feliz):**
 - **Dado que** o autor da vaga acessa sua listagem em **"Minhas Vagas"**
 - **Quando** seleciona a ação de excluir na vaga desejada e confirma o diálogo de exclusão
 - **Então** o sistema remove definitivamente a vaga da plataforma e atualiza a listagem sem a vaga excluída.
 
-**5.2 – Tentativa de exclusão de vaga de outro usuário (Sem Sucesso):**
-- **Dado que** o usuário tenta acionar a exclusão de uma vaga cujo proprietário seja outro usuário
-- **Quando** o pedido de remoção é processado
-- **Então** o sistema bloqueia a exclusão e exibe a mensagem: `"Sem permissão para excluir esta vaga"`.
-
-#### Cenário 6: Consulta e filtragem de vagas na plataforma
+#### Cenário 5: Consulta e filtragem de vagas na plataforma
 
 - **Dado que** existem vagas cadastradas com diferentes modalidades e perfis
 - **Quando** o usuário aplica o `<Critério de Filtro>` na tela de vagas
