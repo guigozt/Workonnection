@@ -88,7 +88,10 @@ export const useCadastro = () => {
             setTimeout(() => navigate('/login'), 1500);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-            const errorMsg = error.response?.data?.erro || 'Erro ao conectar com o servidor.';
+            const errorMsg = error.response?.data?.erro || error.response?.data?.message || 'Erro ao conectar com o servidor.';
+            if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('cpf')) {
+                setErrors(prev => ({ ...prev, cpf: 'CPF inválido (já cadastrado/duplicado)' }));
+            }
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {
             setIsSubmitting(false);

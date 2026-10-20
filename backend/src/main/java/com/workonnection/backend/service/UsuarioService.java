@@ -28,6 +28,8 @@ public class UsuarioService {
             );
         }
 
+        validarCpfUnico(dto.cpf(), null);
+
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setCpf(dto.cpf());
@@ -379,7 +381,8 @@ public class UsuarioService {
         if (dto.nome() != null && !dto.nome().isBlank()) {
             usuario.setNome(dto.nome().trim());
         }
-        if (dto.cpf() != null) {
+        if (dto.cpf() != null && !dto.cpf().isBlank()) {
+            validarCpfUnico(dto.cpf(), usuario.getId());
             usuario.setCpf(dto.cpf().trim());
         }
         if (dto.dataNascimento() != null) {
@@ -454,5 +457,34 @@ public class UsuarioService {
                 naoLidas,
                 config
         );
+    }
+
+    private void validarCpfUnico(String cpf, String usuarioIdIgnorar) {
+        if (cpf == null || cpf.isBlank()) {
+            return;
+        }
+        String rawCpf = cpf.replaceAll("\\D", "");
+        if (rawCpf.isBlank()) {
+            return;
+        }
+
+        String formattedCpf = rawCpf.length() == 11
+                ? String.format("%s.%s.%s-%s",
+                rawCpf.substring(0, 3),
+                rawCpf.substring(3, 6),
+                rawCpf.substring(6, 9),
+                rawCpf.substring(9, 11))
+                : rawCpf;
+
+        java.util.Optional<Usuario> existente = repository.findFirstByCpfVariants(rawCpf, formattedCpf);
+        if (existente.isEmpty()) {
+            existente = repository.findFirstByCpf(cpf.trim());
+        }
+        if (existente.isPresent()) {
+            Usuario u = existente.get();
+            if (usuarioIdIgnorar == null || !u.getId().equals(usuarioIdIgnorar)) {
+                throw new ApiException("CPF já cadastrado", HttpStatus.CONFLICT);
+            }
+        }
     }
 }

@@ -106,6 +106,9 @@ export const Cadastro = () => {
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string; erro?: string } } };
             const errorMsg = err.response?.data?.message || err.response?.data?.erro || 'Erro ao processar o cadastro.';
+            if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('cpf')) {
+                setErrors(prev => ({ ...prev, cpf: 'CPF inválido (já cadastrado/duplicado)' }));
+            }
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {
             setIsSubmitting(false);
