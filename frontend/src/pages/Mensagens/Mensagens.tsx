@@ -30,6 +30,8 @@ export const Mensagens: React.FC = () => {
     setTextoMensagem,
     filtroBusca,
     setFiltroBusca,
+    erroEnvio,
+    setErroEnvio,
     selecionarContato,
     enviarMensagem,
     editarMensagem,
@@ -449,28 +451,38 @@ export const Mensagens: React.FC = () => {
                 </div>
 
                 {/* Input de Envio */}
-                <div className={styles.chatFooter}>
-                  <div className={styles.campoTextoWrapper}>
-                    <input
-                      type="text"
-                      className={styles.campoTexto}
-                      placeholder="Digite sua mensagem... (Pressione Enter para enviar)"
-                      value={textoMensagem}
-                      onChange={(e) => setTextoMensagem(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      disabled={enviando}
-                    />
-                  </div>
+                <div className={styles.chatFooterWrapper}>
+                  {erroEnvio && (
+                    <div className={styles.erroEnvioAviso}>
+                      {erroEnvio}
+                    </div>
+                  )}
+                  <div className={styles.chatFooter}>
+                    <div className={styles.campoTextoWrapper}>
+                      <input
+                        type="text"
+                        className={styles.campoTexto}
+                        placeholder="Digite sua mensagem... (Pressione Enter para enviar)"
+                        value={textoMensagem}
+                        onChange={(e) => {
+                          setTextoMensagem(e.target.value);
+                          if (erroEnvio) setErroEnvio(null);
+                        }}
+                        onKeyDown={handleKeyDown}
+                        disabled={enviando}
+                      />
+                    </div>
 
-                  <button
-                    type="button"
-                    className={styles.btnEnviar}
-                    onClick={enviarMensagem}
-                    disabled={!textoMensagem.trim() || enviando}
-                    title="Enviar Mensagem"
-                  >
-                    <Send size={18} />
-                  </button>
+                    <button
+                      type="button"
+                      className={styles.btnEnviar}
+                      onClick={enviarMensagem}
+                      disabled={!textoMensagem.trim() || enviando}
+                      title="Enviar Mensagem"
+                    >
+                      <Send size={18} />
+                    </button>
+                  </div>
                 </div>
               </>
             ) : (

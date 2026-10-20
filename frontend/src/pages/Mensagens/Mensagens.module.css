@@ -508,9 +508,27 @@
 /* =========================================
    Input / Rodapé de Envio
    ========================================= */
+.chatFooterWrapper {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-top: 1px solid var(--border, #e2e8f0);
+}
+
+.erroEnvioAviso {
+  background-color: #fee2e2;
+  color: #dc2626;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 8px 18px;
+  border-bottom: 1px solid #fecaca;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .chatFooter {
   padding: 14px 18px;
-  border-top: 1px solid var(--border, #e2e8f0);
   background: #ffffff;
   display: flex;
   align-items: center;

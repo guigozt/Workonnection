@@ -7,6 +7,9 @@ import com.workonnection.backend.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -27,6 +30,17 @@ public class UsuarioService {
                     HttpStatus.CONFLICT
             );
         }
+
+        if (dto.nome() == null || dto.nome().isEmpty()) {
+            throw new ApiException("Nome inválido (vazio)", HttpStatus.BAD_REQUEST);
+        } else if (dto.nome().trim().isEmpty()) {
+            throw new ApiException("Nome inválido (em branco)", HttpStatus.BAD_REQUEST);
+        } else if (dto.nome().trim().length() < 3) {
+            throw new ApiException("Mínimo 3 caracteres", HttpStatus.BAD_REQUEST);
+        }
+
+        validarCpfUnico(dto.cpf(), null);
+        validarDataNascimento(dto.dataNascimento());
 
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
@@ -376,13 +390,22 @@ public class UsuarioService {
                         HttpStatus.NOT_FOUND
                 ));
 
-        if (dto.nome() != null && !dto.nome().isBlank()) {
+        if (dto.nome() != null) {
+            if (dto.nome().isEmpty()) {
+                throw new ApiException("Nome inválido (vazio)", HttpStatus.BAD_REQUEST);
+            } else if (dto.nome().trim().isEmpty()) {
+                throw new ApiException("Nome inválido (em branco)", HttpStatus.BAD_REQUEST);
+            } else if (dto.nome().trim().length() < 3) {
+                throw new ApiException("Mínimo 3 caracteres", HttpStatus.BAD_REQUEST);
+            }
             usuario.setNome(dto.nome().trim());
         }
-        if (dto.cpf() != null) {
+        if (dto.cpf() != null && !dto.cpf().isBlank()) {
+            validarCpfUnico(dto.cpf(), usuario.getId());
             usuario.setCpf(dto.cpf().trim());
         }
-        if (dto.dataNascimento() != null) {
+        if (dto.dataNascimento() != null && !dto.dataNascimento().isBlank()) {
+            validarDataNascimento(dto.dataNascimento());
             usuario.setDataNascimento(dto.dataNascimento().trim());
         }
         if (dto.telefone() != null) {
@@ -454,5 +477,68 @@ public class UsuarioService {
                 naoLidas,
                 config
         );
+    }
+
+    private void validarCpfUnico(String cpf, String usuarioIdIgnorar) {
+        if (cpf == null || cpf.isBlank()) {
+            return;
+        }
+        String rawCpf = cpf.replaceAll("\\D", "");
+        if (rawCpf.isBlank()) {
+            return;
+        }
+
+        String formattedCpf = rawCpf.length() == 11
+                ? String.format("%s.%s.%s-%s",
+                rawCpf.substring(0, 3),
+                rawCpf.substring(3, 6),
+                rawCpf.substring(6, 9),
+                rawCpf.substring(9, 11))
+                : rawCpf;
+
+        List<String> variantes = List.of(rawCpf, formattedCpf, cpf.trim());
+        List<Usuario> existentes = repository.findByCpfIn(variantes);
+        if (existentes == null || existentes.isEmpty()) {
+            existentes = repository.findByCpfVariants(rawCpf, formattedCpf);
+        }
+
+        if (existentes != null) {
+            for (Usuario u : existentes) {
+                if (usuarioIdIgnorar == null || !u.getId().equals(usuarioIdIgnorar)) {
+                    throw new ApiException("CPF já cadastrado", HttpStatus.CONFLICT);
+                }
+            }
+        }
+    }
+
+    private void validarDataNascimento(String dataNascimento) {
+        if (dataNascimento == null || dataNascimento.isBlank()) {
+            throw new ApiException("Data obrigatória", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            LocalDate dataNasc;
+            String trimmed = dataNascimento.trim();
+            if (trimmed.contains("/")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                dataNasc = LocalDate.parse(trimmed, formatter);
+            } else {
+                dataNasc = LocalDate.parse(trimmed);
+            }
+            LocalDate hoje = LocalDate.now();
+            if (dataNasc.isAfter(hoje)) {
+                throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+            }
+            int idade = Period.between(dataNasc, hoje).getYears();
+            if (idade < 16) {
+                throw new ApiException("Mínimo 16 anos", HttpStatus.BAD_REQUEST);
+            }
+            if (idade > 100) {
+                throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+            }
+        } catch (ApiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+        }
     }
 }

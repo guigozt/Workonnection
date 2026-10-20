@@ -45,36 +45,11 @@ Gere o roteiro de teste para o projeto interdisciplinar. Selecione a função qu
 
 ---
 
-### Cenário 3: Validação de documento incompatível com a categoria do usuário (Sem Sucesso)
-
-- **Dado que** o usuário está autenticado com uma conta da categoria `<Categoria>`
-- **Quando** tenta submeter uma requisição de upload informando o tipo de documento `<Tipo Documento>`
-- **Então** o sistema rejeita a operação e retorna a mensagem `<Mensagem de Erro>`
-
-| Categoria | Tipo Documento | Mensagem de Erro |
-| :--- | :--- | :--- |
-| Estudante | `CCMEI` | Documento 'CCMEI' não é aplicável ao tipo de usuário: ESTUDANTE |
-| MEI | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: MEI |
-| ME | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: ME |
-| Empresa | `COMPROVANTE_MATRICULA` | Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: EMPRESA |
-
----
-
-### Cenário 4: Substituição de documento já enviado (Caminho Feliz)
+### Cenário 3: Substituição de documento já enviado (Caminho Feliz)
 
 - **Dado que** o usuário autenticado já possui um arquivo associado ao tipo `"COMPROVANTE_MATRICULA"`
 - **Quando** seleciona a opção **"Substituir"** e faz o upload de um novo arquivo válido `"matricula_atualizada.pdf"`
 - **Então** o sistema substitui a versão anterior pelo novo arquivo, atualiza a data e os metadados do documento e mantém apenas a versão mais recente na listagem do perfil.
-
----
-
-### Cenário 5: Visualização de documento e controle de pendências obrigatórias
-
-- **Dado que** o usuário acessa a seção de documentos comprobatórios no seu perfil
-- **Quando** o sistema carrega os requisitos da sua categoria de usuário
-- **Então** o sistema exibe os tipos de documentos configurados para aquela categoria com a indicação dos itens obrigatórios
-- **E** caso existam documentos obrigatórios não enviados, exibe o alerta: `"Atenção: Você possui documentos obrigatórios pendentes de envio."`
-- **E** para os documentos já enviados com sucesso, disponibiliza a opção **"Visualizar"**, abrindo o arquivo correspondente em uma nova aba do navegador.
 
 ---
 

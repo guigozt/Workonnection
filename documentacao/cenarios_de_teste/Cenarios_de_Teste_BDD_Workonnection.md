@@ -68,7 +68,7 @@ Gere o roteiro de teste para o projeto interdisciplinar. Selecione a função qu
 
 ### Cenário 4 – Cadastro de usuário com Data de Nascimento / Idade inválida
 
-- **Dado que** a `<Data Nasc.>` está vazia, em formato incorreto ou indica idade inferior ao requisito legal da plataforma (mínimo de 16 anos)
+- **Dado que** a `<Data Nasc.>` está vazia, em formato incorreto ou indica idade inferior a 16 anos ou superior a 100 anos
 - **Quando** confirmo o cadastro do usuário
 - **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
 
@@ -77,34 +77,6 @@ Gere o roteiro de teste para o projeto interdisciplinar. Selecione a função qu
 | Carlos Silva | 83301677045 | *(vazio)* | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Data obrigatória |
 | Carlos Silva | 83301677045 | 10/10/2015 | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Mínimo 16 anos |
 | Carlos Silva | 83301677045 | 01/01/1850 | (11) 98765-4321 | carlos@email.com | Senha@123 | Senha@123 | Autônomo | Data inválida |
-
----
-
-### Cenário 5 – Cadastro de usuário com Senha ou Confirmação inválida
-
-- **Dado que** a `<Senha>` possui menos de 6 caracteres ou não coincide com `<Confirmação>`
-- **Quando** confirmo o cadastro do usuário
-- **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
-
-| Nome | CPF | Data Nasc. | Telefone | E-mail | Senha | Confirmação | Tipo Usuário | Mensagem |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | 12345 | 12345 | Autônomo | Mínimo 6 caracteres |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | 123456 | 654321 | Autônomo | Senhas não coincidem |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlos@email.com | *(vazio)* | *(vazio)* | Autônomo | Mínimo 6 caracteres |
-
----
-
-### Cenário 6 – Cadastro de usuário com E-mail inválido ou já cadastrado
-
-- **Dado que** o `<E-mail>` está em formato incorreto ou já existente na base de dados
-- **Quando** confirmo o cadastro do usuário
-- **Então** o sistema rejeita o cadastro informando a `<Mensagem>`
-
-| Nome | CPF | Data Nasc. | Telefone | E-mail | Senha | Confirmação | Tipo Usuário | Mensagem |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | carlosemail.com | Senha@123 | Senha@123 | Autônomo | Email inválido |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | *(vazio)* | Senha@123 | Senha@123 | Autônomo | Email inválido |
-| Carlos Silva | 83301677045 | 15/05/1998 | (11) 98765-4321 | jaexiste@email.com | Senha@123 | Senha@123 | Autônomo | Email já cadastrado |
 
 ---
 

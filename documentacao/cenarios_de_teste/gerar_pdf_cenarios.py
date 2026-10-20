@@ -411,7 +411,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <div class="cenario-card">
             <div class="cenario-titulo">Cenário 4: Cadastro de usuário com Data de Nascimento / Idade inválida (Sem Sucesso)</div>
             <ul class="passos">
-                <li><strong>Dado que</strong> a &lt;Data Nasc.&gt; está vazia, em formato incorreto ou indica idade inferior ao requisito legal da plataforma (mínimo de 16 anos)</li>
+                <li><strong>Dado que</strong> a &lt;Data Nasc.&gt; está vazia, em formato incorreto ou indica idade inferior a 16 anos ou superior a 100 anos</li>
                 <li><strong>Quando</strong> confirmo o cadastro do usuário</li>
                 <li><strong>Então</strong> o sistema rejeita o cadastro informando a &lt;Mensagem&gt;</li>
             </ul>
@@ -425,48 +425,6 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     <tr><td>Carlos Silva</td><td>83301677045</td><td><em>(vazio)</em></td><td>(11) 98765-4321</td><td>carlos@email.com</td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Data obrigatória</td></tr>
                     <tr><td>Carlos Silva</td><td>83301677045</td><td>10/10/2015</td><td>(11) 98765-4321</td><td>carlos@email.com</td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Mínimo 16 anos</td></tr>
                     <tr><td>Carlos Silva</td><td>83301677045</td><td>01/01/1850</td><td>(11) 98765-4321</td><td>carlos@email.com</td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Data inválida</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 5: Cadastro de usuário com Senha ou Confirmação inválida (Sem Sucesso)</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> a &lt;Senha&gt; possui menos de 6 caracteres ou não coincide com &lt;Confirmação&gt;</li>
-                <li><strong>Quando</strong> confirmo o cadastro do usuário</li>
-                <li><strong>Então</strong> o sistema rejeita o cadastro informando a &lt;Mensagem&gt;</li>
-            </ul>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th><th>CPF</th><th>Data Nasc.</th><th>Telefone</th><th>E-mail</th><th>Senha</th><th>Confirmação</th><th>Tipo Usuário</th><th>Mensagem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td>carlos@email.com</td><td>12345</td><td>12345</td><td>Autônomo</td><td>Mínimo 6 caracteres</td></tr>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td>carlos@email.com</td><td>123456</td><td>654321</td><td>Autônomo</td><td>Senhas não coincidem</td></tr>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td>carlos@email.com</td><td><em>(vazio)</em></td><td><em>(vazio)</em></td><td>Autônomo</td><td>Mínimo 6 caracteres</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 6: Cadastro de usuário com E-mail inválido ou já cadastrado (Sem Sucesso)</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> o &lt;E-mail&gt; está em formato incorreto ou já existente na base de dados</li>
-                <li><strong>Quando</strong> confirmo o cadastro do usuário</li>
-                <li><strong>Então</strong> o sistema rejeita o cadastro informando a &lt;Mensagem&gt;</li>
-            </ul>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th><th>CPF</th><th>Data Nasc.</th><th>Telefone</th><th>E-mail</th><th>Senha</th><th>Confirmação</th><th>Tipo Usuário</th><th>Mensagem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td>carlosemail.com</td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Email inválido</td></tr>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td><em>(vazio)</em></td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Email inválido</td></tr>
-                    <tr><td>Carlos Silva</td><td>83301677045</td><td>15/05/1998</td><td>(11) 98765-4321</td><td>jaexiste@email.com</td><td>Senha@123</td><td>Senha@123</td><td>Autônomo</td><td>Email já cadastrado</td></tr>
                 </tbody>
             </table>
         </div>
@@ -520,44 +478,11 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 3: Validação de documento incompatível com a categoria do usuário (Sem Sucesso)</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> o usuário está autenticado com uma conta da categoria &lt;Categoria&gt;</li>
-                <li><strong>Quando</strong> tenta submeter uma requisição de upload informando o tipo de documento &lt;Tipo Documento&gt;</li>
-                <li><strong>Então</strong> o sistema rejeita a operação e retorna a mensagem &lt;Mensagem de Erro&gt;</li>
-            </ul>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Categoria</th><th>Tipo Documento</th><th>Mensagem de Erro</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Estudante</td><td><code>CCMEI</code></td><td>Documento 'CCMEI' não é aplicável ao tipo de usuário: ESTUDANTE</td></tr>
-                    <tr><td>MEI</td><td><code>COMPROVANTE_MATRICULA</code></td><td>Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: MEI</td></tr>
-                    <tr><td>ME</td><td><code>COMPROVANTE_MATRICULA</code></td><td>Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: ME</td></tr>
-                    <tr><td>Empresa</td><td><code>COMPROVANTE_MATRICULA</code></td><td>Documento 'COMPROVANTE_MATRICULA' não é aplicável ao tipo de usuário: EMPRESA</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 4: Substituição de documento já enviado (Caminho Feliz)</div>
+            <div class="cenario-titulo">Cenário 3: Substituição de documento já enviado (Caminho Feliz)</div>
             <ul class="passos">
                 <li><strong>Dado que</strong> o usuário autenticado já possui um arquivo associado ao tipo <code>COMPROVANTE_MATRICULA</code></li>
                 <li><strong>Quando</strong> seleciona a opção <strong>"Substituir"</strong> e faz o upload de um novo arquivo válido <code>matricula_atualizada.pdf</code></li>
                 <li><strong>Então</strong> o sistema substitui a versão anterior pelo novo arquivo, atualiza a data e os metadados do documento e mantém apenas a versão mais recente na listagem do perfil.</li>
-            </ul>
-        </div>
-
-        <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 5: Visualização de documento e controle de pendências obrigatórias</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> o usuário acessa a seção de documentos comprobatórios no seu perfil</li>
-                <li><strong>Quando</strong> o sistema carrega os requisitos da sua categoria de usuário</li>
-                <li><strong>Então</strong> o sistema exibe os tipos de documentos configurados para aquela categoria com a indicação dos itens obrigatórios</li>
-                <li><strong>E</strong> caso existam documentos obrigatórios não enviados, exibe o alerta: <code>Atenção: Você possui documentos obrigatórios pendentes de envio.</code></li>
-                <li><strong>E</strong> para os documentos já enviados com sucesso, disponibiliza a opção <strong>"Visualizar"</strong>, abrindo o arquivo correspondente em uma nova aba do navegador.</li>
             </ul>
         </div>
     </div>
@@ -634,24 +559,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 3: Tentativa de publicação de vaga por perfil não autorizado (Sem Sucesso)</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> o usuário está autenticado na plataforma com perfil de <strong>"Estudante"</strong></li>
-                <li><strong>Quando</strong> tenta acessar o recurso de publicação de vaga</li>
-                <li><strong>Então</strong> o sistema bloqueia a criação e exibe a mensagem de restrição de permissão: <code>Estudantes não têm permissão para publicar vagas</code>.</li>
-            </ul>
-        </div>
-
-        <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 4: Edição de vaga publicada</div>
-            <div class="subcenario-titulo">4.1 – Edição de vaga própria com sucesso (Caminho Feliz):</div>
+            <div class="cenario-titulo">Cenário 3: Edição de vaga publicada</div>
+            <div class="subcenario-titulo">3.1 – Edição de vaga própria com sucesso (Caminho Feliz):</div>
             <ul class="passos">
                 <li><strong>Dado que</strong> o usuário possui uma vaga de sua autoria já publicada na plataforma</li>
                 <li><strong>Quando</strong> abre a edição dessa vaga, altera o salário para <code>R$ 6.000,00</code> e a descrição para <code>Atuação em novos projetos web responsivos com React.</code> e salva</li>
                 <li><strong>Então</strong> o sistema valida as alterações, persiste a nova versão e exibe os dados atualizados na listagem.</li>
             </ul>
 
-            <div class="subcenario-titulo">4.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso):</div>
+            <div class="subcenario-titulo">3.2 – Tentativa de edição de vaga pertencente a outro usuário (Sem Sucesso):</div>
             <ul class="passos">
                 <li><strong>Dado que</strong> o usuário está autenticado, mas visualiza uma vaga publicada por outro usuário</li>
                 <li><strong>Quando</strong> tenta submeter uma alteração nessa publicação</li>
@@ -660,24 +576,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
 
         <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 5: Exclusão de vaga publicada</div>
-            <div class="subcenario-titulo">5.1 – Exclusão de vaga própria confirmada (Caminho Feliz):</div>
+            <div class="cenario-titulo">Cenário 4: Exclusão de vaga publicada (Caminho Feliz)</div>
             <ul class="passos">
                 <li><strong>Dado que</strong> o autor da vaga acessa sua listagem em <strong>"Minhas Vagas"</strong></li>
                 <li><strong>Quando</strong> seleciona a ação de excluir na vaga desejada e confirma o diálogo de exclusão</li>
                 <li><strong>Então</strong> o sistema remove definitivamente a vaga da plataforma e atualiza a listagem sem a vaga excluída.</li>
             </ul>
-
-            <div class="subcenario-titulo">5.2 – Tentativa de exclusão de vaga de outro usuário (Sem Sucesso):</div>
-            <ul class="passos">
-                <li><strong>Dado que</strong> o usuário tenta acionar a exclusão de uma vaga cujo proprietário seja outro usuário</li>
-                <li><strong>Quando</strong> o pedido de remoção é processado</li>
-                <li><strong>Então</strong> o sistema bloqueia a exclusão e exibe a mensagem: <code>Sem permissão para excluir esta vaga</code>.</li>
-            </ul>
         </div>
 
         <div class="cenario-card">
-            <div class="cenario-titulo">Cenário 6: Consulta e filtragem de vagas na plataforma</div>
+            <div class="cenario-titulo">Cenário 5: Consulta e filtragem de vagas na plataforma</div>
             <ul class="passos">
                 <li><strong>Dado que</strong> existem vagas cadastradas com diferentes modalidades e perfis</li>
                 <li><strong>Quando</strong> o usuário aplica o &lt;Critério de Filtro&gt; na tela de vagas</li>

@@ -70,13 +70,24 @@ export const Cadastro = () => {
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
 
-        if (formData.nome.trim().length < 3) newErrors.nome = 'Mínimo 3 caracteres';
+        if (!formData.nome || formData.nome.length === 0) {
+            newErrors.nome = 'Nome inválido (vazio)';
+        } else if (formData.nome.trim().length === 0) {
+            newErrors.nome = 'Nome inválido (em branco)';
+        } else if (formData.nome.trim().length < 3) {
+            newErrors.nome = 'Mínimo 3 caracteres';
+        }
         if (!validateCPF(formData.cpf)) newErrors.cpf = 'CPF inválido';
 
         if (!formData.dataNascimento) {
-            newErrors.dataNascimento = 'Obrigatório';
-        } else if (calculateAge(formData.dataNascimento) < 16) {
-            newErrors.dataNascimento = 'Mínimo 16 anos';
+            newErrors.dataNascimento = 'Data obrigatória';
+        } else {
+            const idade = calculateAge(formData.dataNascimento);
+            if (idade < 16) {
+                newErrors.dataNascimento = 'Mínimo 16 anos';
+            } else if (idade > 100) {
+                newErrors.dataNascimento = 'Data inválida';
+            }
         }
 
         if (formData.telefone.replace(/\D/g, '').length < 10) newErrors.telefone = 'Incompleto';
@@ -106,6 +117,15 @@ export const Cadastro = () => {
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string; erro?: string } } };
             const errorMsg = err.response?.data?.message || err.response?.data?.erro || 'Erro ao processar o cadastro.';
+            if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('cpf')) {
+                setErrors(prev => ({ ...prev, cpf: 'CPF inválido (já cadastrado/duplicado)' }));
+            }
+            if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('nome')) {
+                setErrors(prev => ({ ...prev, nome: errorMsg }));
+            }
+            if (typeof errorMsg === 'string' && (errorMsg.toLowerCase().includes('data') || errorMsg.toLowerCase().includes('idade') || errorMsg.toLowerCase().includes('nasc'))) {
+                setErrors(prev => ({ ...prev, dataNascimento: errorMsg }));
+            }
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {
             setIsSubmitting(false);
