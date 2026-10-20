@@ -496,14 +496,17 @@ public class UsuarioService {
                 rawCpf.substring(9, 11))
                 : rawCpf;
 
-        java.util.Optional<Usuario> existente = repository.findFirstByCpfVariants(rawCpf, formattedCpf);
-        if (existente.isEmpty()) {
-            existente = repository.findFirstByCpf(cpf.trim());
+        List<String> variantes = List.of(rawCpf, formattedCpf, cpf.trim());
+        List<Usuario> existentes = repository.findByCpfIn(variantes);
+        if (existentes == null || existentes.isEmpty()) {
+            existentes = repository.findByCpfVariants(rawCpf, formattedCpf);
         }
-        if (existente.isPresent()) {
-            Usuario u = existente.get();
-            if (usuarioIdIgnorar == null || !u.getId().equals(usuarioIdIgnorar)) {
-                throw new ApiException("CPF já cadastrado", HttpStatus.CONFLICT);
+
+        if (existentes != null) {
+            for (Usuario u : existentes) {
+                if (usuarioIdIgnorar == null || !u.getId().equals(usuarioIdIgnorar)) {
+                    throw new ApiException("CPF já cadastrado", HttpStatus.CONFLICT);
+                }
             }
         }
     }
