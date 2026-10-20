@@ -28,6 +28,14 @@ public class UsuarioService {
             );
         }
 
+        if (dto.nome() == null || dto.nome().isEmpty()) {
+            throw new ApiException("Nome inválido (vazio)", HttpStatus.BAD_REQUEST);
+        } else if (dto.nome().trim().isEmpty()) {
+            throw new ApiException("Nome inválido (em branco)", HttpStatus.BAD_REQUEST);
+        } else if (dto.nome().trim().length() < 3) {
+            throw new ApiException("Mínimo 3 caracteres", HttpStatus.BAD_REQUEST);
+        }
+
         validarCpfUnico(dto.cpf(), null);
 
         Usuario usuario = new Usuario();
@@ -378,7 +386,14 @@ public class UsuarioService {
                         HttpStatus.NOT_FOUND
                 ));
 
-        if (dto.nome() != null && !dto.nome().isBlank()) {
+        if (dto.nome() != null) {
+            if (dto.nome().isEmpty()) {
+                throw new ApiException("Nome inválido (vazio)", HttpStatus.BAD_REQUEST);
+            } else if (dto.nome().trim().isEmpty()) {
+                throw new ApiException("Nome inválido (em branco)", HttpStatus.BAD_REQUEST);
+            } else if (dto.nome().trim().length() < 3) {
+                throw new ApiException("Mínimo 3 caracteres", HttpStatus.BAD_REQUEST);
+            }
             usuario.setNome(dto.nome().trim());
         }
         if (dto.cpf() != null && !dto.cpf().isBlank()) {
