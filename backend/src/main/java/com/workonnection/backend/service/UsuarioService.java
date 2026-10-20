@@ -7,6 +7,9 @@ import com.workonnection.backend.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -37,6 +40,7 @@ public class UsuarioService {
         }
 
         validarCpfUnico(dto.cpf(), null);
+        validarDataNascimento(dto.dataNascimento());
 
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
@@ -400,7 +404,8 @@ public class UsuarioService {
             validarCpfUnico(dto.cpf(), usuario.getId());
             usuario.setCpf(dto.cpf().trim());
         }
-        if (dto.dataNascimento() != null) {
+        if (dto.dataNascimento() != null && !dto.dataNascimento().isBlank()) {
+            validarDataNascimento(dto.dataNascimento());
             usuario.setDataNascimento(dto.dataNascimento().trim());
         }
         if (dto.telefone() != null) {
@@ -500,6 +505,37 @@ public class UsuarioService {
             if (usuarioIdIgnorar == null || !u.getId().equals(usuarioIdIgnorar)) {
                 throw new ApiException("CPF já cadastrado", HttpStatus.CONFLICT);
             }
+        }
+    }
+
+    private void validarDataNascimento(String dataNascimento) {
+        if (dataNascimento == null || dataNascimento.isBlank()) {
+            throw new ApiException("Data obrigatória", HttpStatus.BAD_REQUEST);
+        }
+        try {
+            LocalDate dataNasc;
+            String trimmed = dataNascimento.trim();
+            if (trimmed.contains("/")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                dataNasc = LocalDate.parse(trimmed, formatter);
+            } else {
+                dataNasc = LocalDate.parse(trimmed);
+            }
+            LocalDate hoje = LocalDate.now();
+            if (dataNasc.isAfter(hoje)) {
+                throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+            }
+            int idade = Period.between(dataNasc, hoje).getYears();
+            if (idade < 16) {
+                throw new ApiException("Mínimo 16 anos", HttpStatus.BAD_REQUEST);
+            }
+            if (idade > 100) {
+                throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
+            }
+        } catch (ApiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApiException("Data inválida", HttpStatus.BAD_REQUEST);
         }
     }
 }

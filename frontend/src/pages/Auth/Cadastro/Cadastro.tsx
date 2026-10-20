@@ -80,9 +80,14 @@ export const Cadastro = () => {
         if (!validateCPF(formData.cpf)) newErrors.cpf = 'CPF inválido';
 
         if (!formData.dataNascimento) {
-            newErrors.dataNascimento = 'Obrigatório';
-        } else if (calculateAge(formData.dataNascimento) < 16) {
-            newErrors.dataNascimento = 'Mínimo 16 anos';
+            newErrors.dataNascimento = 'Data obrigatória';
+        } else {
+            const idade = calculateAge(formData.dataNascimento);
+            if (idade < 16) {
+                newErrors.dataNascimento = 'Mínimo 16 anos';
+            } else if (idade > 100) {
+                newErrors.dataNascimento = 'Data inválida';
+            }
         }
 
         if (formData.telefone.replace(/\D/g, '').length < 10) newErrors.telefone = 'Incompleto';
@@ -117,6 +122,9 @@ export const Cadastro = () => {
             }
             if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('nome')) {
                 setErrors(prev => ({ ...prev, nome: errorMsg }));
+            }
+            if (typeof errorMsg === 'string' && (errorMsg.toLowerCase().includes('data') || errorMsg.toLowerCase().includes('idade') || errorMsg.toLowerCase().includes('nasc'))) {
+                setErrors(prev => ({ ...prev, dataNascimento: errorMsg }));
             }
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {

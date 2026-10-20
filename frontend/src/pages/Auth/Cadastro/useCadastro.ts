@@ -55,7 +55,7 @@ export const useCadastro = () => {
         } else {
             const idade = calculateAge(formData.dataNascimento);
             if (idade < 16) newErrors.dataNascimento = 'Mínimo 16 anos';
-            if (idade > 120) newErrors.dataNascimento = 'Data inválida';
+            if (idade > 100) newErrors.dataNascimento = 'Data inválida';
         }
 
         if (formData.telefone.replace(/\D/g, '').length < 10) newErrors.telefone = 'Telefone incompleto';
@@ -100,6 +100,9 @@ export const useCadastro = () => {
             }
             if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('nome')) {
                 setErrors(prev => ({ ...prev, nome: errorMsg }));
+            }
+            if (typeof errorMsg === 'string' && (errorMsg.toLowerCase().includes('data') || errorMsg.toLowerCase().includes('idade') || errorMsg.toLowerCase().includes('nasc'))) {
+                setErrors(prev => ({ ...prev, dataNascimento: errorMsg }));
             }
             setFeedback({ message: errorMsg, type: 'erro' });
         } finally {
