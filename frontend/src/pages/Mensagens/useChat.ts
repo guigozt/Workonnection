@@ -20,6 +20,7 @@ export const useChat = () => {
   const [enviando, setEnviando] = useState(false);
   const [textoMensagem, setTextoMensagem] = useState('');
   const [filtroBusca, setFiltroBusca] = useState('');
+  const [erroEnvio, setErroEnvio] = useState<string | null>(null);
 
   const fimMensagensRef = useRef<HTMLDivElement>(null);
   const contatoSelecionadoRef = useRef<UsuarioPublicoDTO | null>(null);
@@ -253,7 +254,13 @@ export const useChat = () => {
     const conteudo = textoMensagem.trim();
     if (!conteudo || !contatoSelecionado || !contatoSelecionado.id || enviando) return;
 
+    if (conteudo.length > 2000) {
+      setErroEnvio('Erro: Tamanho máximo excedido');
+      return;
+    }
+
     setEnviando(true);
+    setErroEnvio(null);
     try {
       const enviada = await chatService.enviarMensagem(String(contatoSelecionado.id), conteudo);
       setMensagens((prev) => {
@@ -265,8 +272,11 @@ export const useChat = () => {
 
       // Atualiza conversa na lista lateral
       await carregarConversas();
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.error('Erro ao enviar mensagem:', err);
+      const msg = err.response?.data?.erro || err.response?.data?.message || 'Erro ao enviar mensagem';
+      setErroEnvio(msg);
     } finally {
       setEnviando(false);
     }
@@ -275,14 +285,21 @@ export const useChat = () => {
   // Editar mensagem
   const editarMensagem = async (mensagemId: string, novoConteudo: string) => {
     if (!novoConteudo.trim()) return;
+    if (novoConteudo.trim().length > 2000) {
+      setErroEnvio('Erro: Tamanho máximo excedido');
+      throw new Error('Erro: Tamanho máximo excedido');
+    }
     try {
       const atualizada = await chatService.editarMensagem(mensagemId, novoConteudo.trim());
       setMensagens((prev) =>
         prev.map((m) => (m.id === mensagemId ? { ...m, ...atualizada } : m))
       );
       await carregarConversas();
-    } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.error('Erro ao editar mensagem:', err);
+      const msg = err.response?.data?.erro || err.response?.data?.message || 'Erro ao editar mensagem';
+      setErroEnvio(msg);
       throw err;
     }
   };
@@ -332,6 +349,8 @@ export const useChat = () => {
     setTextoMensagem,
     filtroBusca,
     setFiltroBusca,
+    erroEnvio,
+    setErroEnvio,
     selecionarContato,
     enviarMensagem,
     editarMensagem,

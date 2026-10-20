@@ -80,6 +80,9 @@ public class ChatService {
         if (dto.conteudo() == null || dto.conteudo().trim().isEmpty()) {
             throw new ApiException("Conteúdo da mensagem não pode ser vazio", HttpStatus.BAD_REQUEST);
         }
+        if (dto.conteudo().trim().length() > 2000) {
+            throw new ApiException("Erro: Tamanho máximo excedido", HttpStatus.BAD_REQUEST);
+        }
 
         Mensagem msg = new Mensagem(remetenteId, destinatarioId, dto.conteudo().trim());
         Mensagem salva = mensagemRepository.save(msg);
@@ -121,6 +124,9 @@ public class ChatService {
 
         if (dto.conteudo() == null || dto.conteudo().trim().isEmpty()) {
             throw new ApiException("Conteúdo da mensagem não pode ser vazio", HttpStatus.BAD_REQUEST);
+        }
+        if (dto.conteudo().trim().length() > 2000) {
+            throw new ApiException("Erro: Tamanho máximo excedido", HttpStatus.BAD_REQUEST);
         }
 
         msg.setConteudo(dto.conteudo().trim());
