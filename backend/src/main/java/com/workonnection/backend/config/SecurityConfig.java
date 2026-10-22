@@ -34,25 +34,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(
             HttpSecurity http,
-            SecurityContextRepository securityContextRepository
-    ) throws Exception {
+            SecurityContextRepository securityContextRepository) throws Exception {
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .securityContext(security -> security
-                        .securityContextRepository(securityContextRepository)
-                )
+                        .securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
-                    .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
-                    .requestMatchers("/usuarios", "/usuarios/**").permitAll()
-                    .requestMatchers("/vagas", "/vagas/**").permitAll()
-                    .requestMatchers("/notificacoes", "/notificacoes/**").permitAll()
-                    .requestMatchers("/conversas", "/conversas/**").permitAll()
-                    .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**", "/imagens/**", "/favicon.ico").permitAll()
-                    .anyRequest().authenticated()
-                );
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                        .requestMatchers("/auth/**", "/auth/google", "/auth/google/**").permitAll()
+                        .requestMatchers("/usuarios", "/usuarios/**").permitAll()
+                        .requestMatchers("/vagas", "/vagas/**").permitAll()
+                        .requestMatchers("/notificacoes", "/notificacoes/**").permitAll()
+                        .requestMatchers("/candidaturas", "/candidaturas/**").permitAll()
+                        .requestMatchers("/conversas", "/conversas/**").permitAll()
+                        .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**",
+                                "/imagens/**", "/favicon.ico")
+                        .permitAll()
+                        .anyRequest().authenticated());
 
         return http.build();
     }
@@ -66,8 +66,7 @@ public class SecurityConfig {
                 "http://192.168.*.*",
                 "https://*.ngrok.io",
                 "https://workonnection-frontend.vercel.app",
-                "https://*.vercel.app"
-        ));
+                "https://*.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));
@@ -81,8 +80,7 @@ public class SecurityConfig {
 
     @Bean
     public CookieSameSiteSupplier applicationCookieSameSiteSupplier(
-            @org.springframework.beans.factory.annotation.Value("${server.servlet.session.cookie.same-site:none}") String sameSite
-    ) {
+            @org.springframework.beans.factory.annotation.Value("${server.servlet.session.cookie.same-site:none}") String sameSite) {
         if ("lax".equalsIgnoreCase(sameSite)) {
             return CookieSameSiteSupplier.ofLax();
         } else if ("strict".equalsIgnoreCase(sameSite)) {

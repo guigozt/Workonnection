@@ -94,7 +94,7 @@ public class CandidaturaService {
     }
 
     public List<CandidaturaResponseDTO> listarMinhas(String candidatoId) {
-        List<Candidatura> candidaturas = candidaturaRepository.findByCandidatoId(candidatoId);
+        List<Candidatura> candidaturas = new ArrayList<>(candidaturaRepository.findByCandidatoId(candidatoId));
         if (candidaturas.isEmpty()) {
             return Collections.emptyList();
         }
@@ -116,9 +116,9 @@ public class CandidaturaService {
     public List<CandidaturaResponseDTO> gerenciarRecebidas(String contratanteId, String vagaId) {
         List<Candidatura> candidaturas;
         if (vagaId != null && !vagaId.isBlank()) {
-            candidaturas = candidaturaRepository.findByContratanteIdAndVagaId(contratanteId, vagaId);
+            candidaturas = new ArrayList<>(candidaturaRepository.findByContratanteIdAndVagaId(contratanteId, vagaId));
         } else {
-            candidaturas = candidaturaRepository.findByContratanteId(contratanteId);
+            candidaturas = new ArrayList<>(candidaturaRepository.findByContratanteId(contratanteId));
         }
 
         if (candidaturas.isEmpty()) {
