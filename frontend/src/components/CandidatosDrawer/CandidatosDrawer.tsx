@@ -5,7 +5,6 @@ import {
   Users,
   MessageSquare,
   Star,
-  CheckCircle,
   Clock3,
 } from 'lucide-react';
 import { candidaturaService } from '../../services/candidaturaService';
