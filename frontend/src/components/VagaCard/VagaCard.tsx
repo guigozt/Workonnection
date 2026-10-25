@@ -21,22 +21,26 @@ interface VagaCardProps {
   vaga: VagaResponseDTO;
   usuarioLogado?: UsuarioLogado | null;
   compacto?: boolean;
+  estaInscrito?: boolean;
   onLike: (vagaId: string) => void;
   onDislike: (vagaId: string) => void;
   onAbrirComentarios: (vaga: VagaResponseDTO) => void;
   onEditar?: (vaga: VagaResponseDTO) => void;
   onExcluir?: (vagaId: string, cargo: string) => void;
+  onCandidatar?: (vaga: VagaResponseDTO) => void;
 }
 
 export const VagaCard: React.FC<VagaCardProps> = ({
   vaga,
   usuarioLogado,
   compacto = false,
+  estaInscrito = false,
   onLike,
   onDislike,
   onAbrirComentarios,
   onEditar,
   onExcluir,
+  onCandidatar,
 }) => {
   const t = obterTraducoes();
   const isDono = Boolean(
@@ -232,13 +236,21 @@ export const VagaCard: React.FC<VagaCardProps> = ({
           >
             {t.suaVaga}
           </span>
+        ) : estaInscrito ? (
+          <span
+            className={`${styles.btnCandidatar} ${styles.candidatarInscrito}`}
+            title="Você já se candidatou para esta vaga"
+          >
+            ✓ Inscrito
+          </span>
         ) : podeCand ? (
-          <a
-            href={`mailto:${vaga.email || ''}`}
+          <button
+            type="button"
+            onClick={() => onCandidatar?.(vaga)}
             className={`${styles.btnCandidatar} ${styles.candidatarAtivo}`}
           >
             {t.candidatarSe}
-          </a>
+          </button>
         ) : (
           <span
             className={`${styles.btnCandidatar} ${styles.candidatarBloqueado}`}

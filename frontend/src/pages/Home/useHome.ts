@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
+import type { CandidaturaResponseDTO } from '../../types/candidatura';
 import { vagaService, type FiltrosVagaParams } from '../../services/vagaService';
+import { candidaturaService } from '../../services/candidaturaService';
 import { useAuth } from '../../context/useAuth';
 
 export const useHome = () => {
@@ -23,6 +25,33 @@ export const useHome = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [vagaEmEdicao, setVagaEmEdicao] = useState<VagaResponseDTO | null>(null);
+  const [minhasCandidaturas, setMinhasCandidaturas] = useState<CandidaturaResponseDTO[]>([]);
+
+  // Carregar candidaturas do usuário logado
+  useEffect(() => {
+    let ativo = true;
+    if (usuario?.id) {
+      candidaturaService
+        .listarMinhas()
+        .then((dados) => {
+          if (ativo) setMinhasCandidaturas(dados);
+        })
+        .catch((err) => {
+          console.error('Erro ao listar candidaturas do usuário:', err);
+        });
+    } else {
+      setMinhasCandidaturas([]);
+    }
+    return () => {
+      ativo = false;
+    };
+  }, [usuario?.id]);
+
+  const vagasInscritasIds = new Set(minhasCandidaturas.map((c) => c.vagaId));
+
+  const handleCandidaturaSucesso = (candidatura: CandidaturaResponseDTO) => {
+    setMinhasCandidaturas((prev) => [...prev, candidatura]);
+  };
 
   // Debounce de 400ms para o campo de texto da busca
   useEffect(() => {
@@ -203,5 +232,7 @@ export const useHome = () => {
     handleDislike,
     handleEnviarComentario,
     handleExcluirComentario,
+    vagasInscritasIds,
+    handleCandidaturaSucesso,
   };
 };
