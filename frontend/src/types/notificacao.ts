@@ -2,7 +2,11 @@ export type TipoNotificacao =
   | 'like'
   | 'dislike'
   | 'comentario'
-  | 'vaga_nova';
+  | 'vaga_nova'
+  | 'candidatura_nova'
+  | 'candidatura_chat'
+  | 'candidatura_aceite'
+  | 'candidatura_feedback';
 
 export interface Notificacao {
   id: string;
