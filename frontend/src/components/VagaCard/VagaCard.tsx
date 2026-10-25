@@ -9,6 +9,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   MessageCircle,
+  Users,
 } from 'lucide-react';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
 import { obterTraducoes } from '../../utils/i18n';
@@ -28,6 +29,7 @@ interface VagaCardProps {
   onEditar?: (vaga: VagaResponseDTO) => void;
   onExcluir?: (vagaId: string, cargo: string) => void;
   onCandidatar?: (vaga: VagaResponseDTO) => void;
+  onVerCandidatos?: (vaga: VagaResponseDTO) => void;
 }
 
 export const VagaCard: React.FC<VagaCardProps> = ({
@@ -41,6 +43,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   onEditar,
   onExcluir,
   onCandidatar,
+  onVerCandidatos,
 }) => {
   const t = obterTraducoes();
   const isDono = Boolean(
@@ -231,11 +234,15 @@ export const VagaCard: React.FC<VagaCardProps> = ({
         <span className={styles.spacer} />
 
         {isDono ? (
-          <span
-            className={`${styles.btnCandidatar} ${styles.candidatarDono}`}
+          <button
+            type="button"
+            className={`${styles.btnCandidatar} ${styles.btnVerCandidatos}`}
+            onClick={() => onVerCandidatos?.(vaga)}
+            title="Ver candidatos que se inscreveram para esta vaga"
           >
-            {t.suaVaga}
-          </span>
+            <Users size={15} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+            Ver Candidatos
+          </button>
         ) : estaInscrito ? (
           <span
             className={`${styles.btnCandidatar} ${styles.candidatarInscrito}`}

@@ -24,6 +24,10 @@ import {
 } from '../../components/CandidaturaCard/CandidaturaCard';
 
 import {
+  CandidatosDrawer,
+} from '../../components/CandidatosDrawer/CandidatosDrawer';
+
+import {
   useMinhasVagas,
 } from './useMinhasVagas';
 
@@ -65,6 +69,13 @@ export const MinhasVagas: React.FC = () => {
   const [
     vagaAtivaComentarios,
     setVagaAtivaComentarios,
+  ] = useState<VagaResponseDTO | null>(
+    null
+  );
+
+  const [
+    vagaAtivaCandidatos,
+    setVagaAtivaCandidatos,
   ] = useState<VagaResponseDTO | null>(
     null
   );
@@ -188,6 +199,10 @@ export const MinhasVagas: React.FC = () => {
                 onEditar={handleAbrirCriacao}
 
                 onExcluir={handleExcluirVaga}
+
+                onVerCandidatos={(v) =>
+                  setVagaAtivaCandidatos(v)
+                }
               />
             ))
           )}
@@ -211,6 +226,12 @@ export const MinhasVagas: React.FC = () => {
           vagaParaEditar={vagaEmEdicao}
         />
       )}
+
+      <CandidatosDrawer
+        isOpen={Boolean(vagaAtivaCandidatos)}
+        vaga={vagaAtivaCandidatos}
+        onClose={() => setVagaAtivaCandidatos(null)}
+      />
 
       <ComentariosDrawer
         isOpen={Boolean(

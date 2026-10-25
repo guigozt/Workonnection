@@ -238,3 +238,17 @@
   border: 1px solid #bfdbfe;
   cursor: default;
 }
+
+.btnVerCandidatos {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btnVerCandidatos:hover {
+  background-color: #1d4ed8;
+}
