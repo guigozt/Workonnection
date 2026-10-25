@@ -5,12 +5,16 @@ import { vagaService } from '../../services/vagaService';
 import { useAuth } from '../../context/useAuth';
 
 import type { VagaResponseDTO } from '../../types/vagas';
+import type { CandidaturaResponseDTO } from '../../types/candidatura';
+import { candidaturaService } from '../../services/candidaturaService';
 
 export const useMinhasVagas = () => {
   const { usuario } = useAuth();
 
   const [vagas, setVagas] = useState<VagaResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
+  const [candidaturas, setCandidaturas] = useState<CandidaturaResponseDTO[]>([]);
+  const [loadingCandidaturas, setLoadingCandidaturas] = useState(true);
 
   const [isModalOpen, setIsModalOpen] =
     useState(false);
@@ -19,6 +23,18 @@ export const useMinhasVagas = () => {
     useState<VagaResponseDTO | undefined>(
       undefined
     );
+
+  const carregarMinhasCandidaturas = async () => {
+    try {
+      setLoadingCandidaturas(true);
+      const data = await candidaturaService.listarMinhas();
+      setCandidaturas(data);
+    } catch (error) {
+      console.error('Erro ao carregar candidaturas:', error);
+    } finally {
+      setLoadingCandidaturas(false);
+    }
+  };
 
   const carregarMinhasVagas = async () => {
     try {
@@ -59,6 +75,8 @@ export const useMinhasVagas = () => {
 
         setLoading(false);
       });
+
+    carregarMinhasCandidaturas();
 
     return () => {
       ativo = false;
@@ -169,5 +187,9 @@ export const useMinhasVagas = () => {
 
     handleEnviarComentario,
     handleExcluirComentario,
+
+    candidaturas,
+    loadingCandidaturas,
+    carregarMinhasCandidaturas,
   };
 };

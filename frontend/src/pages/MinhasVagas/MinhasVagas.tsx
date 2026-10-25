@@ -20,6 +20,10 @@ import {
 } from '../../components/ComentariosDrawer/ComentariosDrawer';
 
 import {
+  CandidaturaCard,
+} from '../../components/CandidaturaCard/CandidaturaCard';
+
+import {
   useMinhasVagas,
 } from './useMinhasVagas';
 
@@ -53,6 +57,9 @@ export const MinhasVagas: React.FC = () => {
 
     handleEnviarComentario,
     handleExcluirComentario,
+
+    candidaturas,
+    loadingCandidaturas,
   } = useMinhasVagas();
 
   const [
@@ -83,47 +90,57 @@ export const MinhasVagas: React.FC = () => {
               color: 'var(--text-h, inherit)',
             }}
           >
-            {isEstudante ? t.painelEstudante : t.minhasPublicacoes}
+            {isEstudante ? 'Minhas Candidaturas' : t.minhasPublicacoes}
           </h2>
 
-          {loading ? (
+          {isEstudante ? (
+            loadingCandidaturas ? (
+              <p>{t.carregandoVagas}</p>
+            ) : candidaturas.length === 0 ? (
+              <div
+                style={{
+                  textAlign: 'center',
+                  padding: '48px 24px',
+                  background: 'var(--card-bg, #fff)',
+                  borderRadius: '12px',
+                  boxShadow: 'var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.04))',
+                  border: '1px solid var(--border, #e2e8f0)',
+                }}
+              >
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎓</div>
+                <h3 style={{ marginBottom: '8px', color: 'var(--text-h, #1e293b)' }}>
+                  {t.areaCandidaturas}
+                </h3>
+                <p
+                  style={{
+                    marginBottom: '24px',
+                    color: 'var(--text-light, #64748b)',
+                    maxWidth: '520px',
+                    margin: '0 auto 24px auto',
+                    lineHeight: '1.6',
+                  }}
+                >
+                  {t.estudanteDesc}
+                </p>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate('/home')}
+                >
+                  {t.explorarVagasCompativeis}
+                </button>
+              </div>
+            ) : (
+              <div>
+                {candidaturas.map((cand) => (
+                  <CandidaturaCard key={cand.id} candidatura={cand} />
+                ))}
+              </div>
+            )
+          ) : loading ? (
             <p>
               {t.carregandoVagas}
             </p>
-          ) : isEstudante ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 24px',
-                background: 'var(--card-bg, #fff)',
-                borderRadius: '12px',
-                boxShadow: 'var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.04))',
-                border: '1px solid var(--border, #e2e8f0)',
-              }}
-            >
-              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎓</div>
-              <h3 style={{ marginBottom: '8px', color: 'var(--text-h, #1e293b)' }}>
-                {t.areaCandidaturas}
-              </h3>
-              <p
-                style={{
-                  marginBottom: '24px',
-                  color: 'var(--text-light, #64748b)',
-                  maxWidth: '520px',
-                  margin: '0 auto 24px auto',
-                  lineHeight: '1.6',
-                }}
-              >
-                {t.estudanteDesc}
-              </p>
-
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('/home')}
-              >
-                {t.explorarVagasCompativeis}
-              </button>
-            </div>
           ) : vagas.length === 0 ? (
             <div
               style={{
