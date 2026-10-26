@@ -13,34 +13,24 @@ export interface ModalCandidaturaProps {
   onSuccess: (candidatura: CandidaturaResponseDTO) => void;
 }
 
-export const ModalCandidatura: React.FC<ModalCandidaturaProps> = ({
-  isOpen,
-  vaga,
-  onClose,
-  onSuccess,
-}) => {
+const ModalCandidaturaContent: React.FC<{
+  vaga: VagaResponseDTO;
+  onClose: () => void;
+  onSuccess: (candidatura: CandidaturaResponseDTO) => void;
+}> = ({ vaga, onClose, onSuccess }) => {
   const [mensagem, setMensagem] = useState('');
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setMensagem('');
-      setErro(null);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !vaga) return null;
+  }, [onClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +44,6 @@ export const ModalCandidatura: React.FC<ModalCandidaturaProps> = ({
 
       alert('🎉 Candidatura enviada com sucesso! O contratante foi notificado.');
       onSuccess(candidatura);
-      setMensagem('');
       onClose();
     } catch (err: unknown) {
       let msg = 'Não foi possível enviar sua candidatura. Tente novamente.';
@@ -162,3 +151,21 @@ export const ModalCandidatura: React.FC<ModalCandidaturaProps> = ({
     </div>
   );
 };
+
+export const ModalCandidatura: React.FC<ModalCandidaturaProps> = ({
+  isOpen,
+  vaga,
+  onClose,
+  onSuccess,
+}) => {
+  if (!isOpen || !vaga) return null;
+
+  return (
+    <ModalCandidaturaContent
+      vaga={vaga}
+      onClose={onClose}
+      onSuccess={onSuccess}
+    />
+  );
+};
+

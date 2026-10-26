@@ -29,25 +29,26 @@ export const useHome = () => {
 
   // Carregar candidaturas do usuário logado
   useEffect(() => {
+    if (!usuario?.id) return;
+
     let ativo = true;
-    if (usuario?.id) {
-      candidaturaService
-        .listarMinhas()
-        .then((dados) => {
-          if (ativo) setMinhasCandidaturas(dados);
-        })
-        .catch((err) => {
-          console.error('Erro ao listar candidaturas do usuário:', err);
-        });
-    } else {
-      setMinhasCandidaturas([]);
-    }
+    candidaturaService
+      .listarMinhas()
+      .then((dados) => {
+        if (ativo) setMinhasCandidaturas(dados);
+      })
+      .catch((err) => {
+        console.error('Erro ao listar candidaturas do usuário:', err);
+      });
+
     return () => {
       ativo = false;
     };
   }, [usuario?.id]);
 
-  const vagasInscritasIds = new Set(minhasCandidaturas.map((c) => c.vagaId));
+  const vagasInscritasIds = new Set(
+    usuario?.id ? minhasCandidaturas.map((c) => c.vagaId) : []
+  );
 
   const handleCandidaturaSucesso = (candidatura: CandidaturaResponseDTO) => {
     setMinhasCandidaturas((prev) => [...prev, candidatura]);

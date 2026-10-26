@@ -76,7 +76,18 @@ export const useMinhasVagas = () => {
         setLoading(false);
       });
 
-    carregarMinhasCandidaturas();
+    candidaturaService
+      .listarMinhas()
+      .then((data) => {
+        if (!ativo) return;
+        setCandidaturas(data);
+        setLoadingCandidaturas(false);
+      })
+      .catch((error) => {
+        if (!ativo) return;
+        console.error('Erro ao carregar candidaturas:', error);
+        setLoadingCandidaturas(false);
+      });
 
     return () => {
       ativo = false;

@@ -30,29 +30,31 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
 }) => {
   const navigate = useNavigate();
   const [candidaturas, setCandidaturas] = useState<CandidaturaResponseDTO[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loadedVagaId, setLoadedVagaId] = useState<string | null>(null);
   const [atualizandoId, setAtualizandoId] = useState<string | null>(null);
 
+  const loading = Boolean(isOpen && vaga?.id && loadedVagaId !== vaga.id);
+  const candidaturasExibidas = isOpen && loadedVagaId === vaga?.id ? candidaturas : [];
+
   useEffect(() => {
+    if (!isOpen || !vaga?.id) {
+      return;
+    }
+
     let ativo = true;
 
-    if (isOpen && vaga?.id) {
-      setLoading(true);
-      candidaturaService
-        .gerenciarRecebidas(vaga.id)
-        .then((dados) => {
-          if (ativo) {
-            setCandidaturas(dados);
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          console.error('Erro ao buscar candidatos da vaga:', err);
-          if (ativo) setLoading(false);
-        });
-    } else {
-      setCandidaturas([]);
-    }
+    candidaturaService
+      .gerenciarRecebidas(vaga.id)
+      .then((dados) => {
+        if (!ativo) return;
+        setCandidaturas(dados);
+        setLoadedVagaId(vaga.id);
+      })
+      .catch((err) => {
+        if (!ativo) return;
+        console.error('Erro ao buscar candidatos da vaga:', err);
+        setLoadedVagaId(vaga.id);
+      });
 
     return () => {
       ativo = false;
@@ -151,7 +153,9 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
             <h3>Candidatos Inscritos</h3>
             <span className={styles.subtitulo}>
               {vaga.cargo}
-              <span className={styles.badgeContador}>{candidaturas.length}</span>
+              <span className={styles.badgeContador}>
+                {loading ? '...' : candidaturasExibidas.length}
+              </span>
             </span>
           </div>
           <button
@@ -170,13 +174,13 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
             <div className={styles.loadingOuVazio}>
               <p>Carregando candidatos...</p>
             </div>
-          ) : candidaturas.length === 0 ? (
+          ) : candidaturasExibidas.length === 0 ? (
             <div className={styles.loadingOuVazio}>
               <Users size={48} style={{ opacity: 0.3 }} />
               <p>Nenhum candidato se inscreveu nesta vaga ainda.</p>
             </div>
           ) : (
-            candidaturas.map((cand) => (
+            candidaturasExibidas.map((cand) => (
               <div key={cand.id} className={styles.cardCandidato}>
                 <div className={styles.candidatoHeader}>
                   <div className={styles.candidatoPerfil}>
