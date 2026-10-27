@@ -672,19 +672,92 @@
 }
 
 :global(html[data-tema="escuro"]) .chatHeaderDetalhes h3,
-:global(body.dark-mode) .chatHeaderDetalhes h3 {
+:global(body.dark-mode) .chatHeaderDetalhes h3,
+:global(html[data-tema="escuro"]) .sidebarTitulo,
+:global(body.dark-mode) .sidebarTitulo,
+:global(html[data-tema="escuro"]) .conversaNome,
+:global(body.dark-mode) .conversaNome {
   color: var(--text-h, #ffffff);
 }
 
-:global(html[data-tema="escuro"]) .mensagemTexto,
-:global(body.dark-mode) .mensagemTexto {
+:global(html[data-tema="escuro"]) .searchInput,
+:global(body.dark-mode) .searchInput {
   background: var(--bg);
   color: var(--text);
   border-color: var(--border);
 }
 
-:global(html[data-tema="escuro"]) .chatInputArea,
-:global(body.dark-mode) .chatInputArea {
+:global(html[data-tema="escuro"]) .searchInput:focus,
+:global(body.dark-mode) .searchInput:focus {
+  background: var(--card-bg);
+}
+
+:global(html[data-tema="escuro"]) .historicoMensagens,
+:global(body.dark-mode) .historicoMensagens {
+  background: var(--bg);
+}
+
+:global(html[data-tema="escuro"]) .linhaMensagem.recebida .balaoMensagem,
+:global(body.dark-mode) .linhaMensagem.recebida .balaoMensagem {
+  background: var(--card-bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .chatFooter,
+:global(body.dark-mode) .chatFooter {
   background: var(--card-bg);
   border-top-color: var(--border);
 }
+
+:global(html[data-tema="escuro"]) .campoTexto,
+:global(body.dark-mode) .campoTexto {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .campoTexto:focus,
+:global(body.dark-mode) .campoTexto:focus {
+  background: var(--card-bg);
+}
+
+:global(html[data-tema="escuro"]) .menuDropdown,
+:global(html[data-tema="escuro"]) .menuMensagemDropdown,
+:global(body.dark-mode) .menuDropdown,
+:global(body.dark-mode) .menuMensagemDropdown {
+  background: var(--card-bg);
+  border-color: var(--border);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+:global(html[data-tema="escuro"]) .menuMensagemDropdown button,
+:global(body.dark-mode) .menuMensagemDropdown button {
+  color: var(--text);
+}
+
+:global(html[data-tema="escuro"]) .menuMensagemDropdown button:hover,
+:global(body.dark-mode) .menuMensagemDropdown button:hover {
+  background: var(--surface-hover, #334155);
+}
+
+:global(html[data-tema="escuro"]) .edicaoContainer,
+:global(body.dark-mode) .edicaoContainer {
+  background: var(--card-bg);
+  border-color: #47a4c4;
+}
+
+:global(html[data-tema="escuro"]) .inputEdicao,
+:global(body.dark-mode) .inputEdicao {
+  background: transparent;
+  color: var(--text);
+}
+
+:global(html[data-tema="escuro"]) .btnMenuHeader:hover,
+:global(body.dark-mode) .btnMenuHeader:hover,
+:global(html[data-tema="escuro"]) .btnAcaoBalao:hover,
+:global(body.dark-mode) .btnAcaoBalao:hover {
+  background: var(--surface-hover, #334155);
+  color: var(--text-h, #ffffff);
+}
+
