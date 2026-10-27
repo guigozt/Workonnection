@@ -154,3 +154,79 @@
 .btnChat:hover {
   background: #6d28d9;
 }
+
+/* =========================================
+   Suporte a Modo Escuro
+   ========================================= */
+:global(html[data-tema="escuro"]) .card,
+:global(body.dark-mode) .card {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .cargoInfo h3,
+:global(body.dark-mode) .cargoInfo h3 {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .tag,
+:global(body.dark-mode) .tag {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text-light);
+}
+
+:global(html[data-tema="escuro"]) .apresentacaoBox,
+:global(body.dark-mode) .apresentacaoBox {
+  background: var(--bg);
+  color: var(--text);
+  border-left-color: #3b82f6;
+}
+
+:global(html[data-tema="escuro"]) .footer,
+:global(body.dark-mode) .footer {
+  border-top-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .statusInscrito,
+:global(body.dark-mode) .statusInscrito {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusChat,
+:global(body.dark-mode) .statusChat {
+  background: rgba(124, 58, 237, 0.2);
+  color: #c084fc;
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusFinal,
+:global(body.dark-mode) .statusFinal {
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+  border-color: rgba(22, 163, 74, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusAndamento,
+:global(body.dark-mode) .statusAndamento {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  border-color: rgba(217, 119, 6, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusConcluido,
+:global(body.dark-mode) .statusConcluido {
+  background: rgba(5, 150, 105, 0.2);
+  color: #34d399;
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusRecusado,
+:global(body.dark-mode) .statusRecusado {
+  background: rgba(100, 116, 139, 0.2);
+  color: #94a3b8;
+  border-color: var(--border);
+}
+
