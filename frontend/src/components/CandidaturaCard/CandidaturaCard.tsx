@@ -150,7 +150,7 @@ export const CandidaturaCard: React.FC<CandidaturaCardProps> = ({ candidatura })
             <button
               type="button"
               className={styles.btnChat}
-              onClick={() => navigate('/mensagens')}
+              onClick={() => navigate(`/mensagens?contatoId=${candidatura.contratanteId}`)}
               title="Ir para o Chat com o Contratante"
             >
               <MessageSquare size={14} /> Abrir Chat

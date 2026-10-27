@@ -114,7 +114,7 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
         onCandidaturaAtualizada?.(atualizada);
       }
       onClose();
-      navigate('/mensagens');
+      navigate(`/mensagens?contatoId=${cand.candidatoId}`);
     } catch (err) {
       console.error('Erro ao atualizar status para EM_CHAT:', err);
       alert('Erro ao iniciar chat com o candidato.');
