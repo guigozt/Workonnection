@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Laptop,
@@ -14,6 +14,8 @@ import {
   XCircle,
 } from 'lucide-react';
 import type { CandidaturaResponseDTO, StatusCandidatura } from '../../types/candidatura';
+import { ModalFeedback } from '../ModalFeedback/ModalFeedback';
+import { feedbackService } from '../../services/feedbackService';
 import styles from './CandidaturaCard.module.css';
 
 interface CandidaturaCardProps {
@@ -22,6 +24,27 @@ interface CandidaturaCardProps {
 
 export const CandidaturaCard: React.FC<CandidaturaCardProps> = ({ candidatura }) => {
   const navigate = useNavigate();
+  const [modalFeedbackAberto, setModalFeedbackAberto] = useState(false);
+  const [feedbackEnviado, setFeedbackEnviado] = useState(false);
+
+  const statusElegivelFeedback =
+    candidatura.status === 'CONCLUIDO' ||
+    candidatura.status === 'RECUSADO' ||
+    candidatura.status === 'EM_ANDAMENTO' ||
+    candidatura.status === 'ALINHAMENTO_FINAL';
+
+  useEffect(() => {
+    if (statusElegivelFeedback && candidatura.id) {
+      feedbackService
+        .buscarStatusFeedback(candidatura.id)
+        .then((resp) => {
+          if (resp.candidatoEnviou) {
+            setFeedbackEnviado(true);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [candidatura.id, statusElegivelFeedback]);
 
   const renderStatusBadge = (status: StatusCandidatura) => {
     switch (status) {
@@ -122,17 +145,49 @@ export const CandidaturaCard: React.FC<CandidaturaCardProps> = ({ candidatura })
           Candidatou-se em {dataFormatada}
         </span>
 
-        {candidatura.status === 'EM_CHAT' && (
-          <button
-            type="button"
-            className={styles.btnChat}
-            onClick={() => navigate('/mensagens')}
-            title="Ir para o Chat com o Contratante"
-          >
-            <MessageSquare size={14} /> Abrir Chat
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {candidatura.status === 'EM_CHAT' && (
+            <button
+              type="button"
+              className={styles.btnChat}
+              onClick={() => navigate('/mensagens')}
+              title="Ir para o Chat com o Contratante"
+            >
+              <MessageSquare size={14} /> Abrir Chat
+            </button>
+          )}
+
+          {/* Botão de Feedback após decisão de aceitação ou recusa */}
+          {statusElegivelFeedback && (
+            feedbackEnviado ? (
+              <span className={styles.btnFeedbackEnviado} title="Você já enviou seu feedback">
+                <CheckCircle size={14} /> Feedback Enviado
+              </span>
+            ) : (
+              <button
+                type="button"
+                className={styles.btnFeedback}
+                onClick={() => setModalFeedbackAberto(true)}
+                title="Avaliar processo seletivo e a empresa"
+              >
+                <Star size={14} /> Avaliar Empresa & Processo
+              </button>
+            )
+          )}
+        </div>
       </div>
+
+      {modalFeedbackAberto && (
+        <ModalFeedback
+          isOpen={modalFeedbackAberto}
+          candidaturaId={candidatura.id}
+          tituloVaga={candidatura.vagaCargo || 'Vaga Temporária'}
+          isContratante={false}
+          decisao={candidatura.status === 'RECUSADO' ? 'RECUSADO' : 'ACEITO'}
+          onClose={() => setModalFeedbackAberto(false)}
+          onSuccess={() => setFeedbackEnviado(true)}
+        />
+      )}
     </div>
   );
 };
