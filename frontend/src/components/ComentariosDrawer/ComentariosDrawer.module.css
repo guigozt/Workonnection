@@ -196,3 +196,59 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* =========================================
+   Suporte a Modo Escuro
+   ========================================= */
+:global(html[data-tema="escuro"]) .drawer,
+:global(body.dark-mode) .drawer {
+  background-color: var(--card-bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -2px 0 14px rgba(0, 0, 0, 0.4);
+}
+
+:global(html[data-tema="escuro"]) .header,
+:global(body.dark-mode) .header {
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .header h6,
+:global(body.dark-mode) .header h6 {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .btnFechar:hover,
+:global(body.dark-mode) .btnFechar:hover {
+  background-color: var(--surface-hover, #334155);
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .comentarioCorpo,
+:global(body.dark-mode) .comentarioCorpo {
+  background-color: var(--bg);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .comentarioNome,
+:global(body.dark-mode) .comentarioNome {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .comentarioTexto,
+:global(body.dark-mode) .comentarioTexto {
+  color: var(--text, #f1f5f9);
+}
+
+:global(html[data-tema="escuro"]) .footer,
+:global(body.dark-mode) .footer {
+  background-color: var(--card-bg);
+  border-top-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .inputComentario,
+:global(body.dark-mode) .inputComentario {
+  background-color: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
