@@ -6,6 +6,7 @@ export interface Traducoes {
   avisos: string;
   chat: string;
   vagas: string;
+  candidaturas: string;
   rede: string;
   perfil: string;
   sobre: string;
@@ -117,6 +118,7 @@ export const DICIONARIO: Record<Idioma, Traducoes> = {
     avisos: 'Avisos',
     chat: 'Chat',
     vagas: 'Vagas',
+    candidaturas: 'Candidaturas',
     rede: 'Rede',
     perfil: 'Perfil',
     sobre: 'Sobre',
@@ -221,6 +223,7 @@ export const DICIONARIO: Record<Idioma, Traducoes> = {
     avisos: 'Notices',
     chat: 'Chat',
     vagas: 'Jobs',
+    candidaturas: 'Applications',
     rede: 'Network',
     perfil: 'Profile',
     sobre: 'About',
@@ -325,6 +328,7 @@ export const DICIONARIO: Record<Idioma, Traducoes> = {
     avisos: 'Avisos',
     chat: 'Chat',
     vagas: 'Empleos',
+    candidaturas: 'Postulaciones',
     rede: 'Red',
     perfil: 'Perfil',
     sobre: 'Acerca de',

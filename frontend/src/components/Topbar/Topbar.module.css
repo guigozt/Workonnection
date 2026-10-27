@@ -1,10 +1,10 @@
 .topbar {
   background: var(--gradient);
-  padding: 0 16px;
+  padding: 0 12px;
   height: var(--topbar-height, 70px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
   position: fixed;
   top: 0;
   left: 0;
@@ -13,26 +13,66 @@
   box-shadow: var(--shadow-sm);
 }
 
+.logo {
+  flex: 0 0 auto;
+}
+
+.logo a {
+  display: flex;
+  align-items: center;
+}
+
 .logo img {
-  height: 35px;
+  height: 50px;
+  max-height: 80%;
+  max-width: 190px;
+  width: auto;
+  object-fit: contain;
   display: block;
 }
 
 .searchBar {
   flex: 1;
-  margin: 0 16px;
+  display: flex;
+  align-items: center;
+  margin: 0 4px;
   max-width: 280px;
+  min-width: 120px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .searchBar input {
   width: 100%;
-  border-radius: 20px;
+  min-width: 0;
   border: none;
   padding: 6px 14px;
   font-size: 13px;
-  background: rgba(255, 255, 255, 0.2);
+  background: transparent;
   color: #ffffff;
   outline: none;
+}
+
+.searchBar input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.searchBar button {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.searchBar:focus-within {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 2px;
 }
 
 .searchBar input::placeholder {
@@ -42,12 +82,14 @@
 .topIcons {
   display: flex;
   align-items: center;
-  gap: 2px;
+  flex: 0 1 auto;
+  min-width: 0;
+  gap: 1px;
 }
 
 .navLink {
   position: relative;
-  width: 58px;
+  flex: 0 0 58px;
   height: 60px;
   border-radius: var(--radius);
   display: flex;
@@ -63,7 +105,6 @@
   cursor: pointer;
 }
 
-/* Alterado de .navLink i para .navLink svg */
 .navLink svg {
   margin-bottom: 2px;
 }
@@ -97,4 +138,57 @@
   align-items: center;
   justify-content: center;
   border: 1px solid #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .searchBar {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .topIcons {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .topIcons::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navLink {
+    flex-basis: 50px;
+  }
+
+  .iconText {
+    display: none;
+  }
+
+  .navLink svg {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .logo img {
+    height: 38px;
+    max-width: 112px;
+  }
+
+  .topIcons {
+    flex: 1 1 0;
+    justify-content: flex-start;
+  }
+
+  .navLink {
+    flex-basis: 44px;
+  }
 }
