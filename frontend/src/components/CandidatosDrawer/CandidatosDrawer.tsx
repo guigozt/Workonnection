@@ -6,7 +6,9 @@ import {
   MessageSquare,
   Star,
   Clock3,
+  Award,
 } from 'lucide-react';
+import { ModalFeedback } from '../ModalFeedback/ModalFeedback';
 import { candidaturaService } from '../../services/candidaturaService';
 import type { VagaResponseDTO } from '../../types/vagas';
 import type { CandidaturaResponseDTO, StatusCandidatura } from '../../types/candidatura';
@@ -35,6 +37,12 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
 
   const loading = Boolean(isOpen && vaga?.id && loadedVagaId !== vaga.id);
   const candidaturasExibidas = isOpen && loadedVagaId === vaga?.id ? candidaturas : [];
+
+  const [feedbackAlvo, setFeedbackAlvo] = useState<{
+    candidaturaId: string;
+    decisao: 'ACEITO' | 'RECUSADO';
+    tituloVaga: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!isOpen || !vaga?.id) {
@@ -72,6 +80,28 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
   }, [isOpen, onClose]);
 
   if (!vaga) return null;
+
+  const handleAbrirFeedback = (cand: CandidaturaResponseDTO, decisao: 'ACEITO' | 'RECUSADO') => {
+    setFeedbackAlvo({
+      candidaturaId: cand.id,
+      decisao,
+      tituloVaga: vaga?.cargo || 'Vaga Temporária',
+    });
+  };
+
+  const handleFeedbackSalvo = (candidaturaId: string, decisao: 'ACEITO' | 'RECUSADO') => {
+    setCandidaturas((prev) =>
+      prev.map((c) => {
+        if (c.id === candidaturaId) {
+          return {
+            ...c,
+            status: decisao === 'RECUSADO' ? 'RECUSADO' : 'CONCLUIDO',
+          };
+        }
+        return c;
+      })
+    );
+  };
 
   const handleChamarNoChat = async (cand: CandidaturaResponseDTO) => {
     try {
@@ -242,7 +272,7 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
                       {cand.status === 'INSCRITO' ? 'Chamar no Chat' : 'Abrir Chat'}
                     </button>
 
-                    {cand.status !== 'ALINHAMENTO_FINAL' && (
+                    {cand.status !== 'ALINHAMENTO_FINAL' && cand.status !== 'CONCLUIDO' && cand.status !== 'RECUSADO' && (
                       <button
                         type="button"
                         className={styles.btnAcaoFinal}
@@ -253,6 +283,30 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
                         <Star size={13} /> Etapa Final
                       </button>
                     )}
+
+                    {/* Feedback de Contratação / Aceitação */}
+                    {(cand.status === 'ALINHAMENTO_FINAL' || cand.status === 'EM_ANDAMENTO' || cand.status === 'CONCLUIDO') && (
+                      <button
+                        type="button"
+                        className={styles.btnAcaoFeedback}
+                        onClick={() => handleAbrirFeedback(cand, 'ACEITO')}
+                        title="Registrar avaliação e motivos da aceitação"
+                      >
+                        <Award size={13} /> Feedback de Aceite
+                      </button>
+                    )}
+
+                    {/* Feedback de Recusa */}
+                    {cand.status !== 'RECUSADO' && cand.status !== 'CONCLUIDO' && (
+                      <button
+                        type="button"
+                        className={styles.btnAcaoRecusar}
+                        onClick={() => handleAbrirFeedback(cand, 'RECUSADO')}
+                        title="Recusar com feedback construtivo"
+                      >
+                        <X size={13} /> Recusar
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -260,6 +314,21 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
           )}
         </div>
       </div>
+
+      {feedbackAlvo && (
+        <ModalFeedback
+          isOpen={Boolean(feedbackAlvo)}
+          candidaturaId={feedbackAlvo.candidaturaId}
+          tituloVaga={feedbackAlvo.tituloVaga}
+          isContratante={true}
+          decisao={feedbackAlvo.decisao}
+          onClose={() => setFeedbackAlvo(null)}
+          onSuccess={() => {
+            handleFeedbackSalvo(feedbackAlvo.candidaturaId, feedbackAlvo.decisao);
+            setFeedbackAlvo(null);
+          }}
+        />
+      )}
     </div>
   );
 };
