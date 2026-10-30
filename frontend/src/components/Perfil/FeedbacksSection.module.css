@@ -1,10 +1,10 @@
 .container {
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
   border-radius: 14px;
   padding: 20px 24px;
   margin-top: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.03));
 }
 
 .header {
@@ -13,7 +13,7 @@
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color, #f1f5f9);
+  border-bottom: 1px solid var(--border, #f1f5f9);
 }
 
 .titulo {
@@ -28,7 +28,7 @@
 
 .badgeContador {
   background: rgba(71, 164, 196, 0.15);
-  color: #0284c7;
+  color: var(--primary-dark, #0284c7);
   font-size: 0.75rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -43,15 +43,15 @@
 
 .cardFeedback {
   background: var(--bg-hover, #f8fafc);
-  border: 1px solid var(--border-color, #edf2f7);
+  border: 1px solid var(--border, #edf2f7);
   border-radius: 12px;
   padding: 16px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .cardFeedback:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.04));
 }
 
 .topRow {
@@ -72,7 +72,7 @@
   height: 42px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--card-bg, #ffffff);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -105,7 +105,7 @@
 
 .dataEnvio {
   font-size: 0.725rem;
-  color: #94a3b8;
+  color: var(--text-light, #94a3b8);
 }
 
 .conteudoFeedback {
@@ -139,7 +139,7 @@
 
 .textoPrincipal {
   font-size: 0.9rem;
-  color: var(--text-body, #334155);
+  color: var(--text, #334155);
   line-height: 1.5;
   margin: 0;
 }
@@ -190,4 +190,85 @@
   padding: 32px 16px;
   color: var(--text-light, #888);
   font-size: 0.9rem;
+}
+
+/* ========================================================= */
+/* SUPORTE AO TEMA ESCURO                                    */
+/* ========================================================= */
+:global(html[data-tema="escuro"]) .container,
+:global(body.dark-mode) .container {
+  background: var(--card-bg, #1e293b);
+  border-color: var(--border, #334155);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:global(html[data-tema="escuro"]) .header,
+:global(body.dark-mode) .header {
+  border-bottom-color: var(--border, #334155);
+}
+
+:global(html[data-tema="escuro"]) .titulo,
+:global(body.dark-mode) .titulo {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .cardFeedback,
+:global(body.dark-mode) .cardFeedback {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: var(--border, #334155);
+}
+
+:global(html[data-tema="escuro"]) .cardFeedback:hover,
+:global(body.dark-mode) .cardFeedback:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+:global(html[data-tema="escuro"]) .avatar,
+:global(body.dark-mode) .avatar {
+  border-color: var(--border, #334155);
+}
+
+:global(html[data-tema="escuro"]) .autorNomeETipo h4,
+:global(body.dark-mode) .autorNomeETipo h4 {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .textoPrincipal,
+:global(body.dark-mode) .textoPrincipal {
+  color: var(--text, #f1f5f9);
+}
+
+:global(html[data-tema="escuro"]) .chipForte,
+:global(body.dark-mode) .chipForte {
+  background: rgba(14, 165, 233, 0.18);
+  color: #7dd3fc;
+  border: 1px solid rgba(14, 165, 233, 0.35);
+}
+
+:global(html[data-tema="escuro"]) .chipMelhoria,
+:global(body.dark-mode) .chipMelhoria {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+:global(html[data-tema="escuro"]) .dicaBox,
+:global(body.dark-mode) .dicaBox {
+  background: rgba(30, 58, 138, 0.25);
+  border-left-color: #60a5fa;
+  color: #bfdbfe;
+}
+
+:global(html[data-tema="escuro"]) .decisaoTagAceito,
+:global(body.dark-mode) .decisaoTagAceito {
+  background: rgba(34, 197, 94, 0.18);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+:global(html[data-tema="escuro"]) .decisaoTagRecusado,
+:global(body.dark-mode) .decisaoTagRecusado {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
