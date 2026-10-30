@@ -240,3 +240,86 @@
         align-items: flex-start;
     }
 }
+
+/* =========================================
+   Suporte a Modo Escuro
+   ========================================= */
+:global(html[data-tema="escuro"]) .header h1,
+:global(body.dark-mode) .header h1 {
+    color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .botaoAcao,
+:global(body.dark-mode) .botaoAcao {
+    background: var(--card-bg);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+:global(html[data-tema="escuro"]) .botaoAcao:hover,
+:global(body.dark-mode) .botaoAcao:hover {
+    border-color: #47a4c4;
+    color: #47a4c4;
+    background: rgba(71, 164, 196, 0.15);
+}
+
+:global(html[data-tema="escuro"]) .danger:hover,
+:global(body.dark-mode) .danger:hover {
+    border-color: #d86b6b;
+    color: #d86b6b;
+    background: rgba(216, 107, 107, 0.15);
+}
+
+:global(html[data-tema="escuro"]) .card,
+:global(body.dark-mode) .card {
+    background: var(--card-bg);
+    border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .naoLida,
+:global(body.dark-mode) .naoLida {
+    border-left: 3px solid #47a4c4;
+    background: rgba(71, 164, 196, 0.12);
+}
+
+:global(html[data-tema="escuro"]) .mensagem,
+:global(body.dark-mode) .mensagem {
+    color: var(--text, #f1f5f9);
+}
+
+:global(html[data-tema="escuro"]) .like,
+:global(body.dark-mode) .like {
+    background: rgba(71, 164, 196, 0.2);
+    color: #5ec3e6;
+}
+
+:global(html[data-tema="escuro"]) .dislike,
+:global(body.dark-mode) .dislike {
+    background: rgba(216, 107, 107, 0.2);
+    color: #e88d8d;
+}
+
+:global(html[data-tema="escuro"]) .comentario,
+:global(body.dark-mode) .comentario {
+    background: rgba(40, 167, 69, 0.2);
+    color: #4ade80;
+}
+
+:global(html[data-tema="escuro"]) .vaga_nova,
+:global(body.dark-mode) .vaga_nova {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+:global(html[data-tema="escuro"]) .botaoExcluir,
+:global(body.dark-mode) .botaoExcluir {
+    border-color: var(--border);
+    color: var(--text-light);
+}
+
+:global(html[data-tema="escuro"]) .botaoExcluir:hover,
+:global(body.dark-mode) .botaoExcluir:hover {
+    border-color: #d86b6b;
+    color: #d86b6b;
+    background: rgba(216, 107, 107, 0.15);
+}

@@ -224,3 +224,61 @@
   from { transform: translateY(16px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* =========================================
+   Suporte a Modo Escuro
+   ========================================= */
+:global(html[data-tema="escuro"]) .modalContent,
+:global(body.dark-mode) .modalContent {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .resumoVaga,
+:global(body.dark-mode) .resumoVaga {
+  background: var(--bg);
+  border-bottom-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .campo label,
+:global(body.dark-mode) .campo label {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .campo textarea,
+:global(body.dark-mode) .campo textarea {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .dica,
+:global(body.dark-mode) .dica {
+  background: rgba(37, 99, 235, 0.15);
+  border-left-color: #60a5fa;
+  color: var(--text);
+}
+
+:global(html[data-tema="escuro"]) .modalFooter,
+:global(body.dark-mode) .modalFooter {
+  border-top-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .btnCancelar,
+:global(body.dark-mode) .btnCancelar {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+:global(html[data-tema="escuro"]) .btnCancelar:hover:not(:disabled),
+:global(body.dark-mode) .btnCancelar:hover:not(:disabled) {
+  background: var(--surface-hover, #334155);
+}
+
+:global(html[data-tema="escuro"]) .alertaErro,
+:global(body.dark-mode) .alertaErro {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: rgba(220, 53, 69, 0.3);
+  color: #f87171;
+}
+
