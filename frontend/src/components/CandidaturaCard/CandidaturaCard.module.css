@@ -1,0 +1,263 @@
+.card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: var(--radius-lg, 12px);
+  padding: 20px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.05));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 16px;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cargoInfo h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h, #1e293b);
+  margin: 0 0 4px 0;
+}
+
+.empresa {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light, #64748b);
+}
+
+.statusBadge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.statusInscrito {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.statusChat {
+  background: #faf5ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+}
+
+.statusFinal {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.statusAndamento {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+
+.statusConcluido {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.statusRecusado {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.detalhesVaga {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-light, #64748b);
+  background: var(--bg-secondary, #f8fafc);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border, #e2e8f0);
+}
+
+.apresentacaoBox {
+  background: var(--bg-secondary, #f8fafc);
+  border-left: 3px solid #2563eb;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--text-main, #334155);
+}
+
+.apresentacaoLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.apresentacaoTexto {
+  margin: 0;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border, #f1f5f9);
+  font-size: 12px;
+  color: var(--text-light, #94a3b8);
+}
+
+.btnChat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #7c3aed;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnChat:hover {
+  background: #6d28d9;
+}
+
+.btnFeedback {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnFeedback:hover {
+  opacity: 0.9;
+}
+
+.btnFeedbackEnviado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  color: #059669;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #a7f3d0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================
+   Suporte a Modo Escuro
+   ========================================= */
+:global(html[data-tema="escuro"]) .card,
+:global(body.dark-mode) .card {
+  background: var(--card-bg);
+  border-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .cargoInfo h3,
+:global(body.dark-mode) .cargoInfo h3 {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .tag,
+:global(body.dark-mode) .tag {
+  background: var(--bg);
+  border-color: var(--border);
+  color: var(--text-light);
+}
+
+:global(html[data-tema="escuro"]) .apresentacaoBox,
+:global(body.dark-mode) .apresentacaoBox {
+  background: var(--bg);
+  color: var(--text);
+  border-left-color: #3b82f6;
+}
+
+:global(html[data-tema="escuro"]) .footer,
+:global(body.dark-mode) .footer {
+  border-top-color: var(--border);
+}
+
+:global(html[data-tema="escuro"]) .statusInscrito,
+:global(body.dark-mode) .statusInscrito {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusChat,
+:global(body.dark-mode) .statusChat {
+  background: rgba(124, 58, 237, 0.2);
+  color: #c084fc;
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusFinal,
+:global(body.dark-mode) .statusFinal {
+  background: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+  border-color: rgba(22, 163, 74, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusAndamento,
+:global(body.dark-mode) .statusAndamento {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  border-color: rgba(217, 119, 6, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusConcluido,
+:global(body.dark-mode) .statusConcluido {
+  background: rgba(5, 150, 105, 0.2);
+  color: #34d399;
+  border-color: rgba(5, 150, 105, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .statusRecusado,
+:global(body.dark-mode) .statusRecusado {
+  background: rgba(100, 116, 139, 0.2);
+  color: #94a3b8;
+  border-color: var(--border);
+}

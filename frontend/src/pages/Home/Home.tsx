@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Topbar } from '../../components/Topbar/Topbar';
 import { ModalVaga } from '../../components/ModalVaga/ModalVaga';
+import { ModalCandidatura } from '../../components/ModalCandidatura/ModalCandidatura';
+import { CandidatosDrawer } from '../../components/CandidatosDrawer/CandidatosDrawer';
 import { VagaCard } from '../../components/VagaCard/VagaCard';
 import { ComentariosDrawer } from '../../components/ComentariosDrawer/ComentariosDrawer';
 import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
@@ -34,11 +36,15 @@ export const Home: React.FC = () => {
     handleDislike,
     handleEnviarComentario,
     handleExcluirComentario,
+    vagasInscritasIds,
+    handleCandidaturaSucesso,
   } = useHome();
 
   const t = obterTraducoes();
 
   const [vagaAtivaComentarios, setVagaAtivaComentarios] = useState<VagaResponseDTO | null>(null);
+  const [vagaParaCandidatar, setVagaParaCandidatar] = useState<VagaResponseDTO | null>(null);
+  const [vagaAtivaCandidatos, setVagaAtivaCandidatos] = useState<VagaResponseDTO | null>(null);
 
   const vagaDrawerAtualizada = vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
 
@@ -90,11 +96,14 @@ export const Home: React.FC = () => {
                 key={vaga.id}
                 vaga={vaga}
                 usuarioLogado={usuarioLogado}
+                estaInscrito={vagasInscritasIds.has(vaga.id)}
                 onLike={handleLike}
                 onDislike={handleDislike}
                 onAbrirComentarios={(v) => setVagaAtivaComentarios(v)}
                 onEditar={handleAbrirEdicao}
                 onExcluir={handleExcluirVaga}
+                onCandidatar={(v) => setVagaParaCandidatar(v)}
+                onVerCandidatos={(v) => setVagaAtivaCandidatos(v)}
               />
             ))
           )}
@@ -113,6 +122,19 @@ export const Home: React.FC = () => {
           vagaParaEditar={vagaEmEdicao}
         />
       )}
+
+      <ModalCandidatura
+        isOpen={Boolean(vagaParaCandidatar)}
+        vaga={vagaParaCandidatar}
+        onClose={() => setVagaParaCandidatar(null)}
+        onSuccess={handleCandidaturaSucesso}
+      />
+
+      <CandidatosDrawer
+        isOpen={Boolean(vagaAtivaCandidatos)}
+        vaga={vagaAtivaCandidatos}
+        onClose={() => setVagaAtivaCandidatos(null)}
+      />
 
       <ComentariosDrawer
         isOpen={Boolean(vagaAtivaComentarios)}

@@ -1,36 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Briefcase, FileText } from 'lucide-react';
 
 import { Topbar } from '../../components/Topbar/Topbar';
-
-import {
-  FloatingButton,
-} from '../../components/FloatingButton/FloatingButton';
-
-import {
-  ModalVaga,
-} from '../../components/ModalVaga/ModalVaga';
-
-import {
-  VagaCard,
-} from '../../components/VagaCard/VagaCard';
-
-import {
-  ComentariosDrawer,
-} from '../../components/ComentariosDrawer/ComentariosDrawer';
-
-import {
-  useMinhasVagas,
-} from './useMinhasVagas';
-
+import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
+import { ModalVaga } from '../../components/ModalVaga/ModalVaga';
+import { VagaCard } from '../../components/VagaCard/VagaCard';
+import { ComentariosDrawer } from '../../components/ComentariosDrawer/ComentariosDrawer';
+import { CandidaturaCard } from '../../components/CandidaturaCard/CandidaturaCard';
+import { CandidatosDrawer } from '../../components/CandidatosDrawer/CandidatosDrawer';
+import { useMinhasVagas } from './useMinhasVagas';
 import { obterTraducoes } from '../../utils/i18n';
+import type { VagaResponseDTO } from '../../types/vagas';
+import styles from './MinhasVagas.module.css';
 
-import type {
-  VagaResponseDTO,
-} from '../../types/vagas';
-
-import styles from '../Home/Home.module.css';
-// Reutilizando o CSS da Home
+type AbaMinhasVagas = 'publicacoes' | 'candidaturas';
 
 export const MinhasVagas: React.FC = () => {
   const navigate = useNavigate();
@@ -53,139 +37,137 @@ export const MinhasVagas: React.FC = () => {
 
     handleEnviarComentario,
     handleExcluirComentario,
+
+    candidaturas,
+    loadingCandidaturas,
   } = useMinhasVagas();
-
-  const [
-    vagaAtivaComentarios,
-    setVagaAtivaComentarios,
-  ] = useState<VagaResponseDTO | null>(
-    null
-  );
-
-  const vagaDrawerAtualizada =
-    vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
 
   const isEstudante =
     usuarioLogado?.tipoUsuario?.toLowerCase() === 'estudante' ||
     usuarioLogado?.tipoUsuario?.toLowerCase() === 'aluno';
 
+  const [abaAtiva, setAbaAtiva] = useState<AbaMinhasVagas>(
+    isEstudante ? 'candidaturas' : 'publicacoes'
+  );
+
+  const [vagaAtivaComentarios, setVagaAtivaComentarios] = useState<VagaResponseDTO | null>(null);
+  const [vagaAtivaCandidatos, setVagaAtivaCandidatos] = useState<VagaResponseDTO | null>(null);
+
+  const vagaDrawerAtualizada =
+    vagas.find((v) => v.id === vagaAtivaComentarios?.id) || null;
+
   return (
     <div>
       <Topbar />
 
-      <main className={styles.homeWrapper}>
+      <main className={styles.wrapper}>
         <div id="vagas-container">
-
-          <h2
-            style={{
-              marginBottom: '24px',
-              fontWeight: 'bold',
-              color: 'var(--text-h, inherit)',
-            }}
-          >
-            {isEstudante ? t.painelEstudante : t.minhasPublicacoes}
-          </h2>
-
-          {loading ? (
-            <p>
-              {t.carregandoVagas}
-            </p>
-          ) : isEstudante ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '48px 24px',
-                background: 'var(--card-bg, #fff)',
-                borderRadius: '12px',
-                boxShadow: 'var(--shadow-sm, 0 2px 10px rgba(0,0,0,0.04))',
-                border: '1px solid var(--border, #e2e8f0)',
-              }}
-            >
-              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎓</div>
-              <h3 style={{ marginBottom: '8px', color: 'var(--text-h, #1e293b)' }}>
-                {t.areaCandidaturas}
-              </h3>
-              <p
-                style={{
-                  marginBottom: '24px',
-                  color: 'var(--text-light, #64748b)',
-                  maxWidth: '520px',
-                  margin: '0 auto 24px auto',
-                  lineHeight: '1.6',
-                }}
-              >
-                {t.estudanteDesc}
-              </p>
-
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('/home')}
-              >
-                {t.explorarVagasCompativeis}
-              </button>
-            </div>
-          ) : vagas.length === 0 ? (
-            <div
-              style={{
-                textAlign: 'center',
-                padding: '40px',
-                background: 'var(--card-bg, #fff)',
-                borderRadius: '8px',
-                border: '1px solid var(--border, #e2e8f0)',
-              }}
-            >
-              <p
-                style={{
-                  marginBottom: '16px',
-                  color: 'var(--text-light, #64748b)',
-                }}
-              >
-                {t.nenhumaVagaPublicada}
-              </p>
-
-              <button
-                className="btn btn-primary"
-                onClick={() =>
-                  handleAbrirCriacao()
-                }
-              >
-                Criar minha primeira vaga
-              </button>
-            </div>
+          {/* Se for estudante, mostra título direto. Se for empresa/MEI, mostra abas de alternância */}
+          {isEstudante ? (
+            <h2 className={styles.titulo}>Minhas Candidaturas</h2>
           ) : (
-            vagas.map((vaga) => (
-              <VagaCard
-                key={vaga.id}
-                vaga={vaga}
-                usuarioLogado={usuarioLogado}
-                compacto={true}
-                // O card vira prévia aqui!
+            <div className={styles.abasContainer}>
+              <button
+                type="button"
+                className={`${styles.abaBtn} ${abaAtiva === 'publicacoes' ? styles.abaAtiva : ''}`}
+                onClick={() => setAbaAtiva('publicacoes')}
+              >
+                <Briefcase size={16} />
+                Minhas Publicações
+                <span className={styles.badgeContador}>{vagas.length}</span>
+              </button>
 
-                onLike={handleLike}
-                onDislike={handleDislike}
-
-                onAbrirComentarios={(v) =>
-                  setVagaAtivaComentarios(v)
-                }
-
-                onEditar={handleAbrirCriacao}
-
-                onExcluir={handleExcluirVaga}
-              />
-            ))
+              <button
+                type="button"
+                className={`${styles.abaBtn} ${abaAtiva === 'candidaturas' ? styles.abaAtiva : ''}`}
+                onClick={() => setAbaAtiva('candidaturas')}
+              >
+                <FileText size={16} />
+                Minhas Candidaturas
+                <span className={styles.badgeContador}>{candidaturas.length}</span>
+              </button>
+            </div>
           )}
 
+          {/* Conteúdo da Aba: Minhas Candidaturas */}
+          {(isEstudante || abaAtiva === 'candidaturas') && (
+            loadingCandidaturas ? (
+              <p>{t.carregandoVagas}</p>
+            ) : candidaturas.length === 0 ? (
+              <div className={styles.estadoVazio}>
+                <span className={styles.emptyIcon}>🎓</span>
+                <h3 className={styles.emptyTitulo}>{t.areaCandidaturas}</h3>
+                <p className={styles.emptySub}>
+                  {isEstudante
+                    ? t.estudanteDesc
+                    : 'Sua empresa ainda não enviou propostas para nenhuma vaga temporária.'}
+                </p>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => navigate('/home')}
+                >
+                  {t.explorarVagasCompativeis}
+                </button>
+              </div>
+            ) : (
+              <div>
+                {candidaturas.map((cand) => (
+                  <CandidaturaCard key={cand.id} candidatura={cand} />
+                ))}
+              </div>
+            )
+          )}
+
+          {/* Conteúdo da Aba: Minhas Publicações (Empresa/MEI/Prestador) */}
+          {!isEstudante && abaAtiva === 'publicacoes' && (
+            loading ? (
+              <p>{t.carregandoVagas}</p>
+            ) : vagas.length === 0 ? (
+              <div className={styles.estadoVazio}>
+                <span className={styles.emptyIcon}>💼</span>
+                <h3 className={styles.emptyTitulo}>Nenhuma vaga publicada ainda</h3>
+                <p className={styles.emptySub}>
+                  Publique oportunidades temporárias para encontrar estudantes e profissionais qualificados.
+                </p>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => handleAbrirCriacao()}
+                >
+                  Criar minha primeira vaga
+                </button>
+              </div>
+            ) : (
+              vagas.map((vaga) => (
+                <VagaCard
+                  key={vaga.id}
+                  vaga={vaga}
+                  usuarioLogado={usuarioLogado}
+                  compacto={true}
+                  onLike={handleLike}
+                  onDislike={handleDislike}
+                  onAbrirComentarios={(v) => setVagaAtivaComentarios(v)}
+                  onEditar={handleAbrirCriacao}
+                  onExcluir={handleExcluirVaga}
+                  onVerCandidatos={(v) => setVagaAtivaCandidatos(v)}
+                />
+              ))
+            )
+          )}
         </div>
       </main>
 
-      {!isEstudante && (
+      {/* Botão flutuante para criar vaga (apenas quando na aba de publicações) */}
+      {!isEstudante && abaAtiva === 'publicacoes' && (
         <FloatingButton
-          onClick={() =>
-            handleAbrirCriacao()
-          }
+          onClick={() => handleAbrirCriacao()}
           title="Criar Nova Vaga"
         />
       )}
+
       {isModalOpen && (
         <ModalVaga
           isOpen={isModalOpen}
@@ -195,21 +177,19 @@ export const MinhasVagas: React.FC = () => {
         />
       )}
 
+      <CandidatosDrawer
+        isOpen={Boolean(vagaAtivaCandidatos)}
+        vaga={vagaAtivaCandidatos}
+        onClose={() => setVagaAtivaCandidatos(null)}
+      />
+
       <ComentariosDrawer
-        isOpen={Boolean(
-          vagaAtivaComentarios
-        )}
+        isOpen={Boolean(vagaAtivaComentarios)}
         vaga={vagaDrawerAtualizada}
         usuarioLogado={usuarioLogado}
-        onClose={() =>
-          setVagaAtivaComentarios(null)
-        }
-        onEnviarComentario={
-          handleEnviarComentario
-        }
-        onExcluirComentario={
-          handleExcluirComentario
-        }
+        onClose={() => setVagaAtivaComentarios(null)}
+        onEnviarComentario={handleEnviarComentario}
+        onExcluirComentario={handleExcluirComentario}
       />
     </div>
   );

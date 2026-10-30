@@ -14,6 +14,7 @@ import {
 import { FaLinkedin, FaGithub } from 'react-icons/fa6';
 import type { Formacao, Experiencia, Curso } from '../../types/perfil';
 import type { UsuarioPublicoDTO, UsuarioResponseDTO } from '../../types/usuarios';
+import { FeedbacksSection } from '../Perfil/FeedbacksSection';
 import styles from './PerfilPublicoModal.module.css';
 
 export interface PerfilPublicoModalProps {
@@ -327,6 +328,13 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Seção de Feedbacks e Avaliações Recebidas */}
+          {usuario.id && (
+            <div style={{ marginTop: '16px' }}>
+              <FeedbacksSection usuarioId={String(usuario.id)} />
             </div>
           )}
         </div>

@@ -11,6 +11,9 @@ import {
   ThumbsUp,
   Trash2,
   X,
+  Users,
+  MessageSquare,
+  Star,
 } from 'lucide-react';
 
 import type {
@@ -89,6 +92,15 @@ export const Notificacoes = () => {
       case 'vaga_nova':
         return <Briefcase size={18} />;
 
+      case 'candidatura_nova':
+        return <Users size={18} />;
+
+      case 'candidatura_chat':
+        return <MessageSquare size={18} />;
+
+      case 'candidatura_aceite':
+        return <Star size={18} />;
+
       default:
         return <Bell size={18} />;
     }
@@ -101,7 +113,15 @@ export const Notificacoes = () => {
       await marcarComoLida(notificacao.id);
     }
 
-    if (notificacao.vagaId) {
+    if (notificacao.tipo === 'candidatura_chat') {
+      navigate('/mensagens');
+    } else if (
+      notificacao.tipo === 'candidatura_nova' ||
+      notificacao.tipo === 'candidatura_aceite' ||
+      notificacao.tipo === 'candidatura_feedback'
+    ) {
+      navigate('/vagas');
+    } else if (notificacao.vagaId) {
       navigate('/home');
     }
   };
