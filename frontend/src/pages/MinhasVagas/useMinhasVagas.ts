@@ -202,5 +202,6 @@ export const useMinhasVagas = () => {
     candidaturas,
     loadingCandidaturas,
     carregarMinhasCandidaturas,
+    carregarMinhasVagas,
   };
 };

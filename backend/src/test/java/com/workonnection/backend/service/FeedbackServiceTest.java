@@ -106,7 +106,9 @@ class FeedbackServiceTest {
         assertEquals("ACEITO", response.getDecisao());
         assertEquals(5, response.getNotaGeral());
         assertEquals("candidato-1", response.getDestinatarioId());
-        verify(notificacaoService, times(1)).criar(eq("candidato-1"), eq("contratante-1"), anyString(), eq("feedback_recebido"), anyString(), eq("cand-1"));
+        verify(notificacaoService, times(1)).criar(eq("candidato-1"), eq("contratante-1"), anyString(), eq("contratacao_sucesso"), anyString(), eq("cand-1"));
+        verify(notificacaoService, times(1)).criar(eq("contratante-1"), eq("candidato-1"), anyString(), eq("contratacao_sucesso"), anyString(), eq("cand-1"));
+        verify(vagaRepository, times(1)).deleteById("vaga-1");
     }
 
     @Test

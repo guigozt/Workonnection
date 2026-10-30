@@ -34,6 +34,13 @@ public class Candidatura {
 
     private FeedbackSelecao feedbackSelecao;
 
+    // Snapshot das informações da vaga caso a vaga seja encerrada/apagada
+    private String vagaCargo;
+    private String vagaEmpresa;
+    private String vagaModalidade;
+    private String vagaSalario;
+    private String vagaLocalizacao;
+
     private Instant criadaEm = Instant.now();
 
     private Instant atualizadaEm = Instant.now();
@@ -120,5 +127,45 @@ public class Candidatura {
 
     public void setAtualizadaEm(Instant atualizadaEm) {
         this.atualizadaEm = atualizadaEm;
+    }
+
+    public String getVagaCargo() {
+        return vagaCargo;
+    }
+
+    public void setVagaCargo(String vagaCargo) {
+        this.vagaCargo = vagaCargo;
+    }
+
+    public String getVagaEmpresa() {
+        return vagaEmpresa;
+    }
+
+    public void setVagaEmpresa(String vagaEmpresa) {
+        this.vagaEmpresa = vagaEmpresa;
+    }
+
+    public String getVagaModalidade() {
+        return vagaModalidade;
+    }
+
+    public void setVagaModalidade(String vagaModalidade) {
+        this.vagaModalidade = vagaModalidade;
+    }
+
+    public String getVagaSalario() {
+        return vagaSalario;
+    }
+
+    public void setVagaSalario(String vagaSalario) {
+        this.vagaSalario = vagaSalario;
+    }
+
+    public String getVagaLocalizacao() {
+        return vagaLocalizacao;
+    }
+
+    public void setVagaLocalizacao(String vagaLocalizacao) {
+        this.vagaLocalizacao = vagaLocalizacao;
     }
 }

@@ -119,7 +119,16 @@ public class FeedbackService {
                         dto.getDicaConstrutiva()
                 );
                 candidatura.setFeedbackSelecao(fs);
+                candidatura.setStatus(StatusCandidatura.RECUSADO);
                 candidaturaRepository.save(candidatura);
+            } else if ("ACEITO".equals(decisao)) {
+                candidatura.setStatus(StatusCandidatura.CONCLUIDO);
+                candidaturaRepository.save(candidatura);
+
+                // Quando tiver um contratado, a vaga fecha (é apagada)
+                if (vaga != null && vaga.getId() != null) {
+                    vagaRepository.deleteById(vaga.getId());
+                }
             }
         } else {
             feedback.setTipoAutor("CANDIDATO");
@@ -131,20 +140,60 @@ public class FeedbackService {
 
         Feedback salvo = feedbackRepository.save(feedback);
 
-        // Notificar o destinatário que recebeu um feedback
+        // Notificações para contratante e contratado
         String autorNome = autor.getNome() != null ? autor.getNome() : "O contratante/candidato";
-        String msgNotificacao = isContratante
-                ? autorNome + " avaliou sua participação e deixou um feedback sobre a vaga " + tituloVaga + "."
-                : autorNome + " enviou um feedback sobre a experiência no processo da vaga " + tituloVaga + ".";
+        String candidatoNome = destinatario != null && destinatario.getNome() != null ? destinatario.getNome() : "O candidato";
 
-        notificacaoService.criar(
-                destinatarioId,
-                usuarioId,
-                autorNome,
-                "feedback_recebido",
-                msgNotificacao,
-                candidaturaId
-        );
+        if (isContratante) {
+            if ("ACEITO".equals(decisao)) {
+                // Mensagem para o contratado (candidato)
+                notificacaoService.criar(
+                        destinatarioId,
+                        usuarioId,
+                        autorNome,
+                        "contratacao_sucesso",
+                        "Parabéns! Você foi contratado para a vaga " + tituloVaga + " por " + autorNome + "! A vaga foi encerrada com sucesso.",
+                        candidaturaId
+                );
+                // Mensagem para o contratante
+                notificacaoService.criar(
+                        usuarioId,
+                        destinatarioId,
+                        candidatoNome,
+                        "contratacao_sucesso",
+                        "Contratação realizada! Você contratou " + candidatoNome + " para a vaga " + tituloVaga + ". A vaga foi encerrada com sucesso.",
+                        candidaturaId
+                );
+            } else {
+                // Decisão: RECUSADO -> vaga continua aberta, mensagem para ambos
+                notificacaoService.criar(
+                        destinatarioId,
+                        usuarioId,
+                        autorNome,
+                        "candidatura_feedback",
+                        autorNome + " enviou um feedback de seleção para a vaga " + tituloVaga + ". Agradecemos sua participação no processo!",
+                        candidaturaId
+                );
+                notificacaoService.criar(
+                        usuarioId,
+                        destinatarioId,
+                        candidatoNome,
+                        "candidatura_feedback",
+                        "Você registrou a recusa com feedback para " + candidatoNome + " na vaga " + tituloVaga + ". A vaga continua aberta para novos candidatos.",
+                        candidaturaId
+                );
+            }
+        } else {
+            // Candidato avaliando processo / empresa
+            notificacaoService.criar(
+                    destinatarioId,
+                    usuarioId,
+                    autorNome,
+                    "feedback_recebido",
+                    autorNome + " enviou um feedback sobre a experiência no processo da vaga " + tituloVaga + ".",
+                    candidaturaId
+            );
+        }
 
         return FeedbackResponseDTO.fromModel(salvo);
     }

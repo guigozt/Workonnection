@@ -22,6 +22,7 @@ interface CandidatosDrawerProps {
   vaga: VagaResponseDTO | null;
   onClose: () => void;
   onCandidaturaAtualizada?: (candidatura: CandidaturaResponseDTO) => void;
+  onVagaEncerrada?: (vagaId: string) => void;
 }
 
 export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
@@ -29,6 +30,7 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
   vaga,
   onClose,
   onCandidaturaAtualizada,
+  onVagaEncerrada,
 }) => {
   const navigate = useNavigate();
   const [candidaturas, setCandidaturas] = useState<CandidaturaResponseDTO[]>([]);
@@ -101,6 +103,16 @@ export const CandidatosDrawer: React.FC<CandidatosDrawerProps> = ({
         return c;
       })
     );
+
+    if (decisao === 'ACEITO') {
+      alert('Contratação concluída com sucesso! A vaga foi encerrada.');
+      if (vaga?.id) {
+        onVagaEncerrada?.(vaga.id);
+      }
+      onClose();
+    } else {
+      alert('Feedback de seleção registrado com sucesso. A vaga continua aberta.');
+    }
   };
 
   const handleChamarNoChat = async (cand: CandidaturaResponseDTO) => {

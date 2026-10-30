@@ -73,6 +73,11 @@ public class CandidaturaService {
         candidatura.setContratanteId(vaga.getUsuarioId());
         candidatura.setStatus(StatusCandidatura.INSCRITO);
         candidatura.setMensagemApresentacao(dto != null ? dto.getMensagemApresentacao() : null);
+        candidatura.setVagaCargo(vaga.getCargo());
+        candidatura.setVagaEmpresa(vaga.getEmpresa());
+        candidatura.setVagaModalidade(vaga.getModalidade());
+        candidatura.setVagaSalario(vaga.getSalario());
+        candidatura.setVagaLocalizacao(vaga.getLocalizacao());
         candidatura.setCriadaEm(Instant.now());
         candidatura.setAtualizadaEm(Instant.now());
 
@@ -242,6 +247,17 @@ public class CandidaturaService {
                 candidatura.getVagaId()
         );
 
+        // Notificação ao contratante confirmando recusa com vaga mantida aberta
+        String nomeCandidato = candidato != null && candidato.getNome() != null ? candidato.getNome() : "O candidato";
+        notificacaoService.criar(
+                contratanteId,
+                candidatura.getCandidatoId(),
+                nomeCandidato,
+                "candidatura_feedback",
+                "Você registrou a recusa com feedback para " + nomeCandidato + " na vaga " + tituloCargo + ". A vaga continua aberta.",
+                candidatura.getVagaId()
+        );
+
         return toResponseDTO(salva, vaga, candidato);
     }
 
@@ -302,6 +318,12 @@ public class CandidaturaService {
             dto.setVagaModalidade(vaga.getModalidade());
             dto.setVagaSalario(vaga.getSalario());
             dto.setVagaLocalizacao(vaga.getLocalizacao());
+        } else {
+            dto.setVagaCargo(c.getVagaCargo() != null ? c.getVagaCargo() : "Vaga Temporária");
+            dto.setVagaEmpresa(c.getVagaEmpresa());
+            dto.setVagaModalidade(c.getVagaModalidade());
+            dto.setVagaSalario(c.getVagaSalario());
+            dto.setVagaLocalizacao(c.getVagaLocalizacao());
         }
 
         if (candidato != null) {
