@@ -14,7 +14,7 @@ import {
 import { FaLinkedin, FaGithub } from 'react-icons/fa6';
 import type { Formacao, Experiencia, Curso } from '../../types/perfil';
 import type { UsuarioPublicoDTO, UsuarioResponseDTO } from '../../types/usuarios';
-import { FeedbacksSection } from '../Perfil/FeedbacksSection';
+import { AvaliacaoResumo } from '../Perfil/AvaliacaoResumo';
 import styles from './PerfilPublicoModal.module.css';
 
 export interface PerfilPublicoModalProps {
@@ -163,6 +163,11 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
 
           <div className={styles.infoPessoa}>
             <h3 className={styles.nome}>{nome}</h3>
+            {usuario.id && (
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                <AvaliacaoResumo usuarioId={String(usuario.id)} />
+              </div>
+            )}
           </div>
 
           {/* Dados Públicos Permitidos: Cidade/Estado e Redes Sociais (LinkedIn, GitHub, Portfólio) */}
@@ -328,13 +333,6 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Seção de Feedbacks e Avaliações Recebidas */}
-          {usuario.id && (
-            <div style={{ marginTop: '16px' }}>
-              <FeedbacksSection usuarioId={String(usuario.id)} />
             </div>
           )}
         </div>

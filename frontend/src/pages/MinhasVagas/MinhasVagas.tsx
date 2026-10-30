@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Briefcase, FileText } from 'lucide-react';
+import { Briefcase, FileText, MessageSquareQuote } from 'lucide-react';
 
 import { Topbar } from '../../components/Topbar/Topbar';
 import { FloatingButton } from '../../components/FloatingButton/FloatingButton';
@@ -9,12 +9,13 @@ import { VagaCard } from '../../components/VagaCard/VagaCard';
 import { ComentariosDrawer } from '../../components/ComentariosDrawer/ComentariosDrawer';
 import { CandidaturaCard } from '../../components/CandidaturaCard/CandidaturaCard';
 import { CandidatosDrawer } from '../../components/CandidatosDrawer/CandidatosDrawer';
+import { FeedbacksSection } from '../../components/Perfil/FeedbacksSection';
 import { useMinhasVagas } from './useMinhasVagas';
 import { obterTraducoes } from '../../utils/i18n';
 import type { VagaResponseDTO } from '../../types/vagas';
 import styles from './MinhasVagas.module.css';
 
-type AbaMinhasVagas = 'publicacoes' | 'candidaturas';
+type AbaMinhasVagas = 'publicacoes' | 'candidaturas' | 'feedbacks';
 
 export const MinhasVagas: React.FC = () => {
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ export const MinhasVagas: React.FC = () => {
 
     candidaturas,
     loadingCandidaturas,
+    carregarMinhasVagas,
+    carregarMinhasCandidaturas,
   } = useMinhasVagas();
 
   const isEstudante =
@@ -62,11 +65,8 @@ export const MinhasVagas: React.FC = () => {
 
       <main className={styles.wrapper}>
         <div id="vagas-container">
-          {/* Se for estudante, mostra título direto. Se for empresa/MEI, mostra abas de alternância */}
-          {isEstudante ? (
-            <h2 className={styles.titulo}>Minhas Candidaturas</h2>
-          ) : (
-            <div className={styles.abasContainer}>
+          <div className={styles.abasContainer}>
+            {!isEstudante && (
               <button
                 type="button"
                 className={`${styles.abaBtn} ${abaAtiva === 'publicacoes' ? styles.abaAtiva : ''}`}
@@ -76,21 +76,30 @@ export const MinhasVagas: React.FC = () => {
                 Minhas Publicações
                 <span className={styles.badgeContador}>{vagas.length}</span>
               </button>
+            )}
 
-              <button
-                type="button"
-                className={`${styles.abaBtn} ${abaAtiva === 'candidaturas' ? styles.abaAtiva : ''}`}
-                onClick={() => setAbaAtiva('candidaturas')}
-              >
-                <FileText size={16} />
-                Minhas Candidaturas
-                <span className={styles.badgeContador}>{candidaturas.length}</span>
-              </button>
-            </div>
-          )}
+            <button
+              type="button"
+              className={`${styles.abaBtn} ${abaAtiva === 'candidaturas' ? styles.abaAtiva : ''}`}
+              onClick={() => setAbaAtiva('candidaturas')}
+            >
+              <FileText size={16} />
+              Minhas Candidaturas
+              <span className={styles.badgeContador}>{candidaturas.length}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`${styles.abaBtn} ${abaAtiva === 'feedbacks' ? styles.abaAtiva : ''}`}
+              onClick={() => setAbaAtiva('feedbacks')}
+            >
+              <MessageSquareQuote size={16} />
+              Meus Feedbacks
+            </button>
+          </div>
 
           {/* Conteúdo da Aba: Minhas Candidaturas */}
-          {(isEstudante || abaAtiva === 'candidaturas') && (
+          {abaAtiva === 'candidaturas' && (
             loadingCandidaturas ? (
               <p>{t.carregandoVagas}</p>
             ) : candidaturas.length === 0 ? (
@@ -118,6 +127,17 @@ export const MinhasVagas: React.FC = () => {
                 ))}
               </div>
             )
+          )}
+
+          {/* Conteúdo da Aba: Meus Feedbacks */}
+          {abaAtiva === 'feedbacks' && (
+            <div>
+              {usuarioLogado?.id ? (
+                <FeedbacksSection usuarioId={String(usuarioLogado.id)} />
+              ) : (
+                <p>Usuário não identificado.</p>
+              )}
+            </div>
           )}
 
           {/* Conteúdo da Aba: Minhas Publicações (Empresa/MEI/Prestador) */}
@@ -181,6 +201,10 @@ export const MinhasVagas: React.FC = () => {
         isOpen={Boolean(vagaAtivaCandidatos)}
         vaga={vagaAtivaCandidatos}
         onClose={() => setVagaAtivaCandidatos(null)}
+        onVagaEncerrada={() => {
+          carregarMinhasVagas();
+          carregarMinhasCandidaturas();
+        }}
       />
 
       <ComentariosDrawer

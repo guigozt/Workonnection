@@ -11,7 +11,7 @@ import { Experiencias } from '../../components/Perfil/Experiencias';
 import { Cursos } from '../../components/Perfil/Cursos';
 import { DocumentosSection } from '../../components/Perfil/DocumentosSection';
 import { SubperfilSection } from '../../components/Perfil/SubperfilSection';
-import { FeedbacksSection } from '../../components/Perfil/FeedbacksSection';
+import { AvaliacaoResumo } from '../../components/Perfil/AvaliacaoResumo';
 
 import { PerfilModal } from '../../components/Perfil/PerfilModal';
 import { normalizarTipoUsuario } from '../../utils/documentosPorCategoria';
@@ -102,6 +102,8 @@ export const Perfil: React.FC = () => {
             carregandoFoto={carregandoFoto}
           />
 
+          {usuario.id && <AvaliacaoResumo usuarioId={usuario.id} />}
+
           <Contatos perfil={perfil} />
 
           <div className={styles.analiseFooter}>
@@ -142,9 +144,6 @@ export const Perfil: React.FC = () => {
           onAdicionar={() => abrirModal('habilidade')}
           onExcluir={excluirHabilidade}
         />
-
-        {/* Avaliações e Feedbacks Recentes (Contratante ou Candidato) */}
-        {usuario.id && <FeedbacksSection usuarioId={usuario.id} />}
 
         {/* Formações e Cursos acadêmicos/pessoais são exibidos apenas para Estudantes */}
         {tipoNormalizado === 'ESTUDANTE' && (

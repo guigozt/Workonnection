@@ -1,0 +1,93 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-top: 14px;
+  margin-bottom: 8px;
+  width: fit-content;
+  box-shadow: var(--shadow-sm, 0 2px 6px rgba(0, 0, 0, 0.03));
+}
+
+.starsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.starIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textos {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.mediaValor {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-h, #0f172a);
+}
+
+.contador {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-light, #64748b);
+}
+
+.semAvaliacao {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text-light, #94a3b8);
+  font-style: italic;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-light, #94a3b8);
+}
+
+.starPlaceholder {
+  opacity: 0.4;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ========================================================= */
+/* SUPORTE AO TEMA ESCURO                                    */
+/* ========================================================= */
+:global(html[data-tema="escuro"]) .container,
+:global(body.dark-mode) .container {
+  background: var(--card-bg, #1e293b);
+  border-color: var(--border, #334155);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global(html[data-tema="escuro"]) .mediaValor,
+:global(body.dark-mode) .mediaValor {
+  color: var(--text-h, #ffffff);
+}
+
+:global(html[data-tema="escuro"]) .contador,
+:global(body.dark-mode) .contador {
+  color: var(--text-light, #94a3b8);
+}
