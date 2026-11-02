@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/candidaturas", "/candidaturas/**").permitAll()
                         .requestMatchers("/feedbacks", "/feedbacks/**").permitAll()
                         .requestMatchers("/conversas", "/conversas/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/", "/error", "/login/**", "/modules/**", "/css/**", "/js/**", "/global/**",
                                 "/imagens/**", "/favicon.ico")
                         .permitAll()
