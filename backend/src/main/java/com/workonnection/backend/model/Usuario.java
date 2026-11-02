@@ -284,6 +284,10 @@ public class Usuario {
             this.fotoPerfil = fotoPerfil;
         }
 
+        public String getFoto() {
+            return fotoPerfil != null ? fotoPerfil.getUrl() : null;
+        }
+
         public List<ArquivoMetadados> getDocumentos() {
             return documentos;
         }

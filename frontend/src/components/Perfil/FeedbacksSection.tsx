@@ -5,7 +5,7 @@ import type { FeedbackResponseDTO } from '../../types/feedback';
 import styles from './FeedbacksSection.module.css';
 
 const FOTO_DEFAULT =
-  'https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png';
+  'https://ui-avatars.com/api/?background=47a4c4&color=fff&name=Autor';
 
 interface FeedbacksSectionProps {
   usuarioId: string;
