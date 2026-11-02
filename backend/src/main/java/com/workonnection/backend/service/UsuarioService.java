@@ -283,7 +283,7 @@ public class UsuarioService {
             throw new ApiException("A foto de perfil deve ser uma imagem (PNG, JPG ou JPEG)", HttpStatus.BAD_REQUEST);
         }
 
-        String url = fileStorageService.armazenarArquivo(arquivo, "fotos");
+        String url = fileStorageService.armazenarFotoPerfil(arquivo);
 
         Usuario.Perfil perfil = usuario.getPerfil() != null ? usuario.getPerfil() : new Usuario.Perfil();
         ArquivoMetadados fotoMeta = new ArquivoMetadados(
