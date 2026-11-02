@@ -185,7 +185,7 @@ export const Mensagens: React.FC = () => {
                   const ativo = contatoSelecionado?.id === c.contato.id;
                   const nome = c.contato.nome || 'Usuário';
                   const fotoUrl =
-                    c.contato.perfil?.site ||
+                    c.contato.perfil?.fotoPerfil?.url ||
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(
                       nome
                     )}&background=47a4c4&color=fff`;
