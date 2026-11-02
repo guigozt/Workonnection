@@ -78,9 +78,10 @@ export const usePerfil = () => {
       const data = await perfilService.uploadFoto(arquivo);
       setUsuario(data);
       setPerfil(data.perfil || {});
-    } catch (error: any) {
-      const msg = error.response?.data?.erro || error.response?.data?.message || error.message;
-      console.error('Erro detalhado do backend:', error.response?.data || error);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { erro?: string; message?: string } }; message?: string };
+      const msg = axiosError.response?.data?.erro || axiosError.response?.data?.message || axiosError.message || 'Erro ao atualizar foto';
+      console.error('Erro detalhado do backend:', axiosError.response?.data || error);
       alert('Erro: ' + msg);
     } finally {
       setCarregandoFoto(false);
