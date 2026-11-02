@@ -31,6 +31,8 @@ export interface UsuarioResponseDTO {
  * Nenhum dado confidencial (E-mail, Telefone, CPF, Senha) é exposto.
  */
 export interface PerfilPublicoData {
+  fotoPerfil?: { url: string };
+  fotoPerfilUrl?: string;
   sobre?: string;
   local?: string;
   foto?: string;
