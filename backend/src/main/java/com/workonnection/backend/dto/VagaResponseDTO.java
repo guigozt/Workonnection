@@ -21,5 +21,6 @@ public record VagaResponseDTO(
     List<String> tiposUsuario,
     List<String> likes,
     List<String> dislikes,
-    List<Comentario> comentarios
+    List<Comentario> comentarios,
+    String fotoCriadorUrl
 ) {}

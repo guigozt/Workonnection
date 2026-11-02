@@ -362,6 +362,14 @@ public class VagaService {
     }
 
     private VagaResponseDTO toDTO(Vaga v) {
+        String fotoCriadorUrl = null;
+        if (v.getUsuarioId() != null) {
+            Usuario criador = usuarioRepository.findById(v.getUsuarioId()).orElse(null);
+            if (criador != null && criador.getPerfil() != null && criador.getPerfil().getFotoPerfil() != null) {
+                fotoCriadorUrl = criador.getPerfil().getFotoPerfil().getUrl();
+            }
+        }
+
         return new VagaResponseDTO(
             v.getId(),
             v.getNomeUsuario(),
@@ -380,7 +388,8 @@ public class VagaService {
             v.getTiposUsuario(),
             orEmpty(v.getLikes()),
             orEmpty(v.getDislikes()),
-            orEmptyC(v.getComentarios())
+            orEmptyC(v.getComentarios()),
+            fotoCriadorUrl
         );
     }
 
