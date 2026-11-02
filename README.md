@@ -237,6 +237,13 @@ pusher.app-id=SEU_PUSHER_APP_ID
 pusher.key=SUA_PUSHER_KEY
 pusher.secret=SEU_PUSHER_SECRET
 pusher.cluster=sa1
+
+# CLOUDINARY (UPLOAD E HOSPEDAGEM DE IMAGENS DE PERFIL)
+# Crie sua conta gratuita em https://cloudinary.com (sem cartão de crédito)
+# As credenciais estão no Dashboard > Product Environment Credentials
+cloudinary.cloud-name=SEU_CLOUD_NAME       # Ex: dxyz123ab (aparece no Dashboard)
+cloudinary.api-key=SUA_API_KEY             # Ex: 123456789012345
+cloudinary.api-secret=SUA_API_SECRET       # Clique no ícone de cópia no Dashboard
 ```
 
 ---
@@ -297,3 +304,31 @@ Se preferir rodar cada serviço individualmente:
 * 👤 **Priscila Mendes**
 * 👤 **Gabriel Gutierres**
 * 👤 **Guilherme Gomes**
+
+
+---
+
+## ☁️ Variáveis de Ambiente em Produção (Render)
+
+Ao hospedar o backend no [Render](https://render.com) (ou outro serviço de nuvem), configure as seguintes variáveis no painel **Environment** do seu Web Service:
+
+| Variável                  | Descrição                                          |
+|---------------------------|---------------------------------------------------|
+| `MONGODB_URI`             | URI de conexão do MongoDB Atlas                   |
+| `GOOGLE_CLIENT_ID`        | Client ID do Google OAuth2                        |
+| `GOOGLE_CLIENT_SECRET`    | Client Secret do Google OAuth2                    |
+| `SMTP_USERNAME`           | E-mail Gmail para envio de verificação            |
+| `SMTP_PASSWORD`           | Senha de app do Gmail (não a senha normal)        |
+| `PUSHER_APP_ID`           | App ID do Pusher Channels                         |
+| `PUSHER_KEY`              | Chave pública do Pusher                           |
+| `PUSHER_SECRET`           | Chave secreta do Pusher                           |
+| `PUSHER_CLUSTER`          | Cluster do Pusher (ex: `sa1`)                     |
+| `CLOUDINARY_CLOUD_NAME`   | Cloud Name do Cloudinary (ex: `sovikbnx`)         |
+| `CLOUDINARY_API_KEY`      | API Key do Cloudinary                             |
+| `CLOUDINARY_API_SECRET`   | API Secret do Cloudinary (**nunca commite essa**) |
+
+> **Como obter as credenciais do Cloudinary:**
+> 1. Acesse [cloudinary.com](https://cloudinary.com) e crie sua conta gratuita (sem cartão).
+> 2. No Dashboard, localize o card **"Product Environment Credentials"**.
+> 3. Copie o **Cloud Name**, **API Key** e o **API Secret** (clique no ícone de olho para revelar).
+> 4. Cole cada valor na variável de ambiente correspondente no Render.
