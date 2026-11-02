@@ -78,9 +78,10 @@ export const usePerfil = () => {
       const data = await perfilService.uploadFoto(arquivo);
       setUsuario(data);
       setPerfil(data.perfil || {});
-    } catch (error) {
-      console.error('Erro ao fazer upload da foto:', error);
-      alert('Erro ao atualizar foto de perfil.');
+    } catch (error: any) {
+      const msg = error.response?.data?.erro || error.response?.data?.message || error.message;
+      console.error('Erro detalhado do backend:', error.response?.data || error);
+      alert('Erro: ' + msg);
     } finally {
       setCarregandoFoto(false);
     }
