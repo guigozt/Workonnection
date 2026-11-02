@@ -15,7 +15,7 @@ import type { CandidaturaResponseDTO, StatusCandidatura } from '../../types/cand
 import styles from './CandidatosDrawer.module.css';
 
 const FOTO_DEFAULT =
-  'https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png';
+  'https://ui-avatars.com/api/?background=47a4c4&color=fff&name=Candidato';
 
 interface CandidatosDrawerProps {
   isOpen: boolean;
