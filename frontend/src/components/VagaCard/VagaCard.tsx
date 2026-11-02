@@ -16,7 +16,7 @@ import { obterTraducoes } from '../../utils/i18n';
 import styles from './VagaCard.module.css';
 
 const FOTO_DEFAULT =
-  'https://newcastle-online.org/uploads/set_resources_2/84c1e40ea0e759e3f1505eb1788ddf3c_default_photo.png';
+  'https://ui-avatars.com/api/?background=47a4c4&color=fff&name=Empresa';
 
 interface VagaCardProps {
   vaga: VagaResponseDTO;
@@ -105,7 +105,7 @@ export const VagaCard: React.FC<VagaCardProps> = ({
       <div className={styles.header}>
         <img
           className={styles.avatar}
-          src={FOTO_DEFAULT}
+          src={vaga.fotoCriadorUrl || FOTO_DEFAULT}
           alt="Foto do autor"
         />
 
