@@ -21,12 +21,7 @@ export const perfilService = {
 
     const response = await api.post<UsuarioPerfil>(
       '/usuarios/perfil/foto',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+      formData
     );
     return response.data;
   },
