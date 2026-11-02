@@ -27,6 +27,7 @@ export interface VagaResponseDTO extends VagaDTO {
     likes: string[];
     dislikes: string[];
     comentarios: Comentario[];
+    fotoCriadorUrl?: string;
 }
 
 export interface VagaFormData extends Partial<VagaDTO> {
