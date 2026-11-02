@@ -1,6 +1,9 @@
 package com.workonnection.backend.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.workonnection.backend.exception.ApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -22,6 +26,9 @@ public class FileStorageService {
     private final List<String> extensoesPermitidas = Arrays.asList(".pdf", ".png", ".jpg", ".jpeg");
     private final long maxFileSize = 10 * 1024 * 1024; // 10MB
 
+    @Autowired(required = false)
+    private Cloudinary cloudinary;
+
     public FileStorageService(@Value("${app.upload.dir:uploads}") String uploadDir) {
         this.uploadDirectory = Paths.get(uploadDir).toAbsolutePath().normalize();
         try {
@@ -29,6 +36,33 @@ public class FileStorageService {
         } catch (IOException e) {
             throw new ApiException("Falha ao criar diretório de uploads: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Faz upload de imagem para o Cloudinary (se configurado) ou local como fallback.
+     */
+    public String armazenarFotoPerfil(MultipartFile arquivo) {
+        validarArquivo(arquivo);
+
+        if (cloudinary != null) {
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(
+                        arquivo.getBytes(),
+                        ObjectUtils.asMap(
+                                "folder", "workonnection/fotos_perfil",
+                                "resource_type", "image"
+                        )
+                );
+                return (String) uploadResult.get("secure_url");
+            } catch (Exception e) {
+                // Se der erro no Cloudinary (ex: credencial inválida ou rede), podemos lançar erro amigável
+                throw new ApiException("Erro ao enviar imagem para o Cloudinary: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        // Fallback para disco local se o Cloudinary não estiver disponível
+        return armazenarArquivo(arquivo, "fotos");
     }
 
     public String armazenarArquivo(MultipartFile arquivo, String subpasta) {
