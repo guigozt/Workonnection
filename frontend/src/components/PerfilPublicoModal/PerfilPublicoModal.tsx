@@ -63,8 +63,7 @@ export const PerfilPublicoModal: React.FC<PerfilPublicoModalProps> = ({
   const userPub = usuario as UsuarioPublicoDTO;
 
   const fotoUrl: string =
-    (usuario as any).perfil?.fotoPerfil?.url ||
-    (usuario as any).perfil?.fotoPerfilUrl ||
+    perfil.fotoPerfil?.url ||
     userPub.foto ||
     perfil.foto ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
