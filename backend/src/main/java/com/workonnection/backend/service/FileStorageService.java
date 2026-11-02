@@ -56,13 +56,37 @@ public class FileStorageService {
                 );
                 return (String) uploadResult.get("secure_url");
             } catch (Exception e) {
-                // Se der erro no Cloudinary (ex: credencial inválida ou rede), podemos lançar erro amigável
                 throw new ApiException("Erro ao enviar imagem para o Cloudinary: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
         // Fallback para disco local se o Cloudinary não estiver disponível
         return armazenarArquivo(arquivo, "fotos");
+    }
+
+    /**
+     * Faz upload de documento comprobatório (PDF, PNG, JPG) para o Cloudinary ou disco local.
+     */
+    public String armazenarDocumento(MultipartFile arquivo) {
+        validarArquivo(arquivo);
+
+        if (cloudinary != null) {
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> uploadResult = cloudinary.uploader().upload(
+                        arquivo.getBytes(),
+                        ObjectUtils.asMap(
+                                "folder", "workonnection/documentos",
+                                "resource_type", "auto"
+                        )
+                );
+                return (String) uploadResult.get("secure_url");
+            } catch (Exception e) {
+                throw new ApiException("Erro ao enviar documento para o Cloudinary: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return armazenarArquivo(arquivo, "documentos");
     }
 
     public String armazenarArquivo(MultipartFile arquivo, String subpasta) {

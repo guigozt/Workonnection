@@ -310,7 +310,7 @@ public class UsuarioService {
 
         validarDocumentoPorTipoUsuario(usuario.getTipoUsuario(), tipoDocumento.toUpperCase().trim());
 
-        String url = fileStorageService.armazenarArquivo(arquivo, "documentos");
+        String url = fileStorageService.armazenarDocumento(arquivo);
 
         Usuario.Perfil perfil = usuario.getPerfil() != null ? usuario.getPerfil() : new Usuario.Perfil();
         if (perfil.getDocumentos() == null) {
