@@ -3,7 +3,12 @@ package com.workonnection.backend.service;
 import com.workonnection.backend.dto.*;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.model.*;
+import com.workonnection.backend.repository.CandidaturaRepository;
+import com.workonnection.backend.repository.FeedbackRepository;
+import com.workonnection.backend.repository.MensagemRepository;
 import com.workonnection.backend.repository.UsuarioRepository;
+import com.workonnection.backend.repository.VagaRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +22,25 @@ public class UsuarioService {
     
     private final UsuarioRepository repository;
     private final FileStorageService fileStorageService;
+    private final VagaRepository vagaRepository;
+    private final CandidaturaRepository candidaturaRepository;
+    private final FeedbackRepository feedbackRepository;
+    private final MensagemRepository mensagemRepository;
 
-    public UsuarioService(UsuarioRepository repository, FileStorageService fileStorageService) {
+    public UsuarioService(
+            UsuarioRepository repository,
+            FileStorageService fileStorageService,
+            VagaRepository vagaRepository,
+            CandidaturaRepository candidaturaRepository,
+            FeedbackRepository feedbackRepository,
+            MensagemRepository mensagemRepository
+    ) {
         this.repository = repository;
         this.fileStorageService = fileStorageService;
+        this.vagaRepository = vagaRepository;
+        this.candidaturaRepository = candidaturaRepository;
+        this.feedbackRepository = feedbackRepository;
+        this.mensagemRepository = mensagemRepository;
     }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
@@ -430,12 +450,67 @@ public class UsuarioService {
         return toResponse(repository.save(usuario));
     }
 
+    @Transactional
     public void excluirConta(String id) {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new ApiException(
                         "Usuário não encontrado",
                         HttpStatus.NOT_FOUND
                 ));
+
+        // 1. Vagas do usuário e candidaturas associadas a essas vagas
+        List<Vaga> vagasDoUsuario = vagaRepository.findByUsuarioId(id);
+        for (Vaga vaga : vagasDoUsuario) {
+            if (vaga.getId() != null) {
+                List<Candidatura> candidaturasDaVaga = candidaturaRepository.findByVagaId(vaga.getId());
+                candidaturaRepository.deleteAll(candidaturasDaVaga);
+                vagaRepository.delete(vaga);
+            }
+        }
+
+        // 2. Candidaturas enviadas pelo usuário
+        List<Candidatura> candidaturasDoUsuario = candidaturaRepository.findByCandidatoId(id);
+        candidaturaRepository.deleteAll(candidaturasDoUsuario);
+
+        // 3. Comentários, likes e dislikes feitos pelo usuário em vagas de outras pessoas
+        List<Vaga> todasAsVagas = vagaRepository.findAll();
+        for (Vaga vaga : todasAsVagas) {
+            boolean alterado = false;
+
+            if (vaga.getLikes() != null && vaga.getLikes().remove(id)) {
+                alterado = true;
+            }
+            if (vaga.getDislikes() != null && vaga.getDislikes().remove(id)) {
+                alterado = true;
+            }
+            if (vaga.getComentarios() != null) {
+                int tamanhoOriginal = vaga.getComentarios().size();
+                vaga.getComentarios().removeIf(c -> id.equals(c.getUsuarioId()));
+                if (vaga.getComentarios().size() != tamanhoOriginal) {
+                    alterado = true;
+                }
+            }
+
+            if (alterado) {
+                vagaRepository.save(vaga);
+            }
+        }
+
+        // 4. Feedbacks onde o usuário é autor ou destinatário
+        List<Feedback> feedbacksDestinatario = feedbackRepository.findByDestinatarioIdOrderByCriadoEmDesc(id);
+        feedbackRepository.deleteAll(feedbacksDestinatario);
+
+        List<Feedback> feedbacksAutor = feedbackRepository.findByAutorIdOrderByCriadoEmDesc(id);
+        feedbackRepository.deleteAll(feedbacksAutor);
+
+        // 5. Mensagens do chat enviadas ou recebidas pelo usuário
+        List<Mensagem> todasMensagens = mensagemRepository.findAll();
+        List<Mensagem> mensagensDoUsuario = todasMensagens.stream()
+                .filter(m -> id.equals(m.getRemetenteId()) || id.equals(m.getDestinatarioId()))
+                .toList();
+        mensagemRepository.deleteAll(mensagensDoUsuario);
+
+        // 6. Exclui o próprio usuário
         repository.delete(usuario);
     }
 
