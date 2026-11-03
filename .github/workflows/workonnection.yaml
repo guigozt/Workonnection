@@ -77,10 +77,10 @@ jobs:
         ports:
           - 27017:27017
         options: >-
-          --health-cmd "mongosh --quiet --eval db.runCommand({ping:1}).ok"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "mongosh --quiet --eval 1"
+          --health-interval 5s
+          --health-timeout 10s
+          --health-retries 10
 
     defaults:
       run:
@@ -107,8 +107,35 @@ jobs:
       - name: Conceder permissao ao Maven Wrapper
         run: chmod +x mvnw
 
-      - name: Executar testes e empacotamento (Maven Verify)
+      - name: Executar testes, cobertura JaCoCo (>= 70%) e empacotamento
         run: ./mvnw -B verify
+
+      - name: Publicar resumo de cobertura JaCoCo
+        run: |
+          python3 - << 'EOF' >> "$GITHUB_STEP_SUMMARY"
+          import csv
+          with open('target/site/jacoco/jacoco.csv', encoding='utf-8') as f:
+              rows = list(csv.DictReader(f))
+          lc = sum(int(r['LINE_COVERED']) for r in rows)
+          lm = sum(int(r['LINE_MISSED']) for r in rows)
+          ic = sum(int(r['INSTRUCTION_COVERED']) for r in rows)
+          im = sum(int(r['INSTRUCTION_MISSED']) for r in rows)
+          mc = sum(int(r['METHOD_COVERED']) for r in rows)
+          mm = sum(int(r['METHOD_MISSED']) for r in rows)
+          print("### Cobertura de Testes Backend (JaCoCo - Meta Minima: 70%)")
+          print("| Metrica | Coberto / Total | Percentual |")
+          print("| :--- | :---: | :---: |")
+          print(f"| **Linhas (Lines)** | `{lc} / {lc+lm}` | **{lc/(lc+lm)*100:.2f}%** |")
+          print(f"| **Metodos (Methods)** | `{mc} / {mc+mm}` | **{mc/(mc+mm)*100:.2f}%** |")
+          print(f"| **Instrucoes (Bytecode)** | `{ic} / {ic+im}` | **{ic/(ic+im)*100:.2f}%** |")
+          EOF
+
+      - name: Salvar relatorio HTML de cobertura (Artefato)
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-coverage-report
+          path: backend/target/site/jacoco/
+          retention-days: 7
 
   docker:
     name: Docker (Build & Compose)
