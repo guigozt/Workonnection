@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { Topbar } from '../../components/Topbar/Topbar';
+import { obterUrlArquivo } from '../../utils/documentosPorCategoria';
 import { useChat } from './useChat';
 import styles from './Mensagens.module.css';
 
@@ -184,11 +185,16 @@ export const Mensagens: React.FC = () => {
                 conversas.map((c) => {
                   const ativo = contatoSelecionado?.id === c.contato.id;
                   const nome = c.contato.nome || 'Usuário';
-                  const fotoUrl =
+                  const fotoRaw =
+                    c.contato.perfil?.fotoPerfilUrl ||
                     c.contato.perfil?.fotoPerfil?.url ||
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                      nome
-                    )}&background=47a4c4&color=fff`;
+                    c.contato.foto ||
+                    c.contato.perfil?.foto;
+                  const fotoUrl = fotoRaw
+                    ? obterUrlArquivo(fotoRaw)
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        nome
+                      )}&background=47a4c4&color=fff`;
 
                   return (
                     <div
@@ -255,13 +261,25 @@ export const Mensagens: React.FC = () => {
                     </button>
 
                     <div className={styles.avatarWrapper} style={{ width: 40, height: 40 }}>
-                      <img
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          contatoSelecionado.nome || 'Usuário'
-                        )}&background=47a4c4&color=fff`}
-                        alt={contatoSelecionado.nome}
-                        className={styles.avatarImg}
-                      />
+                      {(() => {
+                        const fotoHeaderRaw =
+                          contatoSelecionado.perfil?.fotoPerfilUrl ||
+                          contatoSelecionado.perfil?.fotoPerfil?.url ||
+                          contatoSelecionado.foto ||
+                          contatoSelecionado.perfil?.foto;
+                        const fotoHeaderUrl = fotoHeaderRaw
+                          ? obterUrlArquivo(fotoHeaderRaw)
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              contatoSelecionado.nome || 'Usuário'
+                            )}&background=47a4c4&color=fff`;
+                        return (
+                          <img
+                            src={fotoHeaderUrl}
+                            alt={contatoSelecionado.nome}
+                            className={styles.avatarImg}
+                          />
+                        );
+                      })()}
                     </div>
 
                     <div className={styles.chatHeaderDetalhes}>

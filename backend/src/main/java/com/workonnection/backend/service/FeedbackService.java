@@ -213,7 +213,16 @@ public class FeedbackService {
         );
 
         return feedbacks.stream()
-                .map(FeedbackResponseDTO::fromModel)
+                .map(f -> {
+                    FeedbackResponseDTO dto = FeedbackResponseDTO.fromModel(f);
+                    if ((dto.getAutorFotoUrl() == null || dto.getAutorFotoUrl().isBlank()) && f.getAutorId() != null) {
+                        Usuario autor = usuarioRepository.findById(f.getAutorId()).orElse(null);
+                        if (autor != null && autor.getPerfil() != null && autor.getPerfil().getFotoPerfil() != null) {
+                            dto.setAutorFotoUrl(autor.getPerfil().getFotoPerfil().getUrl());
+                        }
+                    }
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

@@ -129,6 +129,11 @@ public class VagaService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
+        String fotoUsuario = null;
+        if (usuario.getPerfil() != null && usuario.getPerfil().getFotoPerfil() != null) {
+            fotoUsuario = usuario.getPerfil().getFotoPerfil().getUrl();
+        }
+
         Vaga vaga = buscarOuErro(vagaId);
 
         List<Comentario> lista = new ArrayList<>(orEmptyC(vaga.getComentarios()));
@@ -136,6 +141,7 @@ public class VagaService {
                 UUID.randomUUID().toString(),
                 usuarioId,
                 usuario.getNome(),
+                fotoUsuario,
                 dto.texto().trim(),
                 Instant.now()
         ));
@@ -388,11 +394,24 @@ public class VagaService {
             v.getTiposUsuario(),
             orEmpty(v.getLikes()),
             orEmpty(v.getDislikes()),
-            orEmptyC(v.getComentarios()),
+            enrichComentarios(v.getComentarios()),
             fotoCriadorUrl
         );
     }
 
     private List<String> orEmpty(List<String> l) { return l != null ? l : new ArrayList<>(); }
+
+    private List<Comentario> enrichComentarios(List<Comentario> lista) {
+        if (lista == null) return new ArrayList<>();
+        return lista.stream().map(c -> {
+            if ((c.getFotoUrl() == null || c.getFotoUrl().isBlank()) && c.getUsuarioId() != null) {
+                Usuario autor = usuarioRepository.findById(c.getUsuarioId()).orElse(null);
+                if (autor != null && autor.getPerfil() != null && autor.getPerfil().getFotoPerfil() != null) {
+                    c.setFotoUrl(autor.getPerfil().getFotoPerfil().getUrl());
+                }
+            }
+            return c;
+        }).toList();
+    }
     private List<Comentario> orEmptyC(List<Comentario> l) { return l != null ? l : new ArrayList<>(); }
 }

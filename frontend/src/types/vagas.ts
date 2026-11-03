@@ -2,6 +2,7 @@ export interface Comentario {
     id?: string;
     usuarioId?: string;
     nomeUsuario: string;
+    fotoUrl?: string;
     texto: string;
 }
 

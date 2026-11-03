@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Send } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import type { VagaResponseDTO, UsuarioLogado } from '../../types/vagas';
+import { obterUrlArquivo } from '../../utils/documentosPorCategoria';
 import styles from './ComentariosDrawer.module.css';
 
 const FOTO_DEFAULT =
@@ -95,8 +96,8 @@ export const ComentariosDrawer: React.FC<ComentariosDrawerProps> = ({
                 <div key={c.id || index} className={styles.item}>
                   <img
                     className={styles.comentarioAvatar}
-                    src={FOTO_DEFAULT}
-                    alt="Avatar"
+                    src={c.fotoUrl ? obterUrlArquivo(c.fotoUrl) : (c.nomeUsuario ? `https://ui-avatars.com/api/?background=47a4c4&color=fff&name=${encodeURIComponent(c.nomeUsuario)}` : FOTO_DEFAULT)}
+                    alt={c.nomeUsuario || 'Avatar'}
                   />
                   <div className={styles.comentarioCorpo}>
                     <div className={styles.comentarioNome}>

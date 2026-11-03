@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Star, MessageSquareQuote, CheckCircle, XCircle, Briefcase, Sparkles } from 'lucide-react';
 import { feedbackService } from '../../services/feedbackService';
 import type { FeedbackResponseDTO } from '../../types/feedback';
+import { obterUrlArquivo } from '../../utils/documentosPorCategoria';
 import styles from './FeedbacksSection.module.css';
 
 const FOTO_DEFAULT =
@@ -70,7 +71,13 @@ export const FeedbacksSection: React.FC<FeedbacksSectionProps> = ({ usuarioId })
                 <div className={styles.topRow}>
                   <div className={styles.autorInfo}>
                     <img
-                      src={f.autorFotoUrl || FOTO_DEFAULT}
+                      src={
+                        f.autorFotoUrl
+                          ? obterUrlArquivo(f.autorFotoUrl)
+                          : f.autorNome
+                          ? `https://ui-avatars.com/api/?background=47a4c4&color=fff&name=${encodeURIComponent(f.autorNome)}`
+                          : FOTO_DEFAULT
+                      }
                       alt={f.autorNome || 'Autor'}
                       className={styles.avatar}
                     />
