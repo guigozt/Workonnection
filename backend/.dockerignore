@@ -1,0 +1,23 @@
+# Artefatos de compilacao local
+target/
+build/
+.mvn/
+
+# Configuracoes locais e segredos (nunca devem entrar na imagem)
+.env
+.env.*
+**/application-local.properties
+
+# Uploads locais de desenvolvimento
+uploads/
+
+# Controle de versao e IDEs
+.git
+.gitignore
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+HELP.md
+

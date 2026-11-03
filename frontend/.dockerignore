@@ -1,0 +1,19 @@
+# Dependencias e artefatos de build local
+node_modules/
+dist/
+dist-ssr/
+
+# Variaveis de ambiente locais
+.env
+.env.*
+!.env.example
+*.local
+
+# Controle de versao, logs e IDEs
+.git
+.gitignore
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+
