@@ -1,0 +1,20 @@
+title = "Configuracao do Gitleaks - Workonnection"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Arquivos de documentacao, scripts auxiliares de desenvolvimento e templates de configuracao"
+paths = [
+  '''(^|/)dev\.js$''',
+  '''(^|/)\.env\.example$''',
+  '''(^|/)frontend/\.env\.example$''',
+  '''(^|/)ARQUITETURA_E_APIS\.md$''',
+  '''(^|/)documentacao/ARQUITETURA_E_APIS\.md$'''
+]
+regexes = [
+  '''c839db74ed8f268ea65c''',
+  '''9f6b6a13e6609dd29be5''',
+  '''459899662845-gu22k1f8f5f4cvjvs2o6b00um6g6o4su'''
+]
+
