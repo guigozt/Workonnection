@@ -150,7 +150,7 @@ Aqui está a sequência exata de **quem chama quem**, desde o clique do botão a
 - **Corpo (Payload)**:
 ```json
 {
-  "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRiOT... (Token longo gerado pelo Google)"
+  "token": "(Token longo gerado pelo Google)"
 }
 ```
 
