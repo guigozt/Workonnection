@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
+import { InputGroup } from "../../../components/Input/InputGroup";
+import { Button } from "../../../components/Button/Button";
+import { ModalVerificacaoEmail } from "../../../components/ModalVerificacaoEmail/ModalVerificacaoEmail";
 import { useAuth } from "../../../context/useAuth";
 import { api } from "../../../services/api";
 import styles from "./Login.module.css";
@@ -29,9 +32,13 @@ declare global {
 
 export const Login = () => {
     const navigate = useNavigate();
-    const { loginComGoogleToken, usuario } = useAuth();
+    const { login, loginComGoogleToken, usuario } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [modalVerificacaoAberto, setModalVerificacaoAberto] = useState(false);
+    const [emailParaVerificar, setEmailParaVerificar] = useState("");
 
     const googleBtnRef = useRef<HTMLDivElement>(null);
     const googleInitializedRef = useRef(false);
@@ -146,6 +153,49 @@ export const Login = () => {
         };
     }, [loginComGoogleToken, navigate]);
 
+    const handleLoginEmailSenha = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrorMessage(null);
+
+        if (!email.trim() || !senha.trim()) {
+            setErrorMessage("Preencha seu e-mail e senha.");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const user = await login({ email: email.trim(), senha: senha.trim() });
+            if (user?.cadastroCompleto) {
+                navigate("/home", { replace: true });
+            } else {
+                navigate("/cadastro", { replace: true });
+            }
+        } catch (err: unknown) {
+            console.error("Erro no login por e-mail e senha:", err);
+            const errorObj = err as { response?: { status?: number; data?: { message?: string } | string }; message?: string };
+            const status = errorObj?.response?.status;
+            const serverMsg =
+                typeof errorObj?.response?.data === "string"
+                    ? errorObj.response.data
+                    : errorObj?.response?.data?.message;
+
+            if (status === 403 || (serverMsg && serverMsg.toLowerCase().includes("verificado"))) {
+                setEmailParaVerificar(email.trim());
+                setModalVerificacaoAberto(true);
+                setErrorMessage("Seu e-mail ainda não foi verificado. Digite o código enviado para continuar.");
+            } else {
+                setErrorMessage(serverMsg || errorObj?.message || "E-mail ou senha incorretos.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleVerificacaoSucesso = () => {
+        setModalVerificacaoAberto(false);
+        navigate("/home", { replace: true });
+    };
+
     return (
         <AuthLayout
             imageSrc="https://www.netzpiloten.de/wp-content/uploads/2021/01/work-life-balance-home-office-1000x1000-1.jpg"
@@ -154,7 +204,7 @@ export const Login = () => {
             <div className={styles.container}>
                 <h2 className={styles.title}>Acesse sua conta</h2>
                 <p className={styles.subtitle}>
-                    Conecte-se com sua conta Google para acessar as melhores oportunidades.
+                    Entre com suas credenciais ou conecte-se com sua conta Google.
                 </p>
 
                 {errorMessage && (
@@ -169,13 +219,57 @@ export const Login = () => {
                     </div>
                 )}
 
-                <div className={styles.form}>
+                <form onSubmit={handleLoginEmailSenha} className={styles.form}>
+                    <InputGroup
+                        label="E-mail"
+                        name="email"
+                        type="email"
+                        icon="fa-solid fa-envelope"
+                        placeholder="seu@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={isLoading}
+                    />
+
+                    <InputGroup
+                        label="Senha"
+                        name="senha"
+                        type="password"
+                        icon="fa-solid fa-lock"
+                        placeholder="Sua senha"
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                        disabled={isLoading}
+                    />
+
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? "Entrando..." : "Entrar com E-mail"}
+                    </Button>
+
+                    <div className={styles.divider}>
+                        <span>ou</span>
+                    </div>
+
                     <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
 
                     <p className={styles.cadastroHint}>
-                        Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.
+                        Não tem uma conta ou precisa completar cadastro?{" "}
+                        <button
+                            type="button"
+                            className={styles.linkVerificar}
+                            onClick={() => navigate("/cadastro")}
+                        >
+                            Cadastre-se aqui
+                        </button>
                     </p>
-                </div>
+                </form>
+
+                <ModalVerificacaoEmail
+                    email={emailParaVerificar}
+                    isOpen={modalVerificacaoAberto}
+                    onClose={() => setModalVerificacaoAberto(false)}
+                    onSuccess={handleVerificacaoSucesso}
+                />
             </div>
         </AuthLayout>
     );
