@@ -277,25 +277,68 @@ public class CandidaturaService {
             return;
         }
 
-        String tipoNormalizado = normalizarTipo(tipoCandidato);
-
-        boolean compativel = permitidos.stream().anyMatch(p -> {
-            if (p == null) return false;
-            String norm = normalizarTipo(p);
-            return norm.equals("todos") || norm.equals(tipoNormalizado);
-        });
+        boolean compativel = permitidos.stream().anyMatch(p -> isTipoCompativel(p, tipoCandidato));
 
         if (!compativel) {
             throw new ApiException("Esta vaga temporária é destinada especificamente para outros perfis: " + String.join(", ", permitidos), HttpStatus.BAD_REQUEST);
         }
     }
 
+    private boolean isTipoCompativel(String permitido, String tipoCandidato) {
+        if (permitido == null || tipoCandidato == null) {
+            return false;
+        }
+
+        String p = permitido.trim().toLowerCase();
+        String c = tipoCandidato.trim().toLowerCase();
+
+        if (p.equals("todos")) {
+            return true;
+        }
+
+        // Vagas voltadas para "prestador" englobam candidaturas de ME, MEI e Empresa (além de autônomo e prestador)
+        if (p.contains("prestador") && isPrestador(c)) {
+            return true;
+        }
+
+        // Vagas voltadas para "estudante" / "aluno" aceitam estudantes
+        if ((p.contains("estudante") || p.contains("aluno")) && isEstudante(c)) {
+            return true;
+        }
+
+        // Se a vaga especificou diretamente perfis como MEI, ME ou Empresa
+        if (isPrestador(p) && isPrestador(c) && normalizarTipo(p).equals(normalizarTipo(c))) {
+            return true;
+        }
+
+        return p.equals(c) || normalizarTipo(p).equals(normalizarTipo(c));
+    }
+
+    private boolean isPrestador(String tipo) {
+        if (tipo == null) return false;
+        String t = tipo.trim().toLowerCase();
+        return t.equals("prestador")
+                || t.equals("mei")
+                || t.contains("microempreendedor")
+                || t.equals("me")
+                || t.contains("microempresa")
+                || t.equals("empresa")
+                || t.contains("autonomo")
+                || t.contains("autônomo");
+    }
+
+    private boolean isEstudante(String tipo) {
+        if (tipo == null) return false;
+        String t = tipo.trim().toLowerCase();
+        return t.contains("estudante") || t.contains("aluno");
+    }
+
     private String normalizarTipo(String tipo) {
         String t = tipo.trim().toLowerCase();
-        if (t.contains("estudante")) return "estudante";
+        if (t.contains("estudante") || t.contains("aluno")) return "estudante";
         if (t.contains("mei") || t.contains("microempreendedor")) return "microempreendedor";
         if (t.contains("autonomo") || t.contains("autônomo")) return "autonomo";
-        if (t.contains("empresa") || t.contains("microempresa")) return "empresa";
+        if (t.equals("me") || t.contains("microempresa") || t.contains("empresa")) return "empresa";
         return t;
     }
 

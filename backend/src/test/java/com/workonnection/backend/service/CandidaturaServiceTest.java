@@ -201,6 +201,68 @@ class CandidaturaServiceTest {
         assertTrue(ex.getMessage().contains("destinada especificamente"));
     }
 
+    @Test
+    @DisplayName("Vaga para prestador deve permitir candidatura de MEI, ME e Empresa")
+    void candidatar_QuandoVagaParaPrestador_DeveEnglobarMeiMeEEmpresa() {
+        vaga.setTiposUsuario(List.of("prestador"));
+
+        Candidatura salva = new Candidatura();
+        salva.setId("cand-ok");
+        salva.setVagaId("vaga-789");
+        salva.setCandidatoId("candidato-123");
+        salva.setStatus(StatusCandidatura.INSCRITO);
+        salva.setCriadaEm(Instant.now());
+        salva.setAtualizadaEm(Instant.now());
+
+        when(vagaRepository.findById("vaga-789")).thenReturn(Optional.of(vaga));
+        when(usuarioRepository.findById("candidato-123")).thenReturn(Optional.of(candidato));
+        when(candidaturaRepository.existsByVagaIdAndCandidatoId("vaga-789", "candidato-123")).thenReturn(false);
+        when(candidaturaRepository.save(any(Candidatura.class))).thenReturn(salva);
+
+        // Testa MEI
+        candidato.setTipoUsuario("MEI");
+        CandidaturaResponseDTO respMei = candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO());
+        assertNotNull(respMei);
+
+        // Testa ME
+        candidato.setTipoUsuario("ME");
+        CandidaturaResponseDTO respMe = candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO());
+        assertNotNull(respMe);
+
+        // Testa Empresa
+        candidato.setTipoUsuario("Empresa");
+        CandidaturaResponseDTO respEmp = candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO());
+        assertNotNull(respEmp);
+
+        // Testa Microempreendedor
+        candidato.setTipoUsuario("Microempreendedor");
+        CandidaturaResponseDTO respMicro = candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO());
+        assertNotNull(respMicro);
+
+        // Testa Microempresa
+        candidato.setTipoUsuario("Microempresa");
+        CandidaturaResponseDTO respMicroemp = candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO());
+        assertNotNull(respMicroemp);
+    }
+
+    @Test
+    @DisplayName("Vaga para prestador deve bloquear candidatura de Estudante")
+    void candidatar_QuandoVagaParaPrestador_CandidatoEstudante_DeveBloquear() {
+        vaga.setTiposUsuario(List.of("prestador"));
+        candidato.setTipoUsuario("Estudante");
+
+        when(vagaRepository.findById("vaga-789")).thenReturn(Optional.of(vaga));
+        when(usuarioRepository.findById("candidato-123")).thenReturn(Optional.of(candidato));
+        when(candidaturaRepository.existsByVagaIdAndCandidatoId("vaga-789", "candidato-123")).thenReturn(false);
+
+        ApiException ex = assertThrows(ApiException.class, () ->
+                candidaturaService.candidatar("vaga-789", "candidato-123", new CandidaturaCreateDTO())
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+        assertTrue(ex.getMessage().contains("destinada especificamente"));
+    }
+
     // -------------------------------------------------------------
     // TESTES DE LISTAGEM (GET /candidaturas/minhas e /gerenciar)
     // -------------------------------------------------------------

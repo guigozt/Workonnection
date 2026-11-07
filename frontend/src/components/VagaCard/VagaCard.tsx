@@ -53,22 +53,25 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   const podeSeCandidar = (): boolean => {
     if (!usuarioLogado || isDono) return false;
 
-    const tipos = vaga.tiposUsuario || [];
+    const tipos = (vaga.tiposUsuario || []).map((t) => t.toLowerCase().trim());
 
-    if (!tipos.length || tipos.includes('todos')) {
+    if (!tipos.length || tipos.some((t) => t === 'todos')) {
       return true;
     }
 
     const tipo = (usuarioLogado.tipoUsuario || '').toLowerCase().trim();
 
     if (
-      tipos.includes('prestador') &&
+      tipos.some((t) => t.includes('prestador')) &&
       ['empresa', 'mei', 'me', 'microempreendedor', 'microempresa', 'autonomo', 'prestador'].includes(tipo)
     ) {
       return true;
     }
 
-    if (tipos.includes('estudante') && ['estudante', 'aluno'].includes(tipo)) {
+    if (
+      tipos.some((t) => t.includes('estudante') || t.includes('aluno')) &&
+      ['estudante', 'aluno'].includes(tipo)
+    ) {
       return true;
     }
 
@@ -76,13 +79,16 @@ export const VagaCard: React.FC<VagaCardProps> = ({
   };
 
   const labelTipos = (tipos?: string[]): string[] => {
-    if (!tipos?.length || tipos.includes('todos')) {
+    if (!tipos?.length || tipos.some((t) => t.toLowerCase() === 'todos')) {
       return ['Todos'];
     }
 
-    return tipos.map((t) =>
-      t === 'prestador' ? 'Prestadores de Serviço' : t === 'estudante' ? 'Estudantes' : t
-    );
+    return tipos.map((t) => {
+      const normalizado = t.toLowerCase();
+      if (normalizado === 'prestador') return 'Prestadores (ME, MEI, Empresa)';
+      if (normalizado === 'estudante') return 'Estudantes';
+      return t;
+    });
   };
 
   const podeCand = podeSeCandidar();

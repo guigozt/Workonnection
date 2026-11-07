@@ -158,6 +158,14 @@
   cursor: not-allowed;
 }
 
+.tipoAjuda {
+  display: block;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
 .modalFooter {
   padding: 16px 24px;
   background: var(--bg);

@@ -205,7 +205,7 @@ public class VagaService {
                         }
                     }
 
-                    // Filtro por tipo de usuário (Aluno, Egresso, Professor, etc.)
+                    // Filtro por tipo de usuário (Prestador, Estudante, etc.)
                     if (tipo != null && !tipo.isBlank() && !tipo.equalsIgnoreCase("todos") && !tipo.equalsIgnoreCase("todas")) {
                         List<String> tipos = orEmpty(v.getTiposUsuario());
                         String tBusca = tipo.trim().toLowerCase();
@@ -215,6 +215,9 @@ public class VagaService {
                                 return true;
                             }
                             if ((tBusca.equals("aluno") || tBusca.equals("estudante")) && (tLower.equals("aluno") || tLower.equals("estudante"))) {
+                                return true;
+                            }
+                            if (tBusca.contains("prestador") && (tLower.contains("prestador") || tLower.equals("mei") || tLower.equals("me") || tLower.equals("empresa") || tLower.contains("microempreendedor") || tLower.contains("microempresa") || tLower.contains("autonomo"))) {
                                 return true;
                             }
                             return false;
@@ -288,7 +291,12 @@ public class VagaService {
 
         if (tipo != null && !tipo.isBlank() && !tipo.equalsIgnoreCase("todos")) {
             String tipoLimpo = tipo.trim();
-            String regexTipo = "^(" + Pattern.quote(tipoLimpo) + "|todos)$";
+            String regexTipo;
+            if (tipoLimpo.equalsIgnoreCase("prestador") || tipoLimpo.equalsIgnoreCase("prestadores")) {
+                regexTipo = "^(prestador|todos|empresa|mei|me|microempreendedor|microempresa|autonomo)$";
+            } else {
+                regexTipo = "^(" + Pattern.quote(tipoLimpo) + "|todos)$";
+            }
             criterias.add(Criteria.where("tiposUsuario").regex(regexTipo, "i"));
         }
 

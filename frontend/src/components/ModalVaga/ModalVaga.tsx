@@ -77,7 +77,7 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
 
   const handleChipClick = (valor: string) => {
     let atualizados: string[] = [];
-    const lista = formData.tiposUsuario || [];
+    const lista = (formData.tiposUsuario || []).map((t) => t.toLowerCase());
 
     if (valor === 'todos') {
       atualizados = lista.includes('todos') ? [] : ['todos'];
@@ -160,7 +160,7 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
     }
   };
 
-  const temTodos = formData.tiposUsuario?.includes('todos');
+  const temTodos = formData.tiposUsuario?.some((t) => t.toLowerCase() === 'todos');
 
   return (
     <div className={styles.overlay}>
@@ -259,7 +259,7 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
               <div className={styles.tiposGrid}>
                 <button
                   type="button"
-                  className={`${styles.tipoChip} ${formData.tiposUsuario?.includes('todos') ? styles.selecionado : ''}`}
+                  className={`${styles.tipoChip} ${formData.tiposUsuario?.some((t) => t.toLowerCase() === 'todos') ? styles.selecionado : ''}`}
                   onClick={() => handleChipClick('todos')}
                 >
                   <i className="fas fa-globe" /> Todos
@@ -267,20 +267,24 @@ export const ModalVaga: React.FC<ModalVagaProps> = ({
 
                 <button
                   type="button"
-                  className={`${styles.tipoChip} ${formData.tiposUsuario?.includes('prestador') ? styles.selecionado : ''} ${temTodos ? styles.desabilitado : ''}`}
+                  className={`${styles.tipoChip} ${formData.tiposUsuario?.some((t) => t.toLowerCase() === 'prestador') ? styles.selecionado : ''} ${temTodos ? styles.desabilitado : ''}`}
                   onClick={() => handleChipClick('prestador')}
+                  title="Aceita candidaturas de ME, MEI e Empresa"
                 >
-                  <i className="fas fa-briefcase" /> Prestador de Serviço
+                  <i className="fas fa-briefcase" /> Prestador (ME, MEI, Empresa)
                 </button>
 
                 <button
                   type="button"
-                  className={`${styles.tipoChip} ${formData.tiposUsuario?.includes('estudante') ? styles.selecionado : ''} ${temTodos ? styles.desabilitado : ''}`}
+                  className={`${styles.tipoChip} ${formData.tiposUsuario?.some((t) => t.toLowerCase() === 'estudante') ? styles.selecionado : ''} ${temTodos ? styles.desabilitado : ''}`}
                   onClick={() => handleChipClick('estudante')}
                 >
                   <i className="fas fa-graduation-cap" /> Estudante
                 </button>
               </div>
+              <span className={styles.tipoAjuda}>
+                * A opção de <strong>Prestador</strong> engloba candidaturas de ME, MEI e Empresa.
+              </span>
               <span className={styles.msgErro}>{errors.tiposUsuario}</span>
             </div>
           </div>
