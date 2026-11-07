@@ -16,6 +16,7 @@ export interface CadastroDTO {
 export interface VerificarCodigoDTO {
     email: string;
     codigo: string;
+    novaSenha?: string;
 }
 
 export interface ReenviarCodigoDTO {
