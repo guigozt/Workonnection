@@ -30,14 +30,19 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
 
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
+  const handleClose = () => {
+    setDigits(["", "", "", "", "", ""]);
+    setErro(null);
+    setSucesso(null);
+    onClose();
+  };
+
   useEffect(() => {
     if (isOpen) {
-      setDigits(["", "", "", "", "", ""]);
-      setErro(null);
-      setSucesso(null);
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         inputsRef.current[0]?.focus();
       }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -143,11 +148,11 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={handleClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h3>{definirSenha ? "Definir Senha de Acesso" : "Confirmar E-mail"}</h3>
-          <button type="button" className={styles.btnClose} onClick={onClose} aria-label="Fechar">
+          <button type="button" className={styles.btnClose} onClick={handleClose} aria-label="Fechar">
             &times;
           </button>
         </div>
