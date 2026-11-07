@@ -2,6 +2,8 @@ import { api } from "./api";
 
 import type {
     LoginDTO,
+    CadastroDTO,
+    VerificarCodigoDTO,
     CompletarCadastroDTO,
     UsuarioResponseDTO
 } from "../types/auth";
@@ -80,6 +82,53 @@ export const authService = {
                 "❌ AUTH SERVICE: erro no login",
                 error
             );
+            throw error;
+        }
+    },
+
+    cadastrar: async (
+        dadosCadastro: CadastroDTO
+    ): Promise<UsuarioResponseDTO> => {
+        console.log("AUTH SERVICE: cadastrando novo usuário...");
+        try {
+            const response = await api.post<UsuarioResponseDTO>(
+                "/usuarios",
+                dadosCadastro
+            );
+            return response.data;
+        } catch (error) {
+            console.error("❌ AUTH SERVICE: erro ao cadastrar usuário", error);
+            throw error;
+        }
+    },
+
+    verificarCodigo: async (
+        dados: VerificarCodigoDTO
+    ): Promise<UsuarioResponseDTO> => {
+        console.log("AUTH SERVICE: verificando código de confirmação...");
+        try {
+            const response = await api.post<UsuarioResponseDTO>(
+                "/usuarios/verificar-codigo",
+                dados
+            );
+            if (response.data && response.data.id) {
+                localStorage.setItem("usuarioId", response.data.id);
+            }
+            return response.data;
+        } catch (error) {
+            console.error("❌ AUTH SERVICE: erro ao verificar código", error);
+            throw error;
+        }
+    },
+
+    reenviarCodigo: async (
+        email: string
+    ): Promise<void> => {
+        console.log("AUTH SERVICE: reenviando código...");
+        try {
+            await api.post("/usuarios/reenviar-codigo", { email });
+        } catch (error) {
+            console.error("❌ AUTH SERVICE: erro ao reenviar código", error);
             throw error;
         }
     },
