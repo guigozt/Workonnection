@@ -8,6 +8,8 @@ interface ModalVerificacaoEmailProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  definirSenha?: boolean;
+  senhaDigitada?: string;
 }
 
 export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
@@ -15,6 +17,8 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  definirSenha = false,
+  senhaDigitada = "",
 }) => {
   const { verificarCodigo, reenviarCodigo } = useAuth();
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
@@ -93,8 +97,16 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
     setSucesso(null);
 
     try {
-      await verificarCodigo({ email, codigo });
-      setSucesso("E-mail confirmado com sucesso!");
+      await verificarCodigo({
+        email,
+        codigo,
+        novaSenha: definirSenha && senhaDigitada ? senhaDigitada : undefined,
+      });
+      setSucesso(
+        definirSenha
+          ? "Identidade confirmada e senha cadastrada com sucesso!"
+          : "E-mail confirmado com sucesso!"
+      );
       setTimeout(() => {
         onSuccess();
       }, 1000);
@@ -134,7 +146,7 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h3>Confirmar E-mail</h3>
+          <h3>{definirSenha ? "Definir Senha de Acesso" : "Confirmar E-mail"}</h3>
           <button type="button" className={styles.btnClose} onClick={onClose} aria-label="Fechar">
             &times;
           </button>
@@ -142,8 +154,9 @@ export const ModalVerificacaoEmail: React.FC<ModalVerificacaoEmailProps> = ({
 
         <form onSubmit={handleConfirmar} className={styles.modalBody}>
           <p className={styles.descricao}>
-            Enviamos um código de 6 dígitos para o endereço{" "}
-            <span className={styles.emailDestaque}>{email}</span>. Digite-o abaixo para confirmar sua conta:
+            {definirSenha
+              ? <>Para proteger sua conta, enviamos um código de segurança para <span className={styles.emailDestaque}>{email}</span>. Confirme-o abaixo para cadastrar sua nova senha e acessar o sistema:</>
+              : <>Enviamos um código de 6 dígitos para o endereço <span className={styles.emailDestaque}>{email}</span>. Digite-o abaixo para confirmar sua conta:</>}
           </p>
 
           {erro && <div className={styles.feedbackErro}>{erro}</div>}
