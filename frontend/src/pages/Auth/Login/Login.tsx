@@ -95,12 +95,12 @@ export const Login = () => {
 
                     window.google.accounts.id.renderButton(googleBtnRef.current, {
                         theme: "outline",
-                        size: "large",
+                        size: "medium",
                         type: "standard",
-                        text: "continue_with",
-                        shape: "rectangular",
+                        text: "signin_with",
+                        shape: "pill",
                         logo_alignment: "left",
-                        width: 320,
+                        width: 240,
                     });
                 }
             };
@@ -220,14 +220,6 @@ export const Login = () => {
                 )}
 
                 <div className={styles.loginCard}>
-                    <div className={styles.googleSection}>
-                        <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
-                    </div>
-
-                    <div className={styles.divider}>
-                        <span>ou acesse com e-mail</span>
-                    </div>
-
                     <form onSubmit={handleLoginEmailSenha} className={styles.form}>
                         <InputGroup
                             label="E-mail"
@@ -252,9 +244,17 @@ export const Login = () => {
                         />
 
                         <Button type="submit" disabled={isLoading}>
-                            {isLoading ? "Entrando..." : "Entrar com E-mail"}
+                            {isLoading ? "Entrando..." : "Entrar"}
                         </Button>
                     </form>
+
+                    <div className={styles.divider}>
+                        <span>ou</span>
+                    </div>
+
+                    <div className={styles.googleSection}>
+                        <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
+                    </div>
 
                     <p className={styles.cadastroHint}>
                         Não tem uma conta?{" "}
