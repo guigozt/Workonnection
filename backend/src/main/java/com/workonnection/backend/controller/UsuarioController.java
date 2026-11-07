@@ -4,7 +4,9 @@ import com.workonnection.backend.dto.CadastroDTO;
 import com.workonnection.backend.dto.ConfiguracoesDTO;
 import com.workonnection.backend.dto.LoginDTO;
 import com.workonnection.backend.dto.PerfilDTO;
+import com.workonnection.backend.dto.ReenviarCodigoDTO;
 import com.workonnection.backend.dto.UsuarioResponseDTO;
+import com.workonnection.backend.dto.VerificarCodigoDTO;
 import com.workonnection.backend.exception.ApiException;
 import com.workonnection.backend.service.UsuarioService;
 
@@ -128,6 +130,45 @@ public class UsuarioController {
         );
 
         return ResponseEntity.ok(usuario);
+    }
+
+    /**
+     * Verificação de código de e-mail.
+     */
+    @PostMapping("/verificar-codigo")
+    public ResponseEntity<UsuarioResponseDTO> verificarCodigo(
+            @RequestBody VerificarCodigoDTO dto,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            HttpSession session
+    ) {
+        UsuarioResponseDTO usuario = service.verificarCodigoEmail(dto);
+        session.setAttribute("usuarioId", usuario.id());
+
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(
+                usuario.email(),
+                null,
+                Collections.emptyList()
+            );
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    /**
+     * Reenvio de código de confirmação de e-mail.
+     */
+    @PostMapping("/reenviar-codigo")
+    public ResponseEntity<java.util.Map<String, String>> reenviarCodigo(
+            @RequestBody ReenviarCodigoDTO dto
+    ) {
+        service.reenviarCodigoEmail(dto.email());
+        return ResponseEntity.ok(java.util.Map.of("mensagem", "Código reenviado com sucesso!"));
     }
 
     /**
