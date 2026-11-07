@@ -39,6 +39,7 @@ export const Login = () => {
     const [senha, setSenha] = useState("");
     const [modalVerificacaoAberto, setModalVerificacaoAberto] = useState(false);
     const [emailParaVerificar, setEmailParaVerificar] = useState("");
+    const [definirNovaSenha, setDefinirNovaSenha] = useState(false);
 
     const googleBtnRef = useRef<HTMLDivElement>(null);
     const googleInitializedRef = useRef(false);
@@ -179,8 +180,14 @@ export const Login = () => {
                     ? errorObj.response.data
                     : errorObj?.response?.data?.message;
 
-            if (status === 403 || (serverMsg && serverMsg.toLowerCase().includes("verificado"))) {
+            if (status === 428 || (serverMsg && serverMsg.toLowerCase().includes("não possui senha"))) {
                 setEmailParaVerificar(email.trim());
+                setDefinirNovaSenha(true);
+                setModalVerificacaoAberto(true);
+                setErrorMessage("Esta conta ainda não possui senha. Enviamos um código para seu e-mail para validar sua identidade e cadastrar sua senha.");
+            } else if (status === 403 || (serverMsg && serverMsg.toLowerCase().includes("verificado"))) {
+                setEmailParaVerificar(email.trim());
+                setDefinirNovaSenha(false);
                 setModalVerificacaoAberto(true);
                 setErrorMessage("Seu e-mail ainda não foi verificado. Digite o código enviado para continuar.");
             } else {
@@ -273,6 +280,8 @@ export const Login = () => {
                     isOpen={modalVerificacaoAberto}
                     onClose={() => setModalVerificacaoAberto(false)}
                     onSuccess={handleVerificacaoSucesso}
+                    definirSenha={definirNovaSenha}
+                    senhaDigitada={senha.trim()}
                 />
             </div>
         </AuthLayout>
