@@ -70,9 +70,9 @@
     /* Permite rolar quando o conteúdo for maior que a tela */
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     background: #f8f9fa !important;
-    padding: 32px 24px;
+    padding: 20px 24px;
     box-sizing: border-box;
 }
 
@@ -99,15 +99,15 @@
     width: 100%;
     margin: auto;
     /* Centraliza verticalmente se couber, rola suavemente se ultrapassar */
-    padding: 20px 16px;
+    padding: 10px 16px;
     box-sizing: border-box;
     text-align: center;
 }
 
 .logo {
-    width: 200px;
-    max-width: 80%;
-    margin-bottom: 20px;
+    width: 170px;
+    max-width: 75%;
+    margin-bottom: 12px;
     transition: transform 0.25s ease;
 }
 
