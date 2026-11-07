@@ -1,100 +1,539 @@
+/* ==========================================================================
+   TOPBAR - Workonnection
+   Design Moderno, Responsivo e Acessível
+   ========================================================================== */
+
 .topbar {
   background: var(--gradient);
-  padding: 0 16px;
-  height: var(--topbar-height, 70px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  height: var(--topbar-height, 70px);
   z-index: 1000;
-  box-shadow: var(--shadow-sm);
-}
-
-.logo img {
-  height: 35px;
-  display: block;
-}
-
-.searchBar {
-  flex: 1;
-  margin: 0 16px;
-  max-width: 280px;
-}
-
-.searchBar input {
-  width: 100%;
-  border-radius: 20px;
-  border: none;
-  padding: 6px 14px;
-  font-size: 13px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  outline: none;
-}
-
-.searchBar input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.topIcons {
   display: flex;
   align-items: center;
-  gap: 2px;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.navLink {
+.topbarInner {
+  width: 100%;
+  max-width: 1240px;
+  height: 100%;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ==========================================================================
+   LOGO
+   ========================================================================== */
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.logoLink:hover {
+  background: #ffffff;
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.logoImg {
+  height: 42px;
+  width: auto;
+  max-width: 160px;
+  display: block;
+  object-fit: contain;
+}
+
+/* ==========================================================================
+   NAVEGAÇÃO DESKTOP
+   ========================================================================== */
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navItem {
   position: relative;
-  width: 58px;
-  height: 60px;
-  border-radius: var(--radius);
+  min-width: 56px;
+  height: 54px;
+  padding: 0 8px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none;
-  transition: all 0.2s ease;
-  gap: 2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 3px;
   background: transparent;
   border: none;
   cursor: pointer;
+  font-family: inherit;
 }
 
-/* Alterado de .navLink i para .navLink svg */
-.navLink svg {
-  margin-bottom: 2px;
+.navItem svg {
+  transition: transform 0.2s ease;
 }
 
-.iconText {
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.2px;
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-.navLink:hover,
-.navLink.ativo {
-  background: rgba(255, 255, 255, 0.15);
+.navItem:hover svg {
+  transform: scale(1.08);
+}
+
+.navItem.ativo {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 0 #ffffff;
+}
+
+.navItem.ativo .navLabel {
+  font-weight: 700;
   color: #ffffff;
 }
 
-.notifBadge {
+.navLabel {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.iconWithBadge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
   position: absolute;
-  top: 8px;
-  right: 14px;
-  min-width: 16px;
-  height: 16px;
+  top: -6px;
+  right: -10px;
+  min-width: 17px;
+  height: 17px;
   padding: 0 4px;
   border-radius: 10px;
-  background: #ff4d4d;
+  background: #e63946;
   color: #ffffff;
   font-size: 9px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ffffff;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+  animation: badgePop 0.25s ease-out;
+}
+
+.navDivider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 6px;
+}
+
+.userAvatarSmall {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.logoutItem {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.logoutItem:hover {
+  background: rgba(230, 57, 70, 0.35);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   AÇÕES MOBILE
+   ========================================================================== */
+
+.mobileActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobileActionBtn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mobileActionBtn:hover,
+.mobileActionBtn:active {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(0.96);
+}
+
+.mobileBadge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 8px;
+  background: #e63946;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.menuToggleBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.menuToggleBtn:hover,
+.menuToggleBtn:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   DRAWER E OVERLAY MOBILE
+   ========================================================================== */
+
+.mobileBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1001;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.mobileDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 84%;
+  max-width: 340px;
+  background: var(--card-bg, #ffffff);
+  box-shadow: -6px 0 28px rgba(0, 0, 0, 0.25);
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.drawerHeader {
+  padding: 20px 16px;
+  background: var(--gradient);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.drawerUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.drawerAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.drawerAvatarInitial {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.drawerUserDetails {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.drawerUserName {
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerUserEmail {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerCloseBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.drawerCloseBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.drawerNavList {
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.drawerNavItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: var(--text-main, #334155);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.drawerNavItem:hover {
+  background: var(--bg-hover, #f1f5f9);
+  color: var(--primary, #007B8A);
+}
+
+.drawerNavItem.ativo {
+  background: rgba(71, 164, 196, 0.12);
+  color: var(--primary, #007B8A);
+  font-weight: 700;
+}
+
+.drawerNavContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drawerChevron {
+  opacity: 0.4;
+  transition: transform 0.2s ease;
+}
+
+.drawerNavItem:hover .drawerChevron {
+  opacity: 0.8;
+  transform: translateX(2px);
+}
+
+.drawerBadge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #e63946;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.drawerFooter {
+  padding: 16px;
+  border-top: 1px solid var(--border, #e2e8f0);
+  background: var(--card-bg, #ffffff);
+}
+
+.drawerLogoutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(220, 53, 69, 0.35);
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--danger, #dc3545);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drawerLogoutBtn:hover {
+  background: var(--danger, #dc3545);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   ANIMAÇÕES
+   ========================================================================== */
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINTS DE RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 960px) {
+  .desktopNav {
+    display: none;
+  }
+
+  .mobileActions {
+    display: flex;
+  }
+
+  .topbarInner {
+    padding: 0 16px;
+  }
+
+  .logoLink {
+    padding: 4px 10px;
+  }
+
+  .logoImg {
+    height: 38px;
+    max-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoImg {
+    height: 34px;
+    max-width: 120px;
+  }
+
+  .logoLink {
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
+
+  .mobileActionBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .menuToggleBtn {
+    width: 40px;
+    height: 40px;
+  }
 }

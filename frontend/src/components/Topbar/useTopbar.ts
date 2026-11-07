@@ -4,6 +4,7 @@ import { useAuth } from '../../context/useAuth';
 import { chatService } from '../../services/chatService';
 import { notificacaoService } from '../../services/notificacaoService';
 import { getPusherClient } from '../../services/pusher';
+import { obterUrlArquivo } from '../../utils/documentosPorCategoria';
 
 export const useTopbar = () => {
     const location = useLocation();
@@ -12,8 +13,36 @@ export const useTopbar = () => {
     const { usuario, logout } = useAuth();
     const [totalMensagensNaoLidas, setTotalMensagensNaoLidas] = useState(0);
     const [totalNotificacoesNaoLidas, setTotalNotificacoesNaoLidas] = useState(0);
+    const [menuAberto, setMenuAberto] = useState(false);
 
     const isActive = (path: string) => location.pathname === path;
+
+    const fecharMenu = () => setMenuAberto(false);
+    const toggleMenu = () => setMenuAberto((prev) => !prev);
+
+    // Fecha o menu se o usuário navegar pelo histórico do navegador (botão voltar/avançar)
+    useEffect(() => {
+        const onPopState = () => setMenuAberto(false);
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, []);
+
+    // Trata fechamento por Escape e previne scroll de fundo quando o drawer estiver aberto
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setMenuAberto(false);
+        };
+        if (menuAberto) {
+            window.addEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [menuAberto]);
 
     useEffect(() => {
         if (!usuario?.id) return;
@@ -82,11 +111,32 @@ export const useTopbar = () => {
         }
     };
 
+    const fotoPerfilUrl = usuario?.perfil?.fotoPerfil?.url
+        ? obterUrlArquivo(usuario.perfil.fotoPerfil.url)
+        : usuario?.foto
+        ? obterUrlArquivo(usuario.foto)
+        : null;
+
+    const iniciaisUsuario = usuario?.nome
+        ? usuario.nome
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((p) => p[0].toUpperCase())
+            .join('')
+        : 'U';
+
     return {
         usuario,
         isActive,
         handleLogout,
         totalMensagensNaoLidas,
         totalNotificacoesNaoLidas,
+        menuAberto,
+        setMenuAberto,
+        toggleMenu,
+        fecharMenu,
+        fotoPerfilUrl,
+        iniciaisUsuario,
     };
 };
