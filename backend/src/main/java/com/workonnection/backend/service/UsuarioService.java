@@ -10,6 +10,7 @@ import com.workonnection.backend.repository.UsuarioRepository;
 import com.workonnection.backend.repository.VagaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +27,8 @@ public class UsuarioService {
     private final CandidaturaRepository candidaturaRepository;
     private final FeedbackRepository feedbackRepository;
     private final MensagemRepository mensagemRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
 
     public UsuarioService(
             UsuarioRepository repository,
@@ -33,7 +36,9 @@ public class UsuarioService {
             VagaRepository vagaRepository,
             CandidaturaRepository candidaturaRepository,
             FeedbackRepository feedbackRepository,
-            MensagemRepository mensagemRepository
+            MensagemRepository mensagemRepository,
+            PasswordEncoder passwordEncoder,
+            EmailVerificationService emailVerificationService
     ) {
         this.repository = repository;
         this.fileStorageService = fileStorageService;
@@ -41,6 +46,8 @@ public class UsuarioService {
         this.candidaturaRepository = candidaturaRepository;
         this.feedbackRepository = feedbackRepository;
         this.mensagemRepository = mensagemRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailVerificationService = emailVerificationService;
     }
 
     public UsuarioResponseDTO cadastrar(CadastroDTO dto) {
@@ -70,17 +77,88 @@ public class UsuarioService {
         usuario.setEmail(dto.email());
         usuario.setTipoUsuario(dto.tipoUsuario());
 
+        if (dto.senha() != null && !dto.senha().isBlank()) {
+            if (dto.senha().trim().length() < 6) {
+                throw new ApiException("A senha deve ter no mínimo 6 caracteres", HttpStatus.BAD_REQUEST);
+            }
+            usuario.setSenha(passwordEncoder.encode(dto.senha().trim()));
+        }
+
+        usuario.setEmailVerified(false);
+        try {
+            emailVerificationService.generateAndSendCode(usuario);
+        } catch (Exception e) {
+            System.err.println("Aviso: Falha ao enviar e-mail de verificação: " + e.getMessage());
+        }
+
         return toResponse(repository.save(usuario));
     }
 
     public UsuarioResponseDTO login(LoginDTO dto) {
-        Usuario usuario = repository.findFirstByEmail(dto.email())
+        if (dto.email() == null || dto.email().isBlank()) {
+            throw new ApiException("E-mail é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        Usuario usuario = repository.findFirstByEmail(dto.email().trim())
                 .orElseThrow(() -> new ApiException(
-                        "Usuário não encontrado",
+                        "Credenciais inválidas",
                         HttpStatus.UNAUTHORIZED
                 ));
 
+        if (dto.senha() != null && !dto.senha().isBlank()) {
+            if (usuario.getSenha() == null || !passwordEncoder.matches(dto.senha().trim(), usuario.getSenha())) {
+                throw new ApiException("Credenciais inválidas", HttpStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (!usuario.isEmailVerified() && !usuario.isGoogleLinked()) {
+            throw new ApiException("E-mail não verificado. Por favor, confirme seu código de verificação.", HttpStatus.FORBIDDEN);
+        }
+
         return toResponse(usuario);
+    }
+
+    public UsuarioResponseDTO verificarCodigoEmail(VerificarCodigoDTO dto) {
+        if (dto.email() == null || dto.email().isBlank() || dto.codigo() == null || dto.codigo().isBlank()) {
+            throw new ApiException("E-mail e código são obrigatórios", HttpStatus.BAD_REQUEST);
+        }
+
+        Usuario usuario = repository.findFirstByEmail(dto.email().trim())
+                .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        if (usuario.isEmailVerified()) {
+            return toResponse(usuario);
+        }
+
+        if (usuario.getVerificationCode() == null || !usuario.getVerificationCode().equals(dto.codigo().trim())) {
+            throw new ApiException("Código de verificação incorreto ou inválido", HttpStatus.BAD_REQUEST);
+        }
+
+        if (usuario.getVerificationExpiry() != null && usuario.getVerificationExpiry().isBefore(java.time.Instant.now())) {
+            throw new ApiException("Código de verificação expirado. Solicite um novo código.", HttpStatus.BAD_REQUEST);
+        }
+
+        usuario.setEmailVerified(true);
+        usuario.setVerificationCode(null);
+        usuario.setVerificationExpiry(null);
+
+        return toResponse(repository.save(usuario));
+    }
+
+    public void reenviarCodigoEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new ApiException("E-mail é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        Usuario usuario = repository.findFirstByEmail(email.trim())
+                .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
+
+        if (usuario.isEmailVerified()) {
+            throw new ApiException("Este e-mail já foi verificado", HttpStatus.BAD_REQUEST);
+        }
+
+        emailVerificationService.generateAndSendCode(usuario);
+        repository.save(usuario);
     }
 
     public UsuarioResponseDTO buscarPorId(String id) {
