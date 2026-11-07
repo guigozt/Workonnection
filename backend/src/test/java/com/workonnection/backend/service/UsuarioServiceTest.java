@@ -67,6 +67,7 @@ class UsuarioServiceTest {
         usuarioPadrao.setTelefone("11999999999");
         usuarioPadrao.setTipoUsuario("ESTUDANTE");
         usuarioPadrao.setEmailVerified(true);
+        usuarioPadrao.setSenha("encoded_hash");
     }
 
     @Test
@@ -142,11 +143,12 @@ class UsuarioServiceTest {
         usuarioPadrao.setNotificacoes(List.of(n1, n2));
 
         when(repository.findFirstByEmail("paulo@email.com")).thenReturn(Optional.of(usuarioPadrao));
-        UsuarioResponseDTO logado = usuarioService.login(new LoginDTO("paulo@email.com"));
+        when(passwordEncoder.matches(eq("123456"), eq("encoded_hash"))).thenReturn(true);
+        UsuarioResponseDTO logado = usuarioService.login(new LoginDTO("paulo@email.com", "123456"));
         assertEquals(1L, logado.notificacoesNaoLidas());
 
         when(repository.findFirstByEmail("nao@existe.com")).thenReturn(Optional.empty());
-        assertThrows(ApiException.class, () -> usuarioService.login(new LoginDTO("nao@existe.com")));
+        assertThrows(ApiException.class, () -> usuarioService.login(new LoginDTO("nao@existe.com", "123456")));
 
         when(repository.findById("user-1")).thenReturn(Optional.of(usuarioPadrao));
         assertEquals("user-1", usuarioService.buscarPorId("user-1").id());
