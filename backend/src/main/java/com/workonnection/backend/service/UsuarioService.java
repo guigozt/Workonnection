@@ -105,10 +105,23 @@ public class UsuarioService {
                         HttpStatus.UNAUTHORIZED
                 ));
 
+        // Se o usuário já existe mas ainda não possui senha cadastrada (conta criada antigamente ou via Google)
+        if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {
+            try {
+                emailVerificationService.generateAndSendCode(usuario);
+                repository.save(usuario);
+            } catch (Exception e) {
+                System.err.println("Aviso: Falha ao enviar código para conta sem senha: " + e.getMessage());
+            }
+            throw new ApiException("Esta conta ainda não possui senha definida. Enviamos um código para seu e-mail para validar sua identidade e cadastrar sua senha.", HttpStatus.PRECONDITION_REQUIRED);
+        }
+
         if (dto.senha() != null && !dto.senha().isBlank()) {
-            if (usuario.getSenha() == null || !passwordEncoder.matches(dto.senha().trim(), usuario.getSenha())) {
+            if (!passwordEncoder.matches(dto.senha().trim(), usuario.getSenha())) {
                 throw new ApiException("Credenciais inválidas", HttpStatus.UNAUTHORIZED);
             }
+        } else {
+            throw new ApiException("Senha é obrigatória", HttpStatus.BAD_REQUEST);
         }
 
         if (!usuario.isEmailVerified() && !usuario.isGoogleLinked()) {
@@ -126,16 +139,19 @@ public class UsuarioService {
         Usuario usuario = repository.findFirstByEmail(dto.email().trim())
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
-        if (usuario.isEmailVerified()) {
-            return toResponse(usuario);
-        }
-
         if (usuario.getVerificationCode() == null || !usuario.getVerificationCode().equals(dto.codigo().trim())) {
             throw new ApiException("Código de verificação incorreto ou inválido", HttpStatus.BAD_REQUEST);
         }
 
         if (usuario.getVerificationExpiry() != null && usuario.getVerificationExpiry().isBefore(java.time.Instant.now())) {
             throw new ApiException("Código de verificação expirado. Solicite um novo código.", HttpStatus.BAD_REQUEST);
+        }
+
+        if (dto.novaSenha() != null && !dto.novaSenha().isBlank()) {
+            if (dto.novaSenha().trim().length() < 6) {
+                throw new ApiException("A senha deve ter no mínimo 6 caracteres", HttpStatus.BAD_REQUEST);
+            }
+            usuario.setSenha(passwordEncoder.encode(dto.novaSenha().trim()));
         }
 
         usuario.setEmailVerified(true);
@@ -152,10 +168,6 @@ public class UsuarioService {
 
         Usuario usuario = repository.findFirstByEmail(email.trim())
                 .orElseThrow(() -> new ApiException("Usuário não encontrado", HttpStatus.NOT_FOUND));
-
-        if (usuario.isEmailVerified()) {
-            throw new ApiException("Este e-mail já foi verificado", HttpStatus.BAD_REQUEST);
-        }
 
         emailVerificationService.generateAndSendCode(usuario);
         repository.save(usuario);
