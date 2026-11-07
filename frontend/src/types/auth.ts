@@ -1,6 +1,25 @@
 export interface LoginDTO {
     email: string;
-    senha: string;
+    senha?: string;
+}
+
+export interface CadastroDTO {
+    nome: string;
+    cpf: string;
+    dataNascimento: string;
+    telefone: string;
+    email: string;
+    tipoUsuario: string;
+    senha?: string;
+}
+
+export interface VerificarCodigoDTO {
+    email: string;
+    codigo: string;
+}
+
+export interface ReenviarCodigoDTO {
+    email: string;
 }
 
 export interface CompletarCadastroDTO {
