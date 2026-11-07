@@ -45,6 +45,12 @@ class UsuarioServiceTest {
     @Mock
     private MensagemRepository mensagemRepository;
 
+    @Mock
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailVerificationService emailVerificationService;
+
     @InjectMocks
     private UsuarioService usuarioService;
 
@@ -60,6 +66,7 @@ class UsuarioServiceTest {
         usuarioPadrao.setDataNascimento("2000-05-15");
         usuarioPadrao.setTelefone("11999999999");
         usuarioPadrao.setTipoUsuario("ESTUDANTE");
+        usuarioPadrao.setEmailVerified(true);
     }
 
     @Test
