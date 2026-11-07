@@ -20,10 +20,12 @@ export const useTopbar = () => {
     const fecharMenu = () => setMenuAberto(false);
     const toggleMenu = () => setMenuAberto((prev) => !prev);
 
-    // Fecha o menu móvel ao mudar de rota
+    // Fecha o menu se o usuário navegar pelo histórico do navegador (botão voltar/avançar)
     useEffect(() => {
-        setMenuAberto(false);
-    }, [location.pathname]);
+        const onPopState = () => setMenuAberto(false);
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, []);
 
     // Trata fechamento por Escape e previne scroll de fundo quando o drawer estiver aberto
     useEffect(() => {
