@@ -219,41 +219,45 @@ export const Login = () => {
                     </div>
                 )}
 
-                <form onSubmit={handleLoginEmailSenha} className={styles.form}>
-                    <InputGroup
-                        label="E-mail"
-                        name="email"
-                        type="email"
-                        icon="fa-solid fa-envelope"
-                        placeholder="seu@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isLoading}
-                    />
-
-                    <InputGroup
-                        label="Senha"
-                        name="senha"
-                        type="password"
-                        icon="fa-solid fa-lock"
-                        placeholder="Sua senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                        disabled={isLoading}
-                    />
-
-                    <Button type="submit" disabled={isLoading}>
-                        {isLoading ? "Entrando..." : "Entrar com E-mail"}
-                    </Button>
-
-                    <div className={styles.divider}>
-                        <span>ou</span>
+                <div className={styles.loginCard}>
+                    <div className={styles.googleSection}>
+                        <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
                     </div>
 
-                    <div className={styles.googleBtnWrapper} ref={googleBtnRef}></div>
+                    <div className={styles.divider}>
+                        <span>ou acesse com e-mail</span>
+                    </div>
+
+                    <form onSubmit={handleLoginEmailSenha} className={styles.form}>
+                        <InputGroup
+                            label="E-mail"
+                            name="email"
+                            type="email"
+                            icon="fa-solid fa-envelope"
+                            placeholder="seu@email.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            disabled={isLoading}
+                        />
+
+                        <InputGroup
+                            label="Senha"
+                            name="senha"
+                            type="password"
+                            icon="fa-solid fa-lock"
+                            placeholder="Sua senha"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            disabled={isLoading}
+                        />
+
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? "Entrando..." : "Entrar com E-mail"}
+                        </Button>
+                    </form>
 
                     <p className={styles.cadastroHint}>
-                        Não tem uma conta ou precisa completar cadastro?{" "}
+                        Não tem uma conta?{" "}
                         <button
                             type="button"
                             className={styles.linkVerificar}
@@ -262,7 +266,7 @@ export const Login = () => {
                             Cadastre-se aqui
                         </button>
                     </p>
-                </form>
+                </div>
 
                 <ModalVerificacaoEmail
                     email={emailParaVerificar}
