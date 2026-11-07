@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthLayout } from "../../../components/layouts/AuthLayout/AuthLayout";
 import { InputGroup } from "../../../components/Input/InputGroup";
 import { Button } from "../../../components/Button/Button";
+import { ModalVerificacaoEmail } from "../../../components/ModalVerificacaoEmail/ModalVerificacaoEmail";
 import { useAuth } from "../../../context/useAuth";
 import { maskCPF, maskPhone } from "../../../utils/masks";
 import { validateCPF, calculateAge } from "../../../utils/validators";
@@ -10,37 +11,44 @@ import styles from "./Cadastro.module.css";
 
 export const Cadastro = () => {
     const navigate = useNavigate();
-    const { usuario, loading, completarCadastro, logout } = useAuth();
+    const { usuario, loading, completarCadastro, cadastrar, logout } = useAuth();
 
     const [formData, setFormData] = useState({
         nome: "",
         cpf: "",
         dataNascimento: "",
         telefone: "",
-        tipoUsuario: ""
+        tipoUsuario: "",
+        email: "",
+        senha: "",
+        confirmarSenha: ""
     });
 
     const [isInitialized, setIsInitialized] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [feedback, setFeedback] = useState<{ message: string; type: 'erro' | 'sucesso' | '' }>({ message: '', type: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [modalVerificacaoAberto, setModalVerificacaoAberto] = useState(false);
+    const [emailParaVerificar, setEmailParaVerificar] = useState("");
+
+    const isCompletandoGoogle = Boolean(usuario && !usuario.cadastroCompleto);
 
     if (!loading && usuario && !isInitialized) {
         setIsInitialized(true);
-        setFormData({
+        setFormData(prev => ({
+            ...prev,
             nome: usuario.nome || "",
             cpf: usuario.cpf || "",
             dataNascimento: usuario.dataNascimento || "",
             telefone: usuario.telefone || "",
-            tipoUsuario: usuario.tipoUsuario || ""
-        });
+            tipoUsuario: usuario.tipoUsuario || "",
+            email: usuario.email || ""
+        }));
     }
 
     useEffect(() => {
         if (!loading) {
-            if (!usuario) {
-                navigate("/login", { replace: true });
-            } else if (usuario.cadastroCompleto) {
+            if (usuario?.cadastroCompleto) {
                 navigate("/home", { replace: true });
             }
         }
@@ -93,6 +101,22 @@ export const Cadastro = () => {
         if (formData.telefone.replace(/\D/g, '').length < 10) newErrors.telefone = 'Incompleto';
         if (!formData.tipoUsuario) newErrors.tipoUsuario = 'Selecione o tipo de conta';
 
+        if (!isCompletandoGoogle) {
+            if (!formData.email || !formData.email.trim()) {
+                newErrors.email = 'E-mail é obrigatório';
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+                newErrors.email = 'E-mail inválido';
+            }
+
+            if (!formData.senha || formData.senha.trim().length < 6) {
+                newErrors.senha = 'Mínimo de 6 caracteres';
+            }
+
+            if (formData.senha !== formData.confirmarSenha) {
+                newErrors.confirmarSenha = 'As senhas não conferem';
+            }
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -108,17 +132,40 @@ export const Cadastro = () => {
 
         setIsSubmitting(true);
         try {
-            await completarCadastro(formData);
-
-            setFeedback({ message: 'Cadastro finalizado com sucesso!', type: 'sucesso' });
-            setTimeout(() => {
-                navigate('/home', { replace: true });
-            }, 1000);
+            if (isCompletandoGoogle) {
+                await completarCadastro({
+                    nome: formData.nome,
+                    cpf: formData.cpf,
+                    dataNascimento: formData.dataNascimento,
+                    telefone: formData.telefone,
+                    tipoUsuario: formData.tipoUsuario
+                });
+                setFeedback({ message: 'Cadastro finalizado com sucesso!', type: 'sucesso' });
+                setTimeout(() => {
+                    navigate('/home', { replace: true });
+                }, 1000);
+            } else {
+                await cadastrar({
+                    nome: formData.nome,
+                    cpf: formData.cpf,
+                    dataNascimento: formData.dataNascimento,
+                    telefone: formData.telefone,
+                    tipoUsuario: formData.tipoUsuario,
+                    email: formData.email.trim(),
+                    senha: formData.senha.trim()
+                });
+                setEmailParaVerificar(formData.email.trim());
+                setFeedback({ message: 'Cadastro realizado! Enviamos um código para seu e-mail.', type: 'sucesso' });
+                setModalVerificacaoAberto(true);
+            }
         } catch (error: unknown) {
             const err = error as { response?: { data?: { message?: string; erro?: string } } };
             const errorMsg = err.response?.data?.message || err.response?.data?.erro || 'Erro ao processar o cadastro.';
             if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('cpf')) {
                 setErrors(prev => ({ ...prev, cpf: 'CPF inválido (já cadastrado/duplicado)' }));
+            }
+            if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('email')) {
+                setErrors(prev => ({ ...prev, email: 'E-mail já cadastrado' }));
             }
             if (typeof errorMsg === 'string' && errorMsg.toLowerCase().includes('nome')) {
                 setErrors(prev => ({ ...prev, nome: errorMsg }));
@@ -130,6 +177,11 @@ export const Cadastro = () => {
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleVerificacaoSucesso = () => {
+        setModalVerificacaoAberto(false);
+        navigate('/home', { replace: true });
     };
 
     if (loading) {
@@ -151,9 +203,13 @@ export const Cadastro = () => {
             imageAlt="Completar Cadastro"
         >
             <div className={styles.container}>
-                <h2 className={styles.title}>Complete seu Cadastro</h2>
+                <h2 className={styles.title}>
+                    {isCompletandoGoogle ? "Complete seu Cadastro" : "Crie sua Conta"}
+                </h2>
                 <p className={styles.subtitle}>
-                    Falta pouco! Preencha os dados abaixo para finalizar sua conta.
+                    {isCompletandoGoogle
+                        ? "Falta pouco! Preencha os dados abaixo para finalizar sua conta."
+                        : "Preencha seus dados para começar a usar o Workonnection."}
                 </p>
 
                 {feedback.message && (
@@ -185,6 +241,46 @@ export const Cadastro = () => {
                             errorMessage={errors.cpf}
                         />
                     </div>
+
+                    {!isCompletandoGoogle && (
+                        <div className={styles.formRow}>
+                            <InputGroup
+                                label="E-mail"
+                                name="email"
+                                type="email"
+                                placeholder="seu@email.com"
+                                icon="fa-solid fa-envelope"
+                                value={formData.email}
+                                onChange={handleChange}
+                                errorMessage={errors.email}
+                            />
+                        </div>
+                    )}
+
+                    {!isCompletandoGoogle && (
+                        <div className={styles.formRow}>
+                            <InputGroup
+                                label="Senha"
+                                name="senha"
+                                type="password"
+                                placeholder="Mínimo 6 caracteres"
+                                icon="fa-solid fa-lock"
+                                value={formData.senha}
+                                onChange={handleChange}
+                                errorMessage={errors.senha}
+                            />
+                            <InputGroup
+                                label="Confirmar Senha"
+                                name="confirmarSenha"
+                                type="password"
+                                placeholder="Confirme sua senha"
+                                icon="fa-solid fa-lock"
+                                value={formData.confirmarSenha}
+                                onChange={handleChange}
+                                errorMessage={errors.confirmarSenha}
+                            />
+                        </div>
+                    )}
 
                     <div className={styles.formRow}>
                         <InputGroup
@@ -233,12 +329,12 @@ export const Cadastro = () => {
 
                     <div className={styles.buttons}>
                         <Button type="submit" icon="fa-solid fa-check" isLoading={isSubmitting}>
-                            Concluir Cadastro
+                            {isCompletandoGoogle ? "Concluir Cadastro" : "Cadastrar"}
                         </Button>
                     </div>
 
                     <p className={styles.loginHint}>
-                        Deseja entrar com outra conta?{' '}
+                        {isCompletandoGoogle ? "Deseja entrar com outra conta?" : "Já possui uma conta?"}{' '}
                         <button
                             type="button"
                             className={styles.linkBtn}
@@ -248,6 +344,13 @@ export const Cadastro = () => {
                         </button>
                     </p>
                 </form>
+
+                <ModalVerificacaoEmail
+                    email={emailParaVerificar}
+                    isOpen={modalVerificacaoAberto}
+                    onClose={() => setModalVerificacaoAberto(false)}
+                    onSuccess={handleVerificacaoSucesso}
+                />
             </div>
         </AuthLayout>
     );

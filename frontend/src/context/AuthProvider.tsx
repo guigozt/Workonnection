@@ -6,6 +6,8 @@ import { contasManager } from '../utils/contasManager';
 import type {
   UsuarioResponseDTO,
   LoginDTO,
+  CadastroDTO,
+  VerificarCodigoDTO,
   CompletarCadastroDTO,
 } from '../types/auth';
 
@@ -57,12 +59,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
   }, []);
 
-  const login = useCallback(async (dados: LoginDTO) => {
+  const login = useCallback(async (dados: LoginDTO): Promise<UsuarioResponseDTO> => {
     console.log('AUTH: executando login...', dados.email);
     const user = await authService.login(dados);
     console.log('AUTH: login retornou:', user);
     setUsuario(user);
     contasManager.salvarConta(user);
+    return user;
+  }, []);
+
+  const cadastrar = useCallback(async (dados: CadastroDTO): Promise<UsuarioResponseDTO> => {
+    console.log('AUTH: cadastrando novo usuário...', dados.email);
+    return await authService.cadastrar(dados);
+  }, []);
+
+  const verificarCodigo = useCallback(async (dados: VerificarCodigoDTO): Promise<UsuarioResponseDTO> => {
+    console.log('AUTH: confirmando código...', dados.email);
+    const user = await authService.verificarCodigo(dados);
+    setUsuario(user);
+    contasManager.salvarConta(user);
+    return user;
+  }, []);
+
+  const reenviarCodigo = useCallback(async (email: string): Promise<void> => {
+    console.log('AUTH: reenviando código para...', email);
+    await authService.reenviarCodigo(email);
   }, []);
 
   const loginComGoogleToken = useCallback(async (token: string): Promise<UsuarioResponseDTO> => {
@@ -127,6 +148,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         usuario,
         loading,
         login,
+        cadastrar,
+        verificarCodigo,
+        reenviarCodigo,
         logout,
         loginComGoogleToken,
         completarCadastro,
