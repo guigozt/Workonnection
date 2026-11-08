@@ -25,6 +25,15 @@ public class EmailVerificationService {
     private final SecureRandom random = new SecureRandom();
     private final HttpClient httpClient;
 
+    @Value("${brevo.api-key:}")
+    private String brevoApiKey;
+
+    @Value("${brevo.sender-email:workonnection.fatec@gmail.com}")
+    private String brevoSenderEmail;
+
+    @Value("${brevo.sender-name:Workonnection}")
+    private String brevoSenderName;
+
     @Value("${resend.api-key:}")
     private String resendApiKey;
 
@@ -53,17 +62,68 @@ public class EmailVerificationService {
         user.setVerificationCode(code);
         user.setVerificationExpiry(java.time.Instant.now().plusSeconds(15 * 60));
 
-        // Prioriza Resend via HTTP (porta 443) caso a chave esteja presente (necessário
-        // em nuvens como o Render)
-        if (resendApiKey != null && !resendApiKey.isBlank()) {
+        // Prioridade 1: Brevo HTTP API (permite envio para qualquer destinatario sem dominio proprio)
+        if (brevoApiKey != null && !brevoApiKey.isBlank()) {
+            enviarViaBrevo(user.getEmail(), code);
+        } else if (resendApiKey != null && !resendApiKey.isBlank()) {
             enviarViaResend(user.getEmail(), code);
         } else if (mailSender != null) {
             enviarViaSmtp(user.getEmail(), code);
         } else {
-            logger.warn("Nenhum provedor de e-mail configurado (Resend API Key ou SMTP ausentes).");
+            logger.warn("Nenhum provedor de e-mail configurado (Brevo, Resend ou SMTP ausentes).");
         }
 
         return code;
+    }
+
+    private void enviarViaBrevo(String emailDestino, String code) {
+        try {
+            logger.info("Enviando código de verificação via Brevo HTTP API para: {}", emailDestino);
+
+            String subject = "Código de verificação Workonnection";
+            String htmlContent = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;'>"
+                    + "<h2 style='color: #2563eb;'>Workonnection</h2>"
+                    + "<p>Seu código de verificação de segurança é:</p>"
+                    + "<div style='background-color: #f1f5f9; padding: 16px; border-radius: 6px; font-size: 24px; font-weight: bold; letter-spacing: 4px; text-align: center; color: #1e293b; margin: 20px 0;'>"
+                    + code
+                    + "</div>"
+                    + "<p style='color: #64748b; font-size: 14px;'>Este código é válido por <strong>15 minutos</strong>. Se você não solicitou este código, por favor ignore este e-mail.</p>"
+                    + "</div>";
+
+            // Monta o JSON para a API v3 do Brevo
+            String jsonPayload = String.format(
+                    "{\"sender\":{\"name\":\"%s\",\"email\":\"%s\"},\"to\":[{\"email\":\"%s\"}],\"subject\":\"%s\",\"htmlContent\":\"%s\"}",
+                    brevoSenderName.replace("\"", "\\\""),
+                    brevoSenderEmail.replace("\"", "\\\""),
+                    emailDestino.replace("\"", "\\\""),
+                    subject.replace("\"", "\\\""),
+                    htmlContent.replace("\"", "\\\"")
+            );
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
+                    .header("api-key", brevoApiKey.trim())
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .timeout(Duration.ofSeconds(15))
+                    .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                logger.info("E-mail de verificação enviado com sucesso pelo Brevo para: {}. Resposta: {}",
+                        emailDestino, response.body());
+            } else {
+                logger.error("Falha ao enviar e-mail via Brevo. Status: {}, Resposta: {}", response.statusCode(),
+                        response.body());
+                throw new RuntimeException(
+                        "Falha na API do Brevo (" + response.statusCode() + "): " + response.body());
+            }
+        } catch (Exception e) {
+            logger.error("Erro ao enviar e-mail via Brevo para {}: {}", emailDestino, e.getMessage(), e);
+            throw new RuntimeException("Não foi possível enviar o e-mail de verificação: " + e.getMessage(), e);
+        }
     }
 
     private void enviarViaResend(String emailDestino, String code) {
