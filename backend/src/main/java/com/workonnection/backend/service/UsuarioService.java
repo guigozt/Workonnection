@@ -87,6 +87,10 @@ public class UsuarioService {
             emailVerificationService.generateAndSendCode(usuario);
         } catch (Exception e) {
             System.err.println("Aviso: Falha ao enviar e-mail de verificação: " + e.getMessage());
+            throw new ApiException(
+                    "Erro ao enviar o e-mail de confirmação: " + e.getMessage()
+                            + ". Por favor, verifique se o e-mail está correto e tente novamente.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return toResponse(repository.save(usuario));
