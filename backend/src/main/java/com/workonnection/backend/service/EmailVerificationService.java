@@ -42,7 +42,8 @@ public class EmailVerificationService {
     }
 
     /**
-     * Generates a verification code, stores it in the user (via setters) and sends an email.
+     * Generates a verification code, stores it in the user (via setters) and sends
+     * an email.
      * Returns the generated code.
      */
     public String generateAndSendCode(Usuario user) {
@@ -52,7 +53,8 @@ public class EmailVerificationService {
         user.setVerificationCode(code);
         user.setVerificationExpiry(java.time.Instant.now().plusSeconds(15 * 60));
 
-        // Prioriza Resend via HTTP (porta 443) caso a chave esteja presente (necessário em nuvens como o Render)
+        // Prioriza Resend via HTTP (porta 443) caso a chave esteja presente (necessário
+        // em nuvens como o Render)
         if (resendApiKey != null && !resendApiKey.isBlank()) {
             enviarViaResend(user.getEmail(), code);
         } else if (mailSender != null) {
@@ -84,8 +86,7 @@ public class EmailVerificationService {
                     resendFromEmail.replace("\"", "\\\""),
                     emailDestino.replace("\"", "\\\""),
                     subject.replace("\"", "\\\""),
-                    htmlContent.replace("\"", "\\\"")
-            );
+                    htmlContent.replace("\"", "\\\""));
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.resend.com/emails"))
@@ -98,10 +99,13 @@ public class EmailVerificationService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                logger.info("E-mail de verificação enviado com sucesso pelo Resend para: {}. Resposta: {}", emailDestino, response.body());
+                logger.info("E-mail de verificação enviado com sucesso pelo Resend para: {}. Resposta: {}",
+                        emailDestino, response.body());
             } else {
-                logger.error("Falha ao enviar e-mail via Resend. Status: {}, Resposta: {}", response.statusCode(), response.body());
-                throw new RuntimeException("Falha na API do Resend (" + response.statusCode() + "): " + response.body());
+                logger.error("Falha ao enviar e-mail via Resend. Status: {}, Resposta: {}", response.statusCode(),
+                        response.body());
+                throw new RuntimeException(
+                        "Falha na API do Resend (" + response.statusCode() + "): " + response.body());
             }
         } catch (Exception e) {
             logger.error("Erro ao enviar e-mail via Resend para {}: {}", emailDestino, e.getMessage(), e);
@@ -121,7 +125,8 @@ public class EmailVerificationService {
             logger.info("E-mail de verificação enviado com sucesso via SMTP para: {}", emailDestino);
         } catch (Exception e) {
             logger.error("Erro ao enviar e-mail via SMTP para {}: {}", emailDestino, e.getMessage(), e);
-            throw new RuntimeException("Não foi possível enviar o e-mail com o código de verificação via SMTP: " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Não foi possível enviar o e-mail com o código de verificação via SMTP: " + e.getMessage(), e);
         }
     }
 }
