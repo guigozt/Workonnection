@@ -326,8 +326,19 @@ public class UsuarioService {
                             .toList());
         }
 
-        // Mapeamento específico conforme o tipo de usuário
-        String tipo = usuario.getTipoUsuario() != null ? usuario.getTipoUsuario().toUpperCase() : "";
+        // Mapeamento específico conforme o tipo de usuário (com normalização de
+        // variações como Microempreendedor e Microempresa)
+        String tipoRaw = usuario.getTipoUsuario() != null ? usuario.getTipoUsuario().trim().toUpperCase() : "";
+        String tipo;
+        if (tipoRaw.equals("MICROEMPREENDEDOR") || tipoRaw.equals("MEI")) {
+            tipo = "MEI";
+        } else if (tipoRaw.equals("MICROEMPRESA") || tipoRaw.equals("ME")) {
+            tipo = "ME";
+        } else if (tipoRaw.equals("EMPRESA")) {
+            tipo = "EMPRESA";
+        } else {
+            tipo = "ESTUDANTE";
+        }
 
         if ("ESTUDANTE".equals(tipo) && dto.perfilEstudante() != null) {
             PerfilEstudante pe = perfil.getPerfilEstudante() != null ? perfil.getPerfilEstudante()
@@ -482,7 +493,17 @@ public class UsuarioService {
     }
 
     private void validarDocumentoPorTipoUsuario(String tipoUsuario, String tipoDocumento) {
-        String tipo = tipoUsuario != null ? tipoUsuario.toUpperCase() : "";
+        String tipoRaw = tipoUsuario != null ? tipoUsuario.trim().toUpperCase() : "";
+        String tipo;
+        if (tipoRaw.equals("MICROEMPREENDEDOR") || tipoRaw.equals("MEI")) {
+            tipo = "MEI";
+        } else if (tipoRaw.equals("MICROEMPRESA") || tipoRaw.equals("ME")) {
+            tipo = "ME";
+        } else if (tipoRaw.equals("EMPRESA")) {
+            tipo = "EMPRESA";
+        } else {
+            tipo = "ESTUDANTE";
+        }
 
         List<String> permitidosEstudante = List.of("COMPROVANTE_MATRICULA", "HISTORICO_ESCOLAR", "CURRICULO",
                 "DOCUMENTO_IDENTIDADE");
